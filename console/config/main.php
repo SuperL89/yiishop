@@ -18,6 +18,12 @@ return [
           ],
     ],
     'components' => [
+        //rbac 权限配置 3
+        "authManager" => [
+            "class" => 'yii\rbac\DbManager',
+            "defaultRoles" => ["guest"],
+        ],
+        //rbac 权限配置 3 end
         'log' => [
             'targets' => [
                 [
