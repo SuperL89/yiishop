@@ -47,4 +47,5 @@ return [
         */
     ],
     'params' => $params,
+    'language'=>'zh_CN',
 ];
