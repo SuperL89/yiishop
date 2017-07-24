@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Adminuser;
+use common\models\User;
 
 /**
- * AdminuserSearch represents the model behind the search form about `common\models\Adminuser`.
+ * UserSearch represents the model behind the search form about `common\models\User`.
  */
-class AdminuserSearch extends Adminuser
+class UserSearch extends User
 {
     /**
      * @inheritdoc
@@ -18,7 +18,7 @@ class AdminuserSearch extends Adminuser
     public function rules()
     {
         return [
-            [['id', 'role', 'status', 'login_at', 'login_ip', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'role', 'status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
         ];
     }
@@ -41,7 +41,7 @@ class AdminuserSearch extends Adminuser
      */
     public function search($params)
     {
-        $query = Adminuser::find();
+        $query = User::find();
 
         // add conditions that should always apply here
 
@@ -62,8 +62,6 @@ class AdminuserSearch extends Adminuser
             'id' => $this->id,
             'role' => $this->role,
             'status' => $this->status,
-            'login_at' => $this->login_at,
-            'login_ip' => $this->login_ip,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

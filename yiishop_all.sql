@@ -1,22 +1,22 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost_3306
-Source Server Version : 50553
+Source Server         : localhost
+Source Server Version : 50547
 Source Host           : localhost:3306
 Source Database       : yiishop
 
 Target Server Type    : MYSQL
-Target Server Version : 50553
+Target Server Version : 50547
 File Encoding         : 65001
 
-Date: 2017-07-23 20:58:50
+Date: 2017-07-24 17:40:02
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `sp_admin_user`
+-- Table structure for sp_admin_user
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_admin_user`;
 CREATE TABLE `sp_admin_user` (
@@ -42,7 +42,7 @@ CREATE TABLE `sp_admin_user` (
 INSERT INTO `sp_admin_user` VALUES ('2', 'admin', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$vBQwQoyE.x3/18LpkUNDE.0o5om2VZd5F1pbK/eb9m8VI4ngizb4e', null, 'admin@163.com', '10', '10', '0', '0', '1500800407', '0');
 
 -- ----------------------------
--- Table structure for `sp_auth_assignment`
+-- Table structure for sp_auth_assignment
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_assignment`;
 CREATE TABLE `sp_auth_assignment` (
@@ -56,10 +56,10 @@ CREATE TABLE `sp_auth_assignment` (
 -- ----------------------------
 -- Records of sp_auth_assignment
 -- ----------------------------
-INSERT INTO `sp_auth_assignment` VALUES ('管理员用户管理', '2', '1500806651');
+INSERT INTO `sp_auth_assignment` VALUES ('上帝视角', '2', '1500881777');
 
 -- ----------------------------
--- Table structure for `sp_auth_item`
+-- Table structure for sp_auth_item
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_item`;
 CREATE TABLE `sp_auth_item` (
@@ -79,90 +79,88 @@ CREATE TABLE `sp_auth_item` (
 -- ----------------------------
 -- Records of sp_auth_item
 -- ----------------------------
-INSERT INTO `sp_auth_item` VALUES ('/*', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/admin/*', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/*', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/assign', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/index', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/revoke', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/view', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/default/*', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/default/index', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/menu/*', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/menu/create', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/menu/delete', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/menu/index', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/menu/update', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/menu/view', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/permission/*', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/permission/assign', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/permission/create', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/permission/delete', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/permission/index', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/permission/remove', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/permission/update', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/permission/view', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/role/*', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/role/assign', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/role/create', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/role/delete', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/role/index', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/role/remove', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/role/update', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/role/view', '2', null, null, null, '1500803381', '1500803381');
-INSERT INTO `sp_auth_item` VALUES ('/admin/route/*', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/route/assign', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/route/create', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/route/index', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/route/refresh', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/route/remove', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/rule/*', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/rule/create', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/rule/delete', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/rule/index', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/rule/update', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/rule/view', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/*', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/activate', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/change-password', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/delete', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/index', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/login', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/logout', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/request-password-reset', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/reset-password', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/signup', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/admin/user/view', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/adminuser/*', '2', null, null, null, '1500809290', '1500809290');
-INSERT INTO `sp_auth_item` VALUES ('/adminuser/create', '2', null, null, null, '1500809290', '1500809290');
-INSERT INTO `sp_auth_item` VALUES ('/adminuser/delete', '2', null, null, null, '1500809290', '1500809290');
-INSERT INTO `sp_auth_item` VALUES ('/adminuser/index', '2', null, null, null, '1500809289', '1500809289');
-INSERT INTO `sp_auth_item` VALUES ('/adminuser/update', '2', null, null, null, '1500809290', '1500809290');
-INSERT INTO `sp_auth_item` VALUES ('/adminuser/view', '2', null, null, null, '1500809289', '1500809289');
-INSERT INTO `sp_auth_item` VALUES ('/debug/*', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/debug/default/*', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/debug/default/db-explain', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/debug/default/download-mail', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/debug/default/index', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/debug/default/toolbar', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/debug/default/view', '2', null, null, null, '1500803382', '1500803382');
-INSERT INTO `sp_auth_item` VALUES ('/gii/*', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/gii/default/*', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/gii/default/action', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/gii/default/diff', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/gii/default/index', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/gii/default/preview', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/gii/default/view', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/site/*', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/site/error', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/site/index', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/site/login', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('/site/logout', '2', null, null, null, '1500803383', '1500803383');
-INSERT INTO `sp_auth_item` VALUES ('管理员用户', '2', null, null, null, '1500805995', '1500806507');
-INSERT INTO `sp_auth_item` VALUES ('管理员用户管理', '1', null, null, null, '1500806199', '1500806555');
+INSERT INTO `sp_auth_item` VALUES ('/*', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/admin-user/*', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/admin-user/create', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/admin-user/delete', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/admin-user/index', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/admin-user/update', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/admin-user/view', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/admin/*', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/*', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/assign', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/index', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/revoke', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/assignment/view', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/default/*', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/default/index', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/menu/*', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/menu/create', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/menu/delete', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/menu/index', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/menu/update', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/menu/view', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/permission/*', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/permission/assign', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/permission/create', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/permission/delete', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/permission/index', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/permission/remove', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/permission/update', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/permission/view', '2', null, null, null, '1500880316', '1500880316');
+INSERT INTO `sp_auth_item` VALUES ('/admin/role/*', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/role/assign', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/role/create', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/role/delete', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/role/index', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/role/remove', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/role/update', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/role/view', '2', null, null, null, '1500880317', '1500880317');
+INSERT INTO `sp_auth_item` VALUES ('/admin/route/*', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/route/assign', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/route/create', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/route/index', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/route/refresh', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/route/remove', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/rule/*', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/rule/create', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/rule/delete', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/rule/index', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/rule/update', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/admin/rule/view', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/debug/*', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/debug/default/*', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/debug/default/db-explain', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/debug/default/download-mail', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/debug/default/index', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/debug/default/toolbar', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/debug/default/view', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/gii/*', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/gii/default/*', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/gii/default/action', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/gii/default/diff', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/gii/default/index', '2', null, null, null, '1500880318', '1500880318');
+INSERT INTO `sp_auth_item` VALUES ('/gii/default/preview', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/gii/default/view', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/site/*', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/site/error', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/site/index', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/site/login', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/site/logout', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/user/*', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/user/create', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/user/delete', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/user/index', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/user/update', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('/user/view', '2', null, null, null, '1500880319', '1500880319');
+INSERT INTO `sp_auth_item` VALUES ('上帝视角', '1', 'root', null, null, '1500881758', '1500883475');
+INSERT INTO `sp_auth_item` VALUES ('开发测试', '2', 'gii和debug工具', null, null, '1500882216', '1500882216');
+INSERT INTO `sp_auth_item` VALUES ('权限控制', '2', 'rbac 以及菜单的操作', null, null, '1500882022', '1500882022');
+INSERT INTO `sp_auth_item` VALUES ('用户管理', '2', '前台会员管理', null, null, '1500881691', '1500881709');
+INSERT INTO `sp_auth_item` VALUES ('管理员用户', '2', '后台管理人员集合', null, null, '1500881634', '1500881664');
 
 -- ----------------------------
--- Table structure for `sp_auth_item_child`
+-- Table structure for sp_auth_item_child
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_item_child`;
 CREATE TABLE `sp_auth_item_child` (
@@ -177,16 +175,78 @@ CREATE TABLE `sp_auth_item_child` (
 -- ----------------------------
 -- Records of sp_auth_item_child
 -- ----------------------------
-INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/adminuser/*');
-INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/adminuser/create');
-INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/adminuser/delete');
-INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/adminuser/index');
-INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/adminuser/update');
-INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/adminuser/view');
-INSERT INTO `sp_auth_item_child` VALUES ('管理员用户管理', '管理员用户');
+INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/admin-user/*');
+INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/admin-user/create');
+INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/admin-user/delete');
+INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/admin-user/index');
+INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/admin-user/update');
+INSERT INTO `sp_auth_item_child` VALUES ('管理员用户', '/admin-user/view');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/assignment/*');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/assignment/assign');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/assignment/index');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/assignment/revoke');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/assignment/view');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/menu/*');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/menu/create');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/menu/delete');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/menu/index');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/menu/update');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/menu/view');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/permission/*');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/permission/assign');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/permission/create');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/permission/delete');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/permission/index');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/permission/remove');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/permission/update');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/permission/view');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/role/*');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/role/assign');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/role/create');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/role/delete');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/role/index');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/role/remove');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/role/update');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/role/view');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/route/*');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/route/assign');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/route/create');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/route/index');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/route/refresh');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/route/remove');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/rule/*');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/rule/create');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/rule/delete');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/rule/index');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/rule/update');
+INSERT INTO `sp_auth_item_child` VALUES ('权限控制', '/admin/rule/view');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/debug/*');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/debug/default/*');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/debug/default/db-explain');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/debug/default/download-mail');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/debug/default/index');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/debug/default/toolbar');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/debug/default/view');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/gii/*');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/gii/default/*');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/gii/default/action');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/gii/default/diff');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/gii/default/index');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/gii/default/preview');
+INSERT INTO `sp_auth_item_child` VALUES ('开发测试', '/gii/default/view');
+INSERT INTO `sp_auth_item_child` VALUES ('用户管理', '/user/*');
+INSERT INTO `sp_auth_item_child` VALUES ('用户管理', '/user/create');
+INSERT INTO `sp_auth_item_child` VALUES ('用户管理', '/user/delete');
+INSERT INTO `sp_auth_item_child` VALUES ('用户管理', '/user/index');
+INSERT INTO `sp_auth_item_child` VALUES ('用户管理', '/user/update');
+INSERT INTO `sp_auth_item_child` VALUES ('用户管理', '/user/view');
+INSERT INTO `sp_auth_item_child` VALUES ('上帝视角', '开发测试');
+INSERT INTO `sp_auth_item_child` VALUES ('上帝视角', '权限控制');
+INSERT INTO `sp_auth_item_child` VALUES ('上帝视角', '用户管理');
+INSERT INTO `sp_auth_item_child` VALUES ('上帝视角', '管理员用户');
 
 -- ----------------------------
--- Table structure for `sp_auth_rule`
+-- Table structure for sp_auth_rule
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_rule`;
 CREATE TABLE `sp_auth_rule` (
@@ -202,7 +262,7 @@ CREATE TABLE `sp_auth_rule` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `sp_menu`
+-- Table structure for sp_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_menu`;
 CREATE TABLE `sp_menu` (
@@ -215,16 +275,27 @@ CREATE TABLE `sp_menu` (
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   CONSTRAINT `sp_menu_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `sp_menu` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sp_menu
 -- ----------------------------
-INSERT INTO `sp_menu` VALUES ('3', '管理员用户', '4', '/adminuser/index', null, null);
-INSERT INTO `sp_menu` VALUES ('4', '后台权限', null, '/admin/default/index', null, null);
+INSERT INTO `sp_menu` VALUES ('5', '后台管理', null, '/admin/default/index', null, null);
+INSERT INTO `sp_menu` VALUES ('6', '管理员用户', '5', '/admin-user/index', null, null);
+INSERT INTO `sp_menu` VALUES ('7', '权限管理', '5', '/admin/default/index', null, null);
+INSERT INTO `sp_menu` VALUES ('8', '路由', '7', '/admin/route/index', '1', null);
+INSERT INTO `sp_menu` VALUES ('9', '权限', '7', '/admin/permission/index', '2', null);
+INSERT INTO `sp_menu` VALUES ('10', '角色', '7', '/admin/role/index', '3', null);
+INSERT INTO `sp_menu` VALUES ('11', '分配', '7', '/admin/assignment/index', '4', null);
+INSERT INTO `sp_menu` VALUES ('12', '菜单管理', '5', '/admin/menu/index', null, null);
+INSERT INTO `sp_menu` VALUES ('13', '前台管理', null, '/admin/default/index', null, null);
+INSERT INTO `sp_menu` VALUES ('14', '用户管理', '13', '/user/index', null, null);
+INSERT INTO `sp_menu` VALUES ('15', '神之左手', '5', '/admin/default/index', null, null);
+INSERT INTO `sp_menu` VALUES ('16', 'gii', '15', '/gii/default/index', '1', null);
+INSERT INTO `sp_menu` VALUES ('17', 'debug', '15', '/debug/default/index', '2', null);
 
 -- ----------------------------
--- Table structure for `sp_migration`
+-- Table structure for sp_migration
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_migration`;
 CREATE TABLE `sp_migration` (
@@ -242,7 +313,7 @@ INSERT INTO `sp_migration` VALUES ('m140602_111327_create_menu_table', '15007812
 INSERT INTO `sp_migration` VALUES ('m140506_102106_rbac_init', '1500787705');
 
 -- ----------------------------
--- Table structure for `sp_user`
+-- Table structure for sp_user
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_user`;
 CREATE TABLE `sp_user` (

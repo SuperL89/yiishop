@@ -77,7 +77,7 @@ class AdminLoginForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = Adminuser::findByUsername($this->username);
+            $this->_user = AdminUser::findByUsername($this->username);
         }
 
         return $this->_user;

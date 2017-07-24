@@ -23,14 +23,14 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  */
-class Adminuser extends \yii\db\ActiveRecord implements IdentityInterface
+class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'sp_admin_user';
+        return '{{%admin_user}}';
     }
 
     /**

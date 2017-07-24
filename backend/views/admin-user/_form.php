@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Adminuser */
+/* @var $model common\models\AdminUser */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="adminuser-form">
+<div class="admin-user-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
