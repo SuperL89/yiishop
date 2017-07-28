@@ -18,6 +18,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'id') ?>
 
     <?= $form->field($model, 'username') ?>
+    
+    <?= $form->field($model, 'nickname') ?> 
 
     <?= $form->field($model, 'auth_key') ?>
 

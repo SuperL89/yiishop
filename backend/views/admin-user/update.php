@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\AdminUser */
 
-$this->title = 'Update Admin User: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Admin Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = '修改管理员用户: ' . $model->username;
+$this->params['breadcrumbs'][] = ['label' => '管理员用户', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '修改管理员用户 '];
+$this->params['breadcrumbs'][] = ['label' => $model->username, 'url' => ['view', 'id' => $model->id]]
 ?>
 <div class="admin-user-update">
 

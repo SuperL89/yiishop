@@ -8,6 +8,9 @@ use common\models\AdminUserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\models\SignupForm;
+use mdm\admin\models\form\ResetPassword;
+use backend\models\ResetpwdForm;
 
 /**
  * AdminUserController implements the CRUD actions for AdminUser model.
@@ -63,10 +66,12 @@ class AdminUserController extends Controller
      */
     public function actionCreate()
     {
-        $model = new AdminUser();
+        $model = new SignupForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if($user = $model->signup()){
+                return $this->redirect(['view', 'id' => $user->id]);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -104,6 +109,22 @@ class AdminUserController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+    
+    /*重置密码*/
+    public function actionResetpwd($id)
+    {
+        $model = new ResetpwdForm();
+        
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if($model->resetPassword($id)){
+                return $this->redirect(['index']);
+            }
+        } else {
+            return $this->render('resetpwd', [
+                'model' => $model,
+            ]);
+        }
     }
 
     /**

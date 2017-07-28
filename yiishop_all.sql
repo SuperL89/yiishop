@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50547
 File Encoding         : 65001
 
-Date: 2017-07-24 17:40:02
+Date: 2017-07-28 17:42:04
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS `sp_admin_user`;
 CREATE TABLE `sp_admin_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `username` varchar(255) NOT NULL COMMENT '管理员帐号',
+  `nickname` varchar(255) DEFAULT NULL COMMENT '别名',
   `auth_key` varchar(32) NOT NULL,
   `password_hash` varchar(255) NOT NULL COMMENT '管理员密码',
   `password_reset_token` varchar(255) DEFAULT NULL,
@@ -34,12 +35,15 @@ CREATE TABLE `sp_admin_user` (
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `adminuser_username_email` (`username`,`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sp_admin_user
 -- ----------------------------
-INSERT INTO `sp_admin_user` VALUES ('2', 'admin', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$vBQwQoyE.x3/18LpkUNDE.0o5om2VZd5F1pbK/eb9m8VI4ngizb4e', null, 'admin@163.com', '10', '10', '0', '0', '1500800407', '0');
+INSERT INTO `sp_admin_user` VALUES ('2', 'admin', '宅太浪', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$sLdMVBItIKRY9Gpn4AiMCejZwuh9gHrKLqXEBRnx/sRca00Pw7guq', null, 'admin@163.com', '10', '10', '0', '0', '1500800407', '1501233884');
+INSERT INTO `sp_admin_user` VALUES ('3', 'admin123', '你麻痹', 'mmbshgsYf3hcY5Uyqyr_Mm9ZByuqG3gm', '$2y$13$8tuNMygabDVJ2tzB.RF5su6l3M1GaIm2sPabYeOZ3LFKt2pfsmUE6', null, 'admin213123@163.com', '10', '0', '0', '0', '1500974268', '1501234000');
+INSERT INTO `sp_admin_user` VALUES ('4', 'admin1234', 'das', 'UcymRn7-nVeJ8oq1QLqVc-UpbaReQtFb', '$2y$13$UH.Agh51yhFzTU1oQs9DJu38cyx8RnVaSyOEKGw//W5sqawuP.d9u', null, 'admi3n@163.com', '10', '10', '0', '0', '1501037414', '1501037414');
+INSERT INTO `sp_admin_user` VALUES ('5', 'zhaitailang', '哈哈哈', '5Boe4gzMlglYqXBGyE8kAaefgWgOg7v0', '$2y$13$zq2xAJlWZB7m5MMU96v.YuJkqCo4zCN/sEjwj75dRX1od5VPhW23.', null, '282586392@qq.com', '10', '10', '0', '0', '1501037769', '1501037769');
 
 -- ----------------------------
 -- Table structure for sp_auth_assignment
