@@ -12,6 +12,7 @@ use yii\web\IdentityInterface;
  *
  * @property string $id
  * @property string $username
+ * @property string $nickname 
  * @property string $auth_key
  * @property string $password_hash
  * @property string $password_reset_token
@@ -25,6 +26,8 @@ use yii\web\IdentityInterface;
  */
 class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    const STATUS_DELETED = 0;
+    const STATUS_ACTIVE = 10;
     /**
      * @inheritdoc
      */
@@ -41,7 +44,7 @@ class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
         return [
             [['username', 'auth_key', 'password_hash', 'email', 'login_at', 'created_at', 'updated_at'], 'required'],
             [['role', 'status', 'login_at', 'login_ip', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
+            [['username', 'nickname', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username', 'email'], 'unique', 'targetAttribute' => ['username', 'email'], 'message' => 'The combination of Username and Email has already been taken.'],
         ];
@@ -54,17 +57,18 @@ class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             'id' => 'ID',
-            'username' => 'Username',
+            'username' => '用户名',
+            'nickname' => '昵称',
             'auth_key' => 'Auth Key',
             'password_hash' => 'Password Hash',
             'password_reset_token' => 'Password Reset Token',
-            'email' => 'Email',
-            'role' => 'Role',
-            'status' => 'Status',
-            'login_at' => 'Login At',
-            'login_ip' => 'Login Ip',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'email' => '邮箱',
+            'role' => '权限',
+            'status' => '状态',
+            'login_at' => '最后登录时间',
+            'login_ip' => '登录IP',
+            'created_at' => '创建时间',
+            'updated_at' => '更新时间',
         ];
     }
     
@@ -196,6 +200,20 @@ class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+    /**
+     * 设置用户状态显示常量
+     */
+    public static function allStatus()
+    {
+        return [self::STATUS_ACTIVE=>'正常',self::STATUS_DELETED=>'已禁用'];
+    }
+    /**
+     * 获得用户状态并转为中文显示
+     */
+    public function getStatusStr()
+    {
+        return $this->status==self::STATUS_ACTIVE?'正常':'已禁用';
     }
     
 }
