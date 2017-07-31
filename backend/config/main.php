@@ -40,6 +40,12 @@ return [
             'identityClass' => 'common\models\Adminuser',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'on beforeLogin' => function($event) {
+                $user = $event->identity; //这里的就是User Model的实例了
+                $user->login_at = time();
+                $user->login_ip = Yii::$app->request->userIP;
+                $user->save();
+            }
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
