@@ -1,22 +1,22 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
-Source Server Version : 50547
+Source Server         : localhost_3306
+Source Server Version : 50553
 Source Host           : localhost:3306
 Source Database       : yiishop
 
 Target Server Type    : MYSQL
-Target Server Version : 50547
+Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2017-07-28 17:42:04
+Date: 2017-07-31 19:20:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for sp_admin_user
+-- Table structure for `sp_admin_user`
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_admin_user`;
 CREATE TABLE `sp_admin_user` (
@@ -30,7 +30,7 @@ CREATE TABLE `sp_admin_user` (
   `role` smallint(6) NOT NULL DEFAULT '10',
   `status` smallint(6) NOT NULL DEFAULT '10',
   `login_at` int(11) NOT NULL COMMENT '最近登陆时间',
-  `login_ip` bigint(20) NOT NULL DEFAULT '0' COMMENT '登录IP',
+  `login_ip` varchar(32) NOT NULL DEFAULT '0' COMMENT '登录IP',
   `created_at` int(11) NOT NULL COMMENT '创建时间',
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -40,13 +40,13 @@ CREATE TABLE `sp_admin_user` (
 -- ----------------------------
 -- Records of sp_admin_user
 -- ----------------------------
-INSERT INTO `sp_admin_user` VALUES ('2', 'admin', '宅太浪', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$sLdMVBItIKRY9Gpn4AiMCejZwuh9gHrKLqXEBRnx/sRca00Pw7guq', null, 'admin@163.com', '10', '10', '0', '0', '1500800407', '1501233884');
-INSERT INTO `sp_admin_user` VALUES ('3', 'admin123', '你麻痹', 'mmbshgsYf3hcY5Uyqyr_Mm9ZByuqG3gm', '$2y$13$8tuNMygabDVJ2tzB.RF5su6l3M1GaIm2sPabYeOZ3LFKt2pfsmUE6', null, 'admin213123@163.com', '10', '0', '0', '0', '1500974268', '1501234000');
+INSERT INTO `sp_admin_user` VALUES ('2', 'admin', '宅太浪', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$sLdMVBItIKRY9Gpn4AiMCejZwuh9gHrKLqXEBRnx/sRca00Pw7guq', null, 'admin@163.com', '10', '10', '1501249767', '127.0.0.1', '1500800407', '1501233884');
+INSERT INTO `sp_admin_user` VALUES ('3', 'admin123', '你麻痹', 'mmbshgsYf3hcY5Uyqyr_Mm9ZByuqG3gm', '$2y$13$IGNhRQvhF0gb.n.L4wv3duwJDHa/s07i7nQtK4UF3JHKCQIARMVRe', null, 'admin213123@163.com', '10', '10', '0', '0', '1500974268', '1501245169');
 INSERT INTO `sp_admin_user` VALUES ('4', 'admin1234', 'das', 'UcymRn7-nVeJ8oq1QLqVc-UpbaReQtFb', '$2y$13$UH.Agh51yhFzTU1oQs9DJu38cyx8RnVaSyOEKGw//W5sqawuP.d9u', null, 'admi3n@163.com', '10', '10', '0', '0', '1501037414', '1501037414');
 INSERT INTO `sp_admin_user` VALUES ('5', 'zhaitailang', '哈哈哈', '5Boe4gzMlglYqXBGyE8kAaefgWgOg7v0', '$2y$13$zq2xAJlWZB7m5MMU96v.YuJkqCo4zCN/sEjwj75dRX1od5VPhW23.', null, '282586392@qq.com', '10', '10', '0', '0', '1501037769', '1501037769');
 
 -- ----------------------------
--- Table structure for sp_auth_assignment
+-- Table structure for `sp_auth_assignment`
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_assignment`;
 CREATE TABLE `sp_auth_assignment` (
@@ -63,7 +63,7 @@ CREATE TABLE `sp_auth_assignment` (
 INSERT INTO `sp_auth_assignment` VALUES ('上帝视角', '2', '1500881777');
 
 -- ----------------------------
--- Table structure for sp_auth_item
+-- Table structure for `sp_auth_item`
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_item`;
 CREATE TABLE `sp_auth_item` (
@@ -164,7 +164,7 @@ INSERT INTO `sp_auth_item` VALUES ('用户管理', '2', '前台会员管理', nu
 INSERT INTO `sp_auth_item` VALUES ('管理员用户', '2', '后台管理人员集合', null, null, '1500881634', '1500881664');
 
 -- ----------------------------
--- Table structure for sp_auth_item_child
+-- Table structure for `sp_auth_item_child`
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_item_child`;
 CREATE TABLE `sp_auth_item_child` (
@@ -250,7 +250,7 @@ INSERT INTO `sp_auth_item_child` VALUES ('上帝视角', '用户管理');
 INSERT INTO `sp_auth_item_child` VALUES ('上帝视角', '管理员用户');
 
 -- ----------------------------
--- Table structure for sp_auth_rule
+-- Table structure for `sp_auth_rule`
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_rule`;
 CREATE TABLE `sp_auth_rule` (
@@ -266,7 +266,7 @@ CREATE TABLE `sp_auth_rule` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for sp_menu
+-- Table structure for `sp_menu`
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_menu`;
 CREATE TABLE `sp_menu` (
@@ -299,7 +299,7 @@ INSERT INTO `sp_menu` VALUES ('16', 'gii', '15', '/gii/default/index', '1', null
 INSERT INTO `sp_menu` VALUES ('17', 'debug', '15', '/debug/default/index', '2', null);
 
 -- ----------------------------
--- Table structure for sp_migration
+-- Table structure for `sp_migration`
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_migration`;
 CREATE TABLE `sp_migration` (
@@ -317,7 +317,7 @@ INSERT INTO `sp_migration` VALUES ('m140602_111327_create_menu_table', '15007812
 INSERT INTO `sp_migration` VALUES ('m140506_102106_rbac_init', '1500787705');
 
 -- ----------------------------
--- Table structure for sp_user
+-- Table structure for `sp_user`
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_user`;
 CREATE TABLE `sp_user` (

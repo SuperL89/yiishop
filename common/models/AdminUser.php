@@ -43,10 +43,13 @@ class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['username', 'auth_key', 'password_hash', 'email', 'login_at', 'created_at', 'updated_at'], 'required'],
-            [['role', 'status', 'login_at', 'login_ip', 'created_at', 'updated_at'], 'integer'],
+            [['role', 'status', 'login_at', 'created_at', 'updated_at'], 'integer'],
             [['username', 'nickname', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
+            [['login_ip'], 'string', 'max' => 32],
             [['username', 'email'], 'unique', 'targetAttribute' => ['username', 'email'], 'message' => 'The combination of Username and Email has already been taken.'],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
     }
 
@@ -77,7 +80,7 @@ class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id]);
+        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
     
     /**
@@ -96,7 +99,7 @@ class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username]);
+        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
     
     /**
@@ -113,6 +116,7 @@ class AdminUser extends \yii\db\ActiveRecord implements IdentityInterface
     
         return static::findOne([
             'password_reset_token' => $token,
+            'status' => self::STATUS_ACTIVE,
         ]);
     }
     

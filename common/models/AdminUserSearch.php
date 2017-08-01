@@ -18,8 +18,8 @@ class AdminUserSearch extends AdminUser
     public function rules()
     {
         return [
-            [['id', 'role', 'status', 'login_at', 'login_ip', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'nickname', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
+            [['id', 'role', 'status', 'login_at', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'nickname', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'login_ip'], 'safe'],
         ];
     }
 
@@ -63,7 +63,7 @@ class AdminUserSearch extends AdminUser
             'role' => $this->role,
             'status' => $this->status,
             'login_at' => $this->login_at,
-            'login_ip' => $this->login_ip,
+            'login_ip' => $this->login_ip, 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
@@ -73,7 +73,8 @@ class AdminUserSearch extends AdminUser
             ->andFilterWhere(['like', 'auth_key', $this->auth_key])
             ->andFilterWhere(['like', 'password_hash', $this->password_hash])
             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'login_ip', $this->login_ip]);
 
         return $dataProvider;
     }
