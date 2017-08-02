@@ -18,8 +18,8 @@ class AdminUserSearch extends AdminUser
     public function rules()
     {
         return [
-            [['id', 'role', 'status', 'login_at', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'nickname', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'login_ip'], 'safe'],
+            [['id', 'role', 'status', /*'login_at', 'created_at', 'updated_at'*/], 'integer'],
+            [['username', 'nickname', /*'auth_key', 'password_hash', 'password_reset_token',*/ 'email', 'login_ip','login_at','created_at','updated_at'], 'safe'],
         ];
     }
 
@@ -62,19 +62,29 @@ class AdminUserSearch extends AdminUser
             'id' => $this->id,
             'role' => $this->role,
             'status' => $this->status,
-            'login_at' => $this->login_at,
+            //'login_at' => $this->login_at,
             'login_ip' => $this->login_ip, 
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            //'created_at' => $this->created_at,
+            //'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'nickname', $this->nickname]) 
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
+            //->andFilterWhere(['like', 'auth_key', $this->auth_key])
+            //->andFilterWhere(['like', 'password_hash', $this->password_hash])
+            //->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'login_ip', $this->login_ip]);
+        
+        if($this->login_at){
+            $query->andFilterWhere(['between', 'login_at', strtotime($this->login_at),strtotime($this->login_at) + 86400 - 1]);
+        }
+        if($this->created_at){
+            $query->andFilterWhere(['between', 'created_at', strtotime($this->created_at),strtotime($this->created_at) + 86400 - 1]);
+        }
+        if($this->updated_at){
+            $query->andFilterWhere(['between', 'updated_at', strtotime($this->updated_at),strtotime($this->updated_at) + 86400 - 1]);
+        }
 
         return $dataProvider;
     }
