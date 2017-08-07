@@ -39,10 +39,11 @@ $fieldOptions2 = [
             ->field($model, 'password', $fieldOptions2)
             ->label(false)
             ->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
-            
-		<?= $form->field($model, 'verifyCode')->label(false)->widget(Captcha::className(), [
-                    'template' => '<div class ="form-group has-feedback">{image}</div><div>{input}</div>',
-                ]) ?>
+         <?php if (Yii::$app->session['login_error_times'] >= $model->errorMaxTimes) { ?>   
+    		<?= $form->field($model, 'verifyCode')->label(false)->widget(Captcha::className(), [
+                        'template' => '<div class ="form-group has-feedback">{image}</div><div>{input}</div>',
+                    ]) ?>
+         <?php }?>
 		
         <div class="row">
             <div class="col-xs-8">
@@ -67,7 +68,7 @@ $fieldOptions2 = [
         </div>-->
         <!-- /.social-auth-links -->
 
-        <a href="#">忘记密码？</a><br>
+         <?= Html::a('忘记密码？', ['site/request-password-reset']) ?> 
         <!-- <a href="register.html" class="text-center">Register a new membership</a> -->
 
     </div>

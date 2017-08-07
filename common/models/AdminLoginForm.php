@@ -13,6 +13,8 @@ class AdminLoginForm extends Model
     public $password;
     public $rememberMe = true;
     public $verifyCode;
+    //密码输错3次则需要输入验证码了
+    public $errorMaxTimes = 3;
     
     private $_user;
 
@@ -32,7 +34,8 @@ class AdminLoginForm extends Model
             // verifyCode needs to be entered correctly
             ['verifyCode', 'required'],
             //['verifyCode', 'captcha'],
-            ['verifyCode', 'captcha','captchaAction'=>'site/captcha','message'=>'验证码不正确！'],
+            ['verifyCode', 'captcha','captchaAction'=>'site/captcha','on' => 'loginError','message'=>'验证码不正确！'],
+            ['verifyCode', 'required', 'on' => 'loginError'],
         ];
     }
     
@@ -57,6 +60,10 @@ class AdminLoginForm extends Model
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, '请检查您的用户名和密码。');
+                
+                $errorTimes = Yii::$app->session['login_error_times'];
+                $errorTimes++;
+                Yii::$app->session['login_error_times'] = $errorTimes;
             }
         }
     }
