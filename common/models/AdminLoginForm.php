@@ -32,8 +32,6 @@ class AdminLoginForm extends Model
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
             // verifyCode needs to be entered correctly
-            ['verifyCode', 'required'],
-            //['verifyCode', 'captcha'],
             ['verifyCode', 'captcha','captchaAction'=>'site/captcha','on' => 'loginError','message'=>'验证码不正确！'],
             ['verifyCode', 'required', 'on' => 'loginError'],
         ];
