@@ -2,10 +2,10 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use common\models\AdminUser;
+use backend\models\AdminUser;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\AdminUser */
+/* @var $model backend\models\AdminUser */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 

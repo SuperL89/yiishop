@@ -5,7 +5,7 @@ use yii\widgets\DetailView;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\AdminUser */
+/* @var $model backend\models\AdminUser */
 
 $this->title = '查看管理员用户:'.$model->username;
 $this->params['breadcrumbs'][] = ['label' => '管理员用户', 'url' => ['index']];

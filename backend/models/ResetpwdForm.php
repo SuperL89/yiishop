@@ -2,7 +2,7 @@
 namespace backend\models;
 
 use yii\base\Model;
-use common\models\AdminUser;
+use backend\models\AdminUser;
 //use yii\helpers\VarDumper;
 /**
  * Signup form

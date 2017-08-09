@@ -1,14 +1,13 @@
 <?php
 
-namespace common\models;
+namespace backend\models;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\AdminUser;
+use backend\models\AdminUser;
 
 /**
- * AdminUserSearch represents the model behind the search form about `common\models\AdminUser`.
+ * AdminUserSearch represents the model behind the search form about `backend\models\AdminUser`.
  */
 class AdminUserSearch extends AdminUser
 {
@@ -47,6 +46,8 @@ class AdminUserSearch extends AdminUser
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            //分页
+            'pagination'=>['pageSize'=>10],
         ]);
 
         $this->load($params);

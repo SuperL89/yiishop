@@ -2,11 +2,11 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-use common\models\AdminUser;
+use backend\models\AdminUser;
 use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\AdminUserSearch */
+/* @var $searchModel backend\models\AdminUserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = '管理员用户';

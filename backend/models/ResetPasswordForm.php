@@ -3,7 +3,7 @@ namespace backend\models;
 
 use yii\base\Model;
 use yii\base\InvalidParamException;
-use common\models\AdminUser;
+use backend\models\AdminUser;
 
 /**
  * Password reset form
@@ -13,7 +13,7 @@ class ResetPasswordForm extends Model
     public $password;
     public $password_repeat;
     /**
-     * @var \common\models\AdminUser
+     * @var \backend\models\AdminUser
      */
     private $_user;
 

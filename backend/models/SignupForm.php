@@ -2,7 +2,7 @@
 namespace backend\models;
 
 use yii\base\Model;
-use common\models\AdminUser;
+use backend\models\AdminUser;
 //use yii\helpers\VarDumper;
 /**
  * Signup form
@@ -25,14 +25,14 @@ class SignupForm extends Model
         return [
             ['username', 'trim'],
             ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\AdminUser', 'message' => '用户名已存在.'],
+            ['username', 'unique', 'targetClass' => '\backend\models\AdminUser', 'message' => '用户名已存在.'],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\AdminUser', 'message' => '邮箱地址已存在.'],
+            ['email', 'unique', 'targetClass' => '\backend\models\AdminUser', 'message' => '邮箱地址已存在.'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],

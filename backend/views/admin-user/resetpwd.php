@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\AdminUser */
+/* @var $model backend\models\AdminUser */
 
 $this->title = '重置密码';
 $this->params['breadcrumbs'][] = ['label' => '管理员用户', 'url' => ['index']];

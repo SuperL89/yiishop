@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\AdminUser */
+/* @var $model backend\models\AdminUser */
 
 $this->title = '修改管理员用户: ' . $model->username;
 $this->params['breadcrumbs'][] = ['label' => '管理员用户', 'url' => ['index']];
