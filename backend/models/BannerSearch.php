@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models;
+namespace backend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -17,8 +17,8 @@ class BannerSearch extends Banner
     public function rules()
     {
         return [
-            [['id', /*'created_at', 'updated_at',*/ 'status'], 'integer'],
-            [['title', 'created_at', 'updated_at', 'image_url'], 'safe'],
+            [['id', /*'created_at', 'updated_at',*/ 'status','order'], 'integer'],
+            [['title', 'created_at', 'updated_at', 'image_url','ad_url'], 'safe'],
         ];
     }
 
@@ -62,11 +62,12 @@ class BannerSearch extends Banner
 //             'created_at' => $this->created_at,
 //             'updated_at' => $this->updated_at,
             'status' => $this->status,
+            'order' => $this->order,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'image_url', $this->image_url]);
-        
+            ->andFilterWhere(['like', 'image_url', $this->image_url])
+            ->andFilterWhere(['like', 'ad_url', $this->ad_url]);
         if($this->created_at){
             $query->andFilterWhere(['between', 'created_at', strtotime($this->created_at),strtotime($this->created_at) + 86400 - 1]);
         }

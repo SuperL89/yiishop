@@ -20,6 +20,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'title') ?>
 
     <?= $form->field($model, 'image_url') ?>
+    
+    <?= $form->field($model, 'ad_url') ?>
 
     <?= $form->field($model, 'created_at') ?>
 

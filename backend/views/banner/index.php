@@ -26,9 +26,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             //['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            //'id',
             'title',
             'image_url:url',
+            'ad_url:url',
             [
                 'attribute'=>'created_at',
                 'format'=>['date','php:Y-m-d H:i:s'],
@@ -68,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                  'value'=>'statusStr',
                  'filter'=>Banner::allStatus(),
              ],
-
+            'order',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

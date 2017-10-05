@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Banner;
-use common\models\BannerSearch;
+use backend\models\BannerSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

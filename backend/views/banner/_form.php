@@ -76,11 +76,12 @@ use yii\helpers\Url;
     ],
 ])?>
     
-    <?php // $form->field($model, 'created_at')->textInput() ?>
+    <?= $form->field($model, 'ad_url')->textInput(['maxlength' => true]) ?>
 
     <?php // $form->field($model, 'updated_at')->textInput() ?>
 
     <?= $form->field($model, 'status')->dropDownList(Banner::allStatus()) ?>
+    <?= $form->field($model, 'order')->input('number') ?>
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '创建' : '更新', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

@@ -31,7 +31,7 @@ use common\models\Category;
 
     <?= $form->field($model, 'status')->dropDownList(Brand::allStatus(),['prompt'=>'请选择状态']) ?>
 
-    <?= $form->field($model, 'order')->textInput() ?>
+    <?= $form->field($model, 'order')->textInput(['value'=>0]) ?>
 
     <?php //$form->field($model, 'is_hot')->textInput() ?>
     <?= $form->field($model, 'is_hot')->dropDownList(Brand::allHot(),['prompt'=>'请选择']) ?>

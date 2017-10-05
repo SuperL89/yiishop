@@ -28,7 +28,7 @@ $this->registerJs($this->render('_script.js'));
 
     <?= $form->field($model, 'status')->dropDownList(Category::allStatus()) ?>
     
-    <?= $form->field($model, 'order')->input('number') ?>
+    <?= $form->field($model, 'order')->textInput(['value'=>0]) ?>
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '创建' : '更新', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

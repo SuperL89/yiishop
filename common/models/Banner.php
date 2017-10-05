@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-
+use Yii;
 
 /**
  * This is the model class for table "sp_banner".
@@ -10,9 +10,11 @@ namespace common\models;
  * @property integer $id
  * @property string $title
  * @property string $image_url
+ * @property string $ad_url 
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $status
+ * @property integer $order
  */
 class Banner extends \yii\db\ActiveRecord
 {
@@ -36,8 +38,8 @@ class Banner extends \yii\db\ActiveRecord
         return [
             [['title', 'image_url'], 'required'],
             [['image_url'], 'safe'],
-            [['created_at', 'updated_at', 'status'], 'integer'],
-            [['title'], 'string', 'max' => 255],
+            [['created_at', 'updated_at', 'status','order'], 'integer'],
+            [['title','ad_url'], 'string', 'max' => 255],
         ];
     }
 
@@ -50,9 +52,11 @@ class Banner extends \yii\db\ActiveRecord
             'id' => 'ID',
             'title' => '标题',
             'image_url' => '图片Url',
+            'ad_url' => 'Url',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
             'status' => '状态',
+            'order' => '排序',
         ];
     }
     
