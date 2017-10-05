@@ -10,13 +10,13 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2017-09-29 16:46:43
+Date: 2017-10-05 14:00:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `sp_admin_user`
+-- Table structure for sp_admin_user
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_admin_user`;
 CREATE TABLE `sp_admin_user` (
@@ -40,13 +40,13 @@ CREATE TABLE `sp_admin_user` (
 -- ----------------------------
 -- Records of sp_admin_user
 -- ----------------------------
-INSERT INTO `sp_admin_user` VALUES ('2', 'admin', '宅太浪', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$sLdMVBItIKRY9Gpn4AiMCejZwuh9gHrKLqXEBRnx/sRca00Pw7guq', null, 'admin@163.com', '10', '10', '1506307434', '127.0.0.1', '1500800407', '1501233884');
+INSERT INTO `sp_admin_user` VALUES ('2', 'admin', '宅太浪', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$sLdMVBItIKRY9Gpn4AiMCejZwuh9gHrKLqXEBRnx/sRca00Pw7guq', null, 'admin@163.com', '10', '10', '1507085508', '127.0.0.1', '1500800407', '1501233884');
 INSERT INTO `sp_admin_user` VALUES ('3', 'admin123', '你麻痹', 'mmbshgsYf3hcY5Uyqyr_Mm9ZByuqG3gm', '$2y$13$IGNhRQvhF0gb.n.L4wv3duwJDHa/s07i7nQtK4UF3JHKCQIARMVRe', null, 'admin213123@163.com', '10', '10', '0', '0', '1500974268', '1501245169');
 INSERT INTO `sp_admin_user` VALUES ('4', 'admin1234', 'das', 'UcymRn7-nVeJ8oq1QLqVc-UpbaReQtFb', '$2y$13$UH.Agh51yhFzTU1oQs9DJu38cyx8RnVaSyOEKGw//W5sqawuP.d9u', null, 'admi3n@163.com', '10', '10', '0', '0', '1501037414', '1501037414');
 INSERT INTO `sp_admin_user` VALUES ('5', 'zhaitailang', '哈哈哈', '5Boe4gzMlglYqXBGyE8kAaefgWgOg7v0', '$2y$13$zq2xAJlWZB7m5MMU96v.YuJkqCo4zCN/sEjwj75dRX1od5VPhW23.', null, '282586392@qq.com', '10', '10', '0', '0', '1501037769', '1501037769');
 
 -- ----------------------------
--- Table structure for `sp_auth_assignment`
+-- Table structure for sp_auth_assignment
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_assignment`;
 CREATE TABLE `sp_auth_assignment` (
@@ -63,7 +63,7 @@ CREATE TABLE `sp_auth_assignment` (
 INSERT INTO `sp_auth_assignment` VALUES ('上帝视角', '2', '1500881777');
 
 -- ----------------------------
--- Table structure for `sp_auth_item`
+-- Table structure for sp_auth_item
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_item`;
 CREATE TABLE `sp_auth_item` (
@@ -207,7 +207,7 @@ INSERT INTO `sp_auth_item` VALUES ('用户管理', '2', '前台会员管理', nu
 INSERT INTO `sp_auth_item` VALUES ('管理员用户', '2', '后台管理人员集合', null, null, '1500881634', '1500881664');
 
 -- ----------------------------
--- Table structure for `sp_auth_item_child`
+-- Table structure for sp_auth_item_child
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_item_child`;
 CREATE TABLE `sp_auth_item_child` (
@@ -404,7 +404,7 @@ INSERT INTO `sp_auth_item_child` VALUES ('上帝视角', '用户管理');
 INSERT INTO `sp_auth_item_child` VALUES ('上帝视角', '管理员用户');
 
 -- ----------------------------
--- Table structure for `sp_auth_rule`
+-- Table structure for sp_auth_rule
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_auth_rule`;
 CREATE TABLE `sp_auth_rule` (
@@ -420,25 +420,30 @@ CREATE TABLE `sp_auth_rule` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `sp_banner`
+-- Table structure for sp_banner
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_banner`;
 CREATE TABLE `sp_banner` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'bannerID',
   `title` varchar(255) NOT NULL COMMENT 'banner标题',
   `image_url` varchar(255) NOT NULL COMMENT '图片路径',
+  `ad_url` varchar(255) DEFAULT NULL COMMENT '链接',
   `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `updated_at` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   `status` smallint(6) NOT NULL DEFAULT '0' COMMENT 'banner状态 0正常 1禁用',
+  `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sp_banner
 -- ----------------------------
+INSERT INTO `sp_banner` VALUES ('23', 'banner_1', 'http://bpic.588ku.com/back_pic/03/70/72/5257b6c12d89875.jpg!ww800', 'http://yii.yiishop.com/', '1507089624', '1507089624', '0', '0');
+INSERT INTO `sp_banner` VALUES ('24', 'banner_2', 'http://bpic.588ku.com/back_pic/00/08/53/17562a43dac4e41.jpg', 'http://yii.yiishop.com/', '1507089624', '1507089624', '0', '10');
+INSERT INTO `sp_banner` VALUES ('25', 'banner_3', 'http://bpic.588ku.com/back_pic/02/67/58/81578e331cc7693.jpg!ww800', 'http://yii.yiishop.com/', '1507089624', '1507089624', '1', '0');
 
 -- ----------------------------
--- Table structure for `sp_brand`
+-- Table structure for sp_brand
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_brand`;
 CREATE TABLE `sp_brand` (
@@ -452,15 +457,17 @@ CREATE TABLE `sp_brand` (
   PRIMARY KEY (`id`),
   KEY `cate_id` (`cate_id`),
   CONSTRAINT `sp_brand_ibfk_1` FOREIGN KEY (`cate_id`) REFERENCES `sp_category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sp_brand
 -- ----------------------------
-INSERT INTO `sp_brand` VALUES ('1', 'nk', '', '1', '0', '0', '0');
+INSERT INTO `sp_brand` VALUES ('2', '兰蔻', '', '6', '0', '0', '1');
+INSERT INTO `sp_brand` VALUES ('3', '天王', '', '17', '0', '0', '1');
+INSERT INTO `sp_brand` VALUES ('4', '天王1', '', '17', '0', '0', '1');
 
 -- ----------------------------
--- Table structure for `sp_category`
+-- Table structure for sp_category
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_category`;
 CREATE TABLE `sp_category` (
@@ -468,20 +475,32 @@ CREATE TABLE `sp_category` (
   `title` varchar(50) NOT NULL COMMENT '分类',
   `parentid` int(11) DEFAULT '0' COMMENT '父id',
   `status` smallint(6) DEFAULT '0' COMMENT '状态 0正常 1已禁用',
-  `order` int(11) DEFAULT '0' COMMENT '排序',
+  `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
   PRIMARY KEY (`id`),
   KEY `sp_category_parentid` (`parentid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sp_category
 -- ----------------------------
-INSERT INTO `sp_category` VALUES ('1', '服装', null, '0', '0');
-INSERT INTO `sp_category` VALUES ('4', '上衣1', '1', '0', '0');
-INSERT INTO `sp_category` VALUES ('5', '春装', '4', '0', '18');
+INSERT INTO `sp_category` VALUES ('6', '美容彩妆', null, '0', '0');
+INSERT INTO `sp_category` VALUES ('7', '彩妆香氛', '6', '0', '0');
+INSERT INTO `sp_category` VALUES ('8', '唇彩', '7', '0', '0');
+INSERT INTO `sp_category` VALUES ('9', '眼妆', '7', '0', '0');
+INSERT INTO `sp_category` VALUES ('10', '精油', '7', '0', '0');
+INSERT INTO `sp_category` VALUES ('11', '美甲', '7', '0', '0');
+INSERT INTO `sp_category` VALUES ('12', '美容护肤', '6', '0', '0');
+INSERT INTO `sp_category` VALUES ('13', '面部清洁', '12', '0', '0');
+INSERT INTO `sp_category` VALUES ('14', '化妆水', '12', '0', '0');
+INSERT INTO `sp_category` VALUES ('15', '面膜', '12', '0', '0');
+INSERT INTO `sp_category` VALUES ('16', '面霜', '12', '0', '0');
+INSERT INTO `sp_category` VALUES ('17', '服饰鞋包', null, '0', '0');
+INSERT INTO `sp_category` VALUES ('18', '手表配饰', '17', '0', '0');
+INSERT INTO `sp_category` VALUES ('19', '墨镜', '18', '0', '0');
+INSERT INTO `sp_category` VALUES ('20', '眼镜', '18', '0', '0');
 
 -- ----------------------------
--- Table structure for `sp_menu`
+-- Table structure for sp_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_menu`;
 CREATE TABLE `sp_menu` (
@@ -517,7 +536,7 @@ INSERT INTO `sp_menu` VALUES ('20', '商品分类', '13', '/category/index', nul
 INSERT INTO `sp_menu` VALUES ('21', '商品品牌', '13', '/brand/index', null, null);
 
 -- ----------------------------
--- Table structure for `sp_migration`
+-- Table structure for sp_migration
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_migration`;
 CREATE TABLE `sp_migration` (
@@ -535,7 +554,7 @@ INSERT INTO `sp_migration` VALUES ('m140602_111327_create_menu_table', '15007812
 INSERT INTO `sp_migration` VALUES ('m140506_102106_rbac_init', '1500787705');
 
 -- ----------------------------
--- Table structure for `sp_user`
+-- Table structure for sp_user
 -- ----------------------------
 DROP TABLE IF EXISTS `sp_user`;
 CREATE TABLE `sp_user` (
