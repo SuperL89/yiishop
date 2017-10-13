@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2017-10-05 14:00:56
+Date: 2017-10-14 00:32:17
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -40,7 +40,7 @@ CREATE TABLE `sp_admin_user` (
 -- ----------------------------
 -- Records of sp_admin_user
 -- ----------------------------
-INSERT INTO `sp_admin_user` VALUES ('2', 'admin', '宅太浪', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$sLdMVBItIKRY9Gpn4AiMCejZwuh9gHrKLqXEBRnx/sRca00Pw7guq', null, 'admin@163.com', '10', '10', '1507085508', '127.0.0.1', '1500800407', '1501233884');
+INSERT INTO `sp_admin_user` VALUES ('2', 'admin', '宅太浪', 'owK8MnOIcXvKBCZg84qdDL4Qv9OzfNLg', '$2y$13$sLdMVBItIKRY9Gpn4AiMCejZwuh9gHrKLqXEBRnx/sRca00Pw7guq', null, 'admin@163.com', '10', '10', '1507704978', '127.0.0.1', '1500800407', '1501233884');
 INSERT INTO `sp_admin_user` VALUES ('3', 'admin123', '你麻痹', 'mmbshgsYf3hcY5Uyqyr_Mm9ZByuqG3gm', '$2y$13$IGNhRQvhF0gb.n.L4wv3duwJDHa/s07i7nQtK4UF3JHKCQIARMVRe', null, 'admin213123@163.com', '10', '10', '0', '0', '1500974268', '1501245169');
 INSERT INTO `sp_admin_user` VALUES ('4', 'admin1234', 'das', 'UcymRn7-nVeJ8oq1QLqVc-UpbaReQtFb', '$2y$13$UH.Agh51yhFzTU1oQs9DJu38cyx8RnVaSyOEKGw//W5sqawuP.d9u', null, 'admi3n@163.com', '10', '10', '0', '0', '1501037414', '1501037414');
 INSERT INTO `sp_admin_user` VALUES ('5', 'zhaitailang', '哈哈哈', '5Boe4gzMlglYqXBGyE8kAaefgWgOg7v0', '$2y$13$zq2xAJlWZB7m5MMU96v.YuJkqCo4zCN/sEjwj75dRX1od5VPhW23.', null, '282586392@qq.com', '10', '10', '0', '0', '1501037769', '1501037769');
@@ -464,7 +464,7 @@ CREATE TABLE `sp_brand` (
 -- ----------------------------
 INSERT INTO `sp_brand` VALUES ('2', '兰蔻', '', '6', '0', '0', '1');
 INSERT INTO `sp_brand` VALUES ('3', '天王', '', '17', '0', '0', '1');
-INSERT INTO `sp_brand` VALUES ('4', '天王1', '', '17', '0', '0', '1');
+INSERT INTO `sp_brand` VALUES ('4', '天王1', '', '17', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for sp_category
@@ -498,6 +498,164 @@ INSERT INTO `sp_category` VALUES ('17', '服饰鞋包', null, '0', '0');
 INSERT INTO `sp_category` VALUES ('18', '手表配饰', '17', '0', '0');
 INSERT INTO `sp_category` VALUES ('19', '墨镜', '18', '0', '0');
 INSERT INTO `sp_category` VALUES ('20', '眼镜', '18', '0', '0');
+
+-- ----------------------------
+-- Table structure for sp_freight
+-- ----------------------------
+DROP TABLE IF EXISTS `sp_freight`;
+CREATE TABLE `sp_freight` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `freight_text` varchar(500) NOT NULL COMMENT '运费模板内容 例子：[{{"place_id":1,"place_id":2,...},"数量":1,"运费":5,"每增加数量":2,"运费增加":8},{{"place_id":1,"place_id":2,...},"数量":1,"运费":10,"每增加数量":2,"运费增加":8},...] 其中place_id为地区id，可以多选',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `sp_freight_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sp_user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sp_freight
+-- ----------------------------
+INSERT INTO `sp_freight` VALUES ('1', '3', '通用3', '[{{\"place_id\":0,},\"num\":1,\"freight\":5,\"numadd\":2,\"freightadd\":8}]');
+INSERT INTO `sp_freight` VALUES ('3', '4', '通用4', '[{{\"place_id\":0,},\"num\":1,\"freight\":5,\"numadd\":2,\"freightadd\":8}]');
+
+-- ----------------------------
+-- Table structure for sp_good
+-- ----------------------------
+DROP TABLE IF EXISTS `sp_good`;
+CREATE TABLE `sp_good` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '商品id',
+  `good_num` int(55) NOT NULL,
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `description` varchar(500) NOT NULL COMMENT '商品说明',
+  `cate_id` int(11) NOT NULL COMMENT '分类id',
+  `brand_id` int(11) NOT NULL COMMENT '品牌id',
+  `status` smallint(6) NOT NULL DEFAULT '0' COMMENT '状态 0正常 1禁用 2审核中',
+  `is_reco` int(11) NOT NULL DEFAULT '0' COMMENT '是否推荐 0否 1是',
+  `is_hot` int(11) NOT NULL DEFAULT '0' COMMENT '是否热门 0否 1是',
+  `created_at` int(11) NOT NULL COMMENT '创建时间',
+  `updated_at` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL COMMENT '商家用户id 空为后台发布 ',
+  `order` int(11) NOT NULL DEFAULT '0' COMMENT '商品排序',
+  PRIMARY KEY (`id`),
+  KEY `brand_id` (`brand_id`),
+  KEY `cate_id` (`cate_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `sp_good_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `sp_brand` (`id`),
+  CONSTRAINT `sp_good_ibfk_2` FOREIGN KEY (`cate_id`) REFERENCES `sp_category` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sp_good
+-- ----------------------------
+INSERT INTO `sp_good` VALUES ('5', '123456', 'karen murrell 口红 #8 艳丽橘色 4克 张艺兴极限挑战同款口红！', '张艺兴极限挑战同款口红！该口红天然无毒，用的全部都是纯天然的物质，是一款可以吃的口红！这款产品推出以后，在澳洲新西兰引起了极大的轰动，正因为它的有机和天然，众多的时尚杂志都极力地推荐！ ', '8', '2', '0', '1', '1', '1507704978', '1507704978', '0', '0');
+INSERT INTO `sp_good` VALUES ('7', '1478969', '【品牌授权】CLIO 珂莱欧 少女之吻雾感唇膏 10#悦动亮橙', '人气韩剧《制作人》女主人公孔孝真的御用单品，淡化唇纹，双唇饱满性感，轻轻涂一层就可以令双唇闪亮饱满，无需反复涂抹，超强紧贴度，即使晕染也能绽放无限魅力。韩剧女主同款，你还不下单购买嘛~', '8', '2', '0', '1', '1', '1507704978', '1507704978', '0', '0');
+
+-- ----------------------------
+-- Table structure for sp_good_clicks
+-- ----------------------------
+DROP TABLE IF EXISTS `sp_good_clicks`;
+CREATE TABLE `sp_good_clicks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `clicks` int(11) NOT NULL DEFAULT '500' COMMENT '点击数',
+  `good_id` int(11) NOT NULL COMMENT '商品id',
+  PRIMARY KEY (`id`),
+  KEY `good_id` (`good_id`),
+  CONSTRAINT `sp_good_clicks_ibfk_1` FOREIGN KEY (`good_id`) REFERENCES `sp_good` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sp_good_clicks
+-- ----------------------------
+INSERT INTO `sp_good_clicks` VALUES ('1', '507', '5');
+INSERT INTO `sp_good_clicks` VALUES ('2', '501', '7');
+
+-- ----------------------------
+-- Table structure for sp_good_image
+-- ----------------------------
+DROP TABLE IF EXISTS `sp_good_image`;
+CREATE TABLE `sp_good_image` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `good_id` int(11) NOT NULL,
+  `image_url` varchar(5000) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `good_id` (`good_id`),
+  CONSTRAINT `sp_good_image_ibfk_1` FOREIGN KEY (`good_id`) REFERENCES `sp_good` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sp_good_image
+-- ----------------------------
+INSERT INTO `sp_good_image` VALUES ('1', '5', '[{\"pic\":\"goods\\/20170718\\/thumb\\/201707181645191500367519028.jpg\",\"small\":\"goods\\/small\\/20170718\\/thumb\\/201707181645191500367519028.jpg\"},{\"pic\":\"goods\\/20170724\\/thumb\\/201707241142061500867726937.jpg\",\"small\":\"goods\\/small\\/20170724\\/thumb\\/201707241142061500867726937.jpg\"},{\"pic\":\"goods\\/20170724\\/thumb\\/201707241142071500867727082.jpg\",\"small\":\"goods\\/small\\/20170724\\/thumb\\/201707241142071500867727082.jpg\"},{\"pic\":\"goods\\/20170724\\/thumb\\/201707241142071500867727257.jpg\",\"small\":\"goods\\/small\\/20170724\\/thumb\\/201707241142071500867727257.jpg\"}]');
+INSERT INTO `sp_good_image` VALUES ('2', '7', '[{\"pic\":\"goods\\/20170718\\/thumb\\/201707181645191500367519028.jpg\",\"small\":\"goods\\/small\\/20170718\\/thumb\\/201707181645191500367519028.jpg\"},{\"pic\":\"goods\\/20170724\\/thumb\\/201707241142061500867726937.jpg\",\"small\":\"goods\\/small\\/20170724\\/thumb\\/201707241142061500867726937.jpg\"},{\"pic\":\"goods\\/20170724\\/thumb\\/201707241142071500867727082.jpg\",\"small\":\"goods\\/small\\/20170724\\/thumb\\/201707241142071500867727082.jpg\"},{\"pic\":\"goods\\/20170724\\/thumb\\/201707241142071500867727257.jpg\",\"small\":\"goods\\/small\\/20170724\\/thumb\\/201707241142071500867727257.jpg\"}]');
+
+-- ----------------------------
+-- Table structure for sp_good_mb
+-- ----------------------------
+DROP TABLE IF EXISTS `sp_good_mb`;
+CREATE TABLE `sp_good_mb` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '商家用户id',
+  `place_id` int(11) NOT NULL DEFAULT '0' COMMENT '发货地id',
+  `freight_id` int(11) NOT NULL DEFAULT '0' COMMENT '运费模板id',
+  `good_id` int(11) NOT NULL COMMENT '商品id',
+  `cate_id` int(11) NOT NULL COMMENT '分类id',
+  `brand_id` int(11) NOT NULL COMMENT '品牌id',
+  `status` smallint(6) NOT NULL DEFAULT '2' COMMENT '状态 0正常 1已下架 2审核中 3已删除',
+  `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updated_at` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `place_id` (`place_id`),
+  KEY `freight_id` (`freight_id`),
+  KEY `good_id` (`good_id`),
+  KEY `cate_id` (`cate_id`),
+  KEY `brand_id` (`brand_id`),
+  CONSTRAINT `sp_good_mb_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sp_user` (`id`),
+  CONSTRAINT `sp_good_mb_ibfk_2` FOREIGN KEY (`place_id`) REFERENCES `sp_place` (`id`),
+  CONSTRAINT `sp_good_mb_ibfk_3` FOREIGN KEY (`freight_id`) REFERENCES `sp_freight` (`id`),
+  CONSTRAINT `sp_good_mb_ibfk_4` FOREIGN KEY (`good_id`) REFERENCES `sp_good` (`id`),
+  CONSTRAINT `sp_good_mb_ibfk_5` FOREIGN KEY (`cate_id`) REFERENCES `sp_category` (`id`),
+  CONSTRAINT `sp_good_mb_ibfk_6` FOREIGN KEY (`brand_id`) REFERENCES `sp_brand` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of sp_good_mb
+-- ----------------------------
+INSERT INTO `sp_good_mb` VALUES ('3', '3', '1', '1', '5', '8', '2', '0', '0', '0');
+INSERT INTO `sp_good_mb` VALUES ('5', '3', '1', '1', '5', '8', '2', '0', '0', '0');
+INSERT INTO `sp_good_mb` VALUES ('6', '4', '1', '3', '7', '8', '2', '0', '0', '0');
+INSERT INTO `sp_good_mb` VALUES ('7', '4', '1', '3', '7', '8', '2', '0', '0', '0');
+
+-- ----------------------------
+-- Table structure for sp_good_mbv
+-- ----------------------------
+DROP TABLE IF EXISTS `sp_good_mbv`;
+CREATE TABLE `sp_good_mbv` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mb_id` int(11) NOT NULL DEFAULT '0' COMMENT '报价id',
+  `model_text` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '型号 如 黑色1 黑色2',
+  `price` decimal(10,0) NOT NULL COMMENT '价格',
+  `stock_num` int(7) NOT NULL COMMENT '库存数量',
+  `bar_code` int(50) NOT NULL COMMENT '条形码',
+  `bar_code_status` smallint(6) NOT NULL COMMENT '条形码是否通过官方验证 0否 1是',
+  `status` smallint(6) NOT NULL DEFAULT '2' COMMENT '状态 0正常 1下架 2审核中 3已删除',
+  `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updated_at` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `mb_id` (`mb_id`),
+  CONSTRAINT `sp_good_mbv_ibfk_1` FOREIGN KEY (`mb_id`) REFERENCES `sp_good_mb` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of sp_good_mbv
+-- ----------------------------
+INSERT INTO `sp_good_mbv` VALUES ('1', '3', '型号1', '123', '50', '987659', '1', '0', '0', '0');
+INSERT INTO `sp_good_mbv` VALUES ('2', '3', '型号2', '124', '50', '987658', '1', '0', '0', '0');
+INSERT INTO `sp_good_mbv` VALUES ('5', '3', '型号3', '125', '50', '987657', '1', '0', '0', '0');
+INSERT INTO `sp_good_mbv` VALUES ('6', '6', '型号1-1', '51', '50', '789451', '1', '0', '0', '0');
+INSERT INTO `sp_good_mbv` VALUES ('7', '6', '型号1-2', '59', '50', '789452', '1', '0', '0', '0');
+INSERT INTO `sp_good_mbv` VALUES ('8', '6', '型号1-2', '57', '50', '789453', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for sp_menu
@@ -552,6 +710,45 @@ INSERT INTO `sp_migration` VALUES ('m000000_000000_base', '1500776810');
 INSERT INTO `sp_migration` VALUES ('m130524_201442_init', '1500776815');
 INSERT INTO `sp_migration` VALUES ('m140602_111327_create_menu_table', '1500781213');
 INSERT INTO `sp_migration` VALUES ('m140506_102106_rbac_init', '1500787705');
+
+-- ----------------------------
+-- Table structure for sp_place
+-- ----------------------------
+DROP TABLE IF EXISTS `sp_place`;
+CREATE TABLE `sp_place` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `title` varchar(50) NOT NULL COMMENT '分类',
+  `parentid` int(11) DEFAULT NULL COMMENT '父id',
+  `status` smallint(6) DEFAULT '0' COMMENT '状态 0正常 1已禁用',
+  `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  PRIMARY KEY (`id`),
+  KEY `sp_category_parentid` (`parentid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sp_place
+-- ----------------------------
+INSERT INTO `sp_place` VALUES ('1', '纽约', null, '0', '0');
+
+-- ----------------------------
+-- Table structure for sp_search_keywords
+-- ----------------------------
+DROP TABLE IF EXISTS `sp_search_keywords`;
+CREATE TABLE `sp_search_keywords` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `status` smallint(6) NOT NULL DEFAULT '0' COMMENT '状态 0正常 1已禁用',
+  `order` int(11) NOT NULL DEFAULT '0',
+  `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updated_at` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sp_search_keywords
+-- ----------------------------
+INSERT INTO `sp_search_keywords` VALUES ('1', '兰蔻', '0', '0', '0', '0');
+INSERT INTO `sp_search_keywords` VALUES ('2', '口红', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for sp_user

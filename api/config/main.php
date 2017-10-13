@@ -1,9 +1,9 @@
 <?php
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
-    require(__DIR__ . '/../../common/config/params-local.php'),
-    require(__DIR__ . '/params.php'),
-    require(__DIR__ . '/params-local.php')
+    //require(__DIR__ . '/../../common/config/params-local.php'),
+    require(__DIR__ . '/params.php')
+    //require(__DIR__ . '/params-local.php')
 );
 
 return [
@@ -47,7 +47,7 @@ return [
             'showScriptName' => true,
             'enableStrictParsing' =>false,
             'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/banners','v1/categorys']],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/banners','v1/categorys','v1/listgoods','v1/mbgoods','v1/mbvgoods','v1/searchkeywords','v1/searchgoods','v1/searchbarcode']],
             ],
         ],
         'request' => [

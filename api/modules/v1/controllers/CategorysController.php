@@ -4,6 +4,7 @@ namespace api\modules\v1\controllers;
 
 use yii\rest\ActiveController;
 use yii\web\Response;
+
 class CategorysController extends ActiveController
 {
     public $modelClass = 'api\models\Category';
@@ -19,15 +20,22 @@ class CategorysController extends ActiveController
         $action =  parent::actions();
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
     }
-    public function actionIndex(){
+    public function actionIndex($ishot=''){
+        $ishot = intval($ishot);
+        
         $modelClass = $this->modelClass;  
         $modelBrand = $this->modelBrand;
         //查询所有分类
-        $allCategorys = $modelClass::find()->where(['status' => 0])->orderBy('order desc')->asArray()->all();
+        $allCategorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0])->orderBy('order desc')->asArray()->all();
         //查询所有一级分类
-        $categorys = $modelClass::find()->where(['status' => 0, 'parentid' => null])->orderBy('order desc')->asArray()->all();
-        //查询一级分类下的品牌
-        $categoryBrand = $modelBrand::find()->where(['status' => 0])->orderBy('order desc')->asArray()->all();
+        $categorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0, 'parentid' => null])->orderBy('order desc')->asArray()->all();
+        if($ishot == 1){
+            //查询一级分类下的热门品牌
+            $categoryBrand = $modelBrand::find()->select(['id','title','image_url','cate_id'])->where(['status' => 0,'is_hot' => 1])->orderBy('order desc')->asArray()->all();
+        }else{
+            //查询一级分类下的所有品牌
+            $categoryBrand = $modelBrand::find()->select(['id','title','image_url','cate_id'])->where(['status' => 0])->orderBy('order desc')->asArray()->all();
+        }
         $child = array();
         //获取一级分类子分类
         $childTree = $this->actionCate($allCategorys, $child);
