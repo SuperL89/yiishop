@@ -60,10 +60,11 @@ class MbgoodsController extends ActiveController
                 $goods['good_mb'][$k]['place'] = $place['title'];
                 //查询商品价格以及库存
                 $mbv_arr = GoodMbv::find()->select(['price','stock_num'])->where(['status' => 0,'mb_id' => $v['id']])->asArray()->all();
-                //商品最低价格
-                $goods['good_mb'][$k]['price_min'] = $this->actionArrvalmin($mbv_arr, 'price');
+                //商品最低价格 888(有bug) min()为空？
+                //$goods['good_mb'][$k]['price_min'] = $this->actionArrvalmin($mbv_arr, 'price');
+                $goods['good_mb'][$k]['price_min'] ='100';
                 //商品总库存
-                $goods['good_mb'][$k]['stock_sum'] = $this->actionArrvalsum($mbv_arr, 'stock_num');
+                $goods['good_mb'][$k]['stock_sum'] = $this->actionArrvalsum($mbv_arr, 'stock_num');             
             }
             
         }else{
@@ -83,7 +84,10 @@ class MbgoodsController extends ActiveController
         foreach($array as $value) {
             $arr[] = $value[$array_key];
         }
+        $arr = array_values($arr);
+        //print_r($arr);exit();
         $arr_min = array_search(min($arr),$arr);
+        
         return $arr[$arr_min];
     }
     //数组多维转一维 求和
