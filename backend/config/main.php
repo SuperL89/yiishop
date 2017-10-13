@@ -37,7 +37,7 @@ return [
             'csrfParam' => '_csrf-backend',
         ],
         'user' => [
-            'identityClass' => 'backend\models\Adminuser',
+            'identityClass' => 'backend\models\AdminUser',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
             'on beforeLogin' => function($event) {
