@@ -44,30 +44,32 @@ return [
         // other config
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => true,
+            'showScriptName' => false,
             'enableStrictParsing' =>false,
-            'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/banners','v1/categorys','v1/listgoods','v1/mbgoods','v1/mbvgoods','v1/searchkeywords','v1/searchgoods','v1/searchbarcode']],
-            ],
+//             'rules' => [
+//                 ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/banners','v1/categorys','v1/viewgoods','v1/mbgoods','v1/mbvgoods','v1/searchkeywords','v1/searchgoods','v1/searchbarcode']],
+//             ],
         ],
         'request' => [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
+                'text/json' => 'yii\web\JsonParser',
             ]
         ],
-//         'response' => [
-//             'class' => 'yii\web\Response',
-//             'on beforeSend' => function ($event) {
-//                 $response = $event->sender;
-//                 if ($response->data !== null && !empty(Yii::$app->request->get('suppress_response_code'))) {
-//                     $response->data = [
-//                         'success' => $response->isSuccessful,
-//                         'data' => $response->data,
-//                     ];
-//                     $response->statusCode = 200;
-//                 }
-//             },
-//         ]
+        
+        'response' => [
+            'class' => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                $response->data = [
+                    'code' => $response->getStatusCode(),
+                    'message' => $response->statusText,
+                    'data_w' => $response->data
+                    
+                ];
+                $response->format = yii\web\Response::FORMAT_JSON;
+            },
+        ],
         
     ],
     'params' => $params,

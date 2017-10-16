@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use Yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
 use api\models\GoodImage;
@@ -12,6 +13,13 @@ use api\models\GoodMbv;
 class MbvgoodsController extends ActiveController
 {
     public $modelClass = 'api\models\Good';
+    
+    protected function verbs()
+    {
+        return [
+            'index' => ['POST'],
+        ];
+    }
     
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -24,12 +32,13 @@ class MbvgoodsController extends ActiveController
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
     }
     
-    public function actionIndex($id,$mbid){
-        $id = intval($id);
-        $mbid = intval($mbid);
-        if(!$id || $id <= 0 || !$mbid || $mbid <= 0){
-            $good['code'] = '10001';
-            $good['msg'] = '商品id不能为空或小于1';
+    public function actionIndex(){
+        $id = (int)Yii::$app->request->post("id",'0');
+        $mbid = (int)Yii::$app->request->post("mbid", '0');
+        
+        if($id <= 0 && $mbid <= 0){
+            $good['code'] = '80000';
+            $good['msg'] = '参数不合法或缺少参数';
             return $good;
         }
         //查询是否有该报价

@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use Yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
 
@@ -9,6 +10,13 @@ class CategorysController extends ActiveController
 {
     public $modelClass = 'api\models\Category';
     public $modelBrand = 'api\models\Brand';
+    
+    protected function verbs()
+    {
+        return [
+            'index' => ['POST'],
+        ];
+    }
     
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -20,11 +28,13 @@ class CategorysController extends ActiveController
         $action =  parent::actions();
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
     }
-    public function actionIndex($ishot=''){
-        $ishot = intval($ishot);
-        
+    public function actionIndex(){
+       
         $modelClass = $this->modelClass;  
         $modelBrand = $this->modelBrand;
+       
+        $ishot = (int)Yii::$app->request->post("ishot");
+        
         //查询所有分类
         $allCategorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0])->orderBy('order desc')->asArray()->all();
         //查询所有一级分类

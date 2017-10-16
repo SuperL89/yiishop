@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use Yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
 use api\models\Category;
@@ -16,6 +17,13 @@ class SearchgoodsController extends ActiveController
 {
     public $modelClass = 'api\models\Good';
     
+    protected function verbs()
+    {
+        return [
+            'index' => ['POST'],
+        ];
+    }
+    
     public function behaviors() {
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON;
@@ -27,13 +35,17 @@ class SearchgoodsController extends ActiveController
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
     }
 
-    public function actionIndex($keyword,$page=1){
-        $page = intval($page);
-        if(empty($keyword)){
-            $good['code'] = '10004';
-            $good['msg'] = '搜索词不能为空';
+    public function actionIndex(){
+
+        $keyword = Yii::$app->request->post("keyword",'');
+        $page = (int)Yii::$app->request->post("page", '1');
+        
+        if(empty($keyword) || $page <= 0){
+            $good['code'] = '80000';
+            $good['msg'] = '参数不合法或缺少参数';
             return $good;
         }
+        
         $modelClass = $this->modelClass;
         //搜索模块
         //根据关键词搜索符合的商品id集合

@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use Yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
 use api\models\Brand;
@@ -14,6 +15,13 @@ class SearchbarcodeController extends ActiveController
 {
     public $modelClass = 'api\models\Good';
     
+    protected function verbs()
+    {
+        return [
+            'index' => ['POST'],
+        ];
+    }
+    
     public function behaviors() {
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON;
@@ -25,14 +33,15 @@ class SearchbarcodeController extends ActiveController
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
     }
 
-    public function actionIndex($code){
-        $code = intval($code);
-        
+    public function actionIndex(){
+        $code = (int)Yii::$app->request->post("code", '0');
+         
         if(!$code || $code <= 0){
-            $good['code'] = '10005';
-            $good['msg'] = 'code不能为空或小于1';
+            $good['code'] = '80000';
+            $good['msg'] = '参数不合法或缺少参数';
             return $good;
         }
+        
         $modelClass = $this->modelClass;
         //根据条形码搜索符合的商品id集合
         $goodmbv=GoodMbv::find()->select(['mb_id'])->where(['bar_code' => $code , 'status' => 0 , 'bar_code_status' => 1])->asArray()->one();

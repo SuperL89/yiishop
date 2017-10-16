@@ -10,6 +10,13 @@ class BannersController extends ActiveController
 {
     public $modelClass = 'api\models\Banner';
     
+    protected function verbs()
+    {
+        return [
+            'index' => ['POST'],
+        ];
+    }
+    
     public function behaviors() {
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON;

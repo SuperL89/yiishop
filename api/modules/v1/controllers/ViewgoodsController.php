@@ -2,15 +2,24 @@
 
 namespace api\modules\v1\controllers;
 
+use Yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
 use api\models\Brand;
 use api\models\GoodImage;
 use api\models\GoodClicks;
 
+
 class ViewgoodsController extends ActiveController
 {
     public $modelClass = 'api\models\Good';
+    
+    protected function verbs()
+    {
+        return [
+            'index' => ['POST'],
+        ];
+    }
     
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -23,12 +32,12 @@ class ViewgoodsController extends ActiveController
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
     }
 
-    public function actionIndex($id){
-        $id = intval($id);
-        
-        if(!$id || $id <= 0){
-            $good['code'] = '10001';
-            $good['msg'] = '商品id不能为空或小于1';
+    public function actionIndex(){
+       $id = (int)Yii::$app->request->post("id", '0');
+       
+       if(!$id || $id <= 0){
+            $good['code'] = '80000';
+            $good['msg'] = '参数不合法或缺少参数';
             return $good;
         }
         $modelClass = $this->modelClass;
