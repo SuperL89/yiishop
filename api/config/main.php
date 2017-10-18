@@ -17,18 +17,27 @@ return [
         ],
     ],
     'components' => [
-//         'request' => [
-//             'csrfParam' => '_csrf-backend',
-//         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'api\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'on beforeLogin' => function($event) {
+                $user = $event->identity; //这里的就是User Model的实例了
+                $user->login_at = time();
+                $user->login_ip = Yii::$app->request->userIP;
+                $user->save();
+             },
+            'enableSession' => false,
         ],
-        'session' => [
-            // this is the name of the session cookie used for login on the backend
-            'name' => 'advanced-api',
+        'smser' => [
+            // 云片网
+            'class' => 'daixianceng\smser\YunpianSmser',
+            'apikey' => '11bf15c1728ddab4e5501b8c70c225ad', // 请替换成您的apikey
+            'useFileTransport' => false
         ],
+//         'session' => [
+//             // this is the name of the session cookie used for login on the backend
+//             'name' => 'advanced-api',
+//         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -46,10 +55,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'enableStrictParsing' =>false,
-//             'rules' => [
-//                 ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/banners','v1/categorys','v1/viewgoods','v1/mbgoods','v1/mbvgoods','v1/searchkeywords','v1/searchgoods','v1/searchbarcode']],
-//             ],
         ],
+        
         'request' => [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
