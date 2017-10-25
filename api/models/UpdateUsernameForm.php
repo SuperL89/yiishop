@@ -9,14 +9,12 @@ use yii\helpers\VarDumper;
 /**
  * Signup form
  */
-class SignupForm extends Model
+class UpdateUsernameForm extends Model
 {
-    const  VERCODE_USAGE = 'register';
+    const  VERCODE_USAGE = 'UpdateUsername';
     public $username;
     public $verifycode;
-    public $password;
-    public $nickname;
-    public $sex;
+    //public $password;
 
 
     /**
@@ -38,24 +36,17 @@ class SignupForm extends Model
             ['verifycode', 'required', 'message' => '验证码不能为空.'],
             ['verifycode', '\common\validators\SmscodeValidator', 'usage' => self::VERCODE_USAGE ],
             
-            ['password', 'trim'],
-            ['password', 'required', 'message' => '密码不能为空.'],
-            ['password', 'match', 'pattern'=>'/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/','message'=>'6-12位密码必须由字母+数字组成'],
-            
-            //用户信息
-            ['nickname', 'trim'],
-            ['sex', 'trim'],
+//             ['password', 'trim'],
+//             ['password', 'required', 'message' => '密码不能为空.'],
+//             ['password', 'match', 'pattern'=>'/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/','message'=>'6-12位密码必须由字母+数字组成'],
         ];
     }
     
     public function attributeLabels()
     {
         return [
-            'username' => '用户名',
-            'password' => '密码',
+            'username' => '手机号/用户名',
             'verifycode' => '验证码',
-            'nickname' => '昵称',
-            'sex' => '性别',
         ];
     }
 
@@ -64,17 +55,11 @@ class SignupForm extends Model
      *
      * @return User|null the saved model or null if saving fails
      */
-    public function signup()
+    public function update($id)
     {
-        $user = new User();
+        $user = User::findOne($id);
         $user->username = $this->username;
-        $user->nickname = $this->nickname;
-        $user->sex = $this->sex ?: 2;
-        $user->created_at = time();
-        $user->updated_at = time();
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        //$user->save(); VarDumper::dump($user->errors);exit();
+
         return $user->save() ? $user : null;
     }
 }

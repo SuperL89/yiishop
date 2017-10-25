@@ -18,23 +18,17 @@ class CategorysController extends ActiveController
         ];
     }
     
-    public function behaviors() {
-        $behaviors = parent::behaviors();
-        $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON;
-        return $behaviors;
-    }
+    
     public function actions()
     {
         $action =  parent::actions();
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
     }
     public function actionIndex(){
+        $ishot = (int)Yii::$app->request->post("ishot");
        
         $modelClass = $this->modelClass;  
         $modelBrand = $this->modelBrand;
-       
-        $ishot = (int)Yii::$app->request->post("ishot");
-        
         //查询所有分类
         $allCategorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0])->orderBy('order desc')->asArray()->all();
         //查询所有一级分类

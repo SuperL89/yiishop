@@ -27,6 +27,8 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+    
+    
 
 
     /**
@@ -66,14 +68,6 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findIdentity($id)
     {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
 
     /**
@@ -211,5 +205,31 @@ class User extends ActiveRecord implements IdentityInterface
         $timestamp = (int) substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.apiTokenExpire'];
         return $timestamp + $expire >= time();
+    }
+    /**
+     * 验证token  
+     */
+    public static function findIdentityByAccessToken($token, $type=NULL)
+    {
+        // 如果token无效的话，
+        if(!static::apiTokenIsValid($token)) {
+            $this->addError('token', 'token错误');
+            throw new \yii\web\UnauthorizedHttpException("token错误");
+        }
+        
+       return static::findOne(['api_token' => $token, 'status' => self::STATUS_ACTIVE]);
+        
+    }
+    
+
+    /**
+     * 获取用户收货地址信息
+     */
+    public function getReceivAddress()
+    {
+        return $this->hasMany(UserAddress::className(), ['user_id' => 'id']);
+        //print_r($this->id);exit();
+        //return UserAddress::find()->select(['{{%user_address}}.*','sp_place.title'])->where(['user_id' => $this->id,'status' => [0, 1]])->joinwith('sp_place')->where(['id' => '{{%user_address}}.city_id'])->asArray()->all();
+       
     }
 }

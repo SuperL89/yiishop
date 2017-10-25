@@ -48,13 +48,53 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            //'errorAction' => 'v1/site/error',
         ],
         // other config
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'enableStrictParsing' =>false,
+            'showScriptName' => false,    
+            'enableStrictParsing' =>true,
+            'rules' => [
+                '/'=>'default/index',//这是个坑  如不配置则enableStrictParsing开启后全部404 mbd
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => [
+                        'v1/user',
+                        'v1/viewgoods',
+                        'v1/listgoods',
+                        'v1/categorys',
+                        'v1/banners',
+                        'v1/mbgoods',
+                        'v1/mbvgoods',
+                        'v1/searchgoods',
+                        'v1/searchbarcode',
+                        'v1/searchkeywords',
+                    ],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'POST index' => 'index',
+                        'POST register' => 'register',
+                        'POST login' => 'login',
+                        'GET signup-test' => 'signup-test',
+                        'POST resetpwd' => 'resetpwd',
+                        'POST send-verifycode' => 'send-verifycode',
+                        'POST user-profile' => 'user-profile',
+                        'POST update-profile' => 'update-profile',
+                        'POST reset-password' => 'reset-password',
+                        'POST modify-username' => 'modify-username',
+                        'POST update-username' => 'update-username',
+                        'POST receiving-address' => 'receiving-address',
+                        'POST create-address' => 'create-address',
+                        'POST update-address' => 'update-address',
+                        'POST get-place' => 'get-place',
+                        'POST get-category' => 'get-category',
+                        'POST apply-business' => 'apply-business',
+                        'POST update-business' => 'update-business',
+                        'POST good-order' => 'good-order',
+                    ]
+                ],
+            ]
         ],
         
         'request' => [
