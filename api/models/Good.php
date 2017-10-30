@@ -105,6 +105,14 @@ class Good extends \yii\db\ActiveRecord
         return $this->hasMany(GoodImage::className(), ['good_id' => 'id']);
     }
     
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGoodImage()
+    {
+        return $this->hasOne(GoodImage::className(), ['good_id' => 'id']);
+    }
+    
     public function getGoodMb()
     {
         return $this->hasMany(GoodMb::className(), ['good_id' => 'id']);

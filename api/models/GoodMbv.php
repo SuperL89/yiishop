@@ -66,7 +66,7 @@ class GoodMbv extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMb()
+    public function getGoodMb()
     {
         return $this->hasOne(GoodMb::className(), ['id' => 'mb_id']);
     }

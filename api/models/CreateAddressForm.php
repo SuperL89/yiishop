@@ -69,8 +69,29 @@ class CreateAddressForm extends \yii\db\ActiveRecord
      * 创建收货地址
      */
     public function createaddress($user_id)
-    {
-    //变更默认地址
+    {   
+        //根据城市ID查询州ID、国家ID
+        $place = Place::find()->select(['*'])->where(['id' => $this->city_id])->andWhere(['like','path',',140,'])->with([
+            'state' => function ($query) {
+                $query->select('id,pid,name,name_en,code')->with([
+                    'country' => function ($query) {
+                        $query->select('id,pid,name,name_en,code');
+                    }
+                ]);
+            }
+        ])->one();
+        if (empty($place)) return null;
+        
+        //验证州ID、国家ID
+        $country_id = isset($place->state->country->id) && $place->state->country->id ? $place->state->country->id : 0;
+        $state_id = isset($place->state->id) && $place->state->id ? $place->state->id : 0;
+        $state_name = isset($place->state->name) && $place->state->name ? $place->state->name : '';
+        $state_code = isset($place->state->code) && $place->state->code ? $place->state->code : '';
+        $city_name = isset($place->name) && $place->name ? $place->name : '';
+        $city_name_en = isset($place->name_en) && $place->name_en ? $place->name_en : '';
+        if (empty($country_id) || empty($state_id) || empty($state_name) || empty($state_code) || empty($city_name) || empty($city_name_en)) return null;
+        
+        //变更默认地址
         if($this->status == 1){
             $user = UserAddress::find()->select(['id'])->where(['user_id'=>$user_id,'status' => 1])->one();
             if($user){
@@ -79,32 +100,17 @@ class CreateAddressForm extends \yii\db\ActiveRecord
             }
         }
         
-        //根据城市ID查询州ID、国家ID
-        $place = Place::find()->select(['*'])->where(['id' => $this->city_id, 'status' => 0])->with([
-            'state' => function ($query) {
-                $query->select('id,title,parentid')->andWhere('status = 0')->with([
-                    'country' => function ($query) {
-                        $query->select('id,title,parentid')->andWhere('status = 0');
-                    }
-                ]);
-            }
-        ])
-        ->one();
-        //验证州ID、国家ID
-        $country_id = isset($place->state->country->id) && $place->state->country->id ? $place->state->country->id : 0;
-        $state_id = isset($place->state->id) && $place->state->id ? $place->state->id : 0;
-        if (empty($country_id)) return null;
-        if (empty($state_id)) return null;
-            
         $user = new UserAddress();
         $user->user_id =$user_id;
         $user->name = $this->name;
         $user->country_id = $country_id;
         $user->state_id = $state_id;
         $user->city_id = $this->city_id;
+        $user->csc_name = $state_name.' '.$city_name;
+        $user->csc_name_en = $city_name_en.','.$state_code;
         $user->street = $this->street;
         $user->phone = $this->phone;
-        $user->status = $this->status?:0;
+        $user->status = $this->status;
         //$user->save(); VarDumper::dump($user->errors);exit();
         return $user->save() ? $user : null;
     }

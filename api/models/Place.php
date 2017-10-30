@@ -7,16 +7,14 @@ use Yii;
 /**
  * This is the model class for table "{{%place}}".
  *
- * @property integer $id
- * @property string $title
- * @property integer $parentid
- * @property integer $status
- * @property integer $order
- *
- * @property GoodMb[] $goodMbs
- * @property Place $parent
- * @property Place[] $places
- * @property UserAddress[] $userAddresses
+ * @property string $id
+ * @property string $pid
+ * @property string $path
+ * @property string $level
+ * @property string $name
+ * @property string $name_en
+ * @property string $name_pinyin
+ * @property string $code
  */
 class Place extends \yii\db\ActiveRecord
 {
@@ -34,10 +32,9 @@ class Place extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title'], 'required'],
-            [['parentid', 'status', 'order'], 'integer'],
-            [['title'], 'string', 'max' => 50],
-            [['parentid'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['parentid' => 'id']],
+            [['pid', 'level'], 'integer'],
+            [['path', 'name', 'name_en', 'name_pinyin'], 'string', 'max' => 255],
+            [['code'], 'string', 'max' => 50],
         ];
     }
 
@@ -48,43 +45,14 @@ class Place extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'parentid' => 'Parentid',
-            'status' => 'Status',
-            'order' => 'Order',
+            'pid' => 'Pid',
+            'path' => 'Path',
+            'level' => 'Level',
+            'name' => 'Name',
+            'name_en' => 'Name En',
+            'name_pinyin' => 'Name Pinyin',
+            'code' => 'Code',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getGoodMbs()
-    {
-        return $this->hasMany(GoodMb::className(), ['place_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getParent()
-    {
-        return $this->hasOne(Place::className(), ['id' => 'parentid']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlaces()
-    {
-        return $this->hasMany(Place::className(), ['parentid' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserAddresses()
-    {
-        return $this->hasMany(UserAddress::className(), ['city_id' => 'id']);
     }
     
     /**
@@ -92,7 +60,7 @@ class Place extends \yii\db\ActiveRecord
      */
     public function getState()
     {
-        return $this->hasOne(Place::className(), ['id' => 'parentid']);
+        return $this->hasOne(Place::className(), ['id' => 'pid']);
     }
     
     /**
@@ -100,6 +68,6 @@ class Place extends \yii\db\ActiveRecord
      */
     public function getCountry()
     {
-        return $this->hasOne(Place::className(), ['id' => 'parentid']);
+        return $this->hasOne(Place::className(), ['id' => 'pid']);
     }
 }

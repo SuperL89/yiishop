@@ -55,7 +55,7 @@ class ViewgoodsController extends ActiveController
             $goodclicks->save();
         }else{
             $good['code'] = '10002';
-            $good['msg'] = '商品不存在';
+            $good['msg'] = '商品不存在或者已下架';
             return $good;
         }
         

@@ -5,15 +5,14 @@ namespace api\models;
 use Yii;
 
 /**
- * This is the model class for table "sp_freight".
+ * This is the model class for table "{{%freight}}".
  *
  * @property integer $id
  * @property integer $user_id
  * @property string $title
- * @property string $freight_text
  *
  * @property User $user
- * @property GoodMb[] $goodMbs
+ * @property FreightVar[] $freightVars
  */
 class Freight extends \yii\db\ActiveRecord
 {
@@ -31,10 +30,9 @@ class Freight extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'title', 'freight_text'], 'required'],
+            [['user_id', 'title'], 'required'],
             [['user_id'], 'integer'],
             [['title'], 'string', 'max' => 255],
-            [['freight_text'], 'string', 'max' => 5000],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -48,7 +46,6 @@ class Freight extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'title' => 'Title',
-            'freight_text' => 'Freight Text',
         ];
     }
 
@@ -63,8 +60,8 @@ class Freight extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getGoodMbs()
+    public function getFreightVars()
     {
-        return $this->hasMany(GoodMb::className(), ['freight_id' => 'id']);
+        return $this->hasMany(FreightVar::className(), ['freight_id' => 'id']);
     }
 }

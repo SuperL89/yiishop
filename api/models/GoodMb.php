@@ -123,8 +123,15 @@ class GoodMb extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getGoodMbvs()
+    public function getGoodMbv()
     {
         return $this->hasMany(GoodMbv::className(), ['mb_id' => 'id']);
+    }
+    /**
+    * @return \yii\db\ActiveQuery
+    */
+    public function getOrder()
+    {
+        return $this->hasMany(Order::className(), ['mb_id' => 'id']);
     }
 }
