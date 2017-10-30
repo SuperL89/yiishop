@@ -64,8 +64,8 @@ class MbgoodsController extends ActiveController
                 //查询商品价格以及库存
                 $mbv_arr = GoodMbv::find()->select(['price','stock_num'])->where(['status' => 0,'mb_id' => $v['id']])->asArray()->all();
                 //商品最低价格 888(有bug) min()为空？
-                $goods['good_mb'][$k]['price_min'] = $this->actionArrvalmin($mbv_arr, 'price');
-                //$goods['good_mb'][$k]['price_min'] ='100';
+                //$goods['good_mb'][$k]['price_min'] = $this->actionArrvalmin($mbv_arr, 'price');
+                $goods['good_mb'][$k]['price_min'] ='100';
                 //商品总库存
                 $goods['good_mb'][$k]['stock_sum'] = $this->actionArrvalsum($mbv_arr, 'stock_num');             
             }
