@@ -1860,7 +1860,6 @@ class UserController extends ActiveController
                 $good->description=$user_data['description'];
                 $good->cate_id=$user_data['cate_id'];
                 $good->brand_id=$user_data['brand_id'];
-                $good->place_id=$user_data['place_id'];
                 $good->created_at=time();
                 $good->updated_at=time();
                 if(!$good->save()){
@@ -1887,6 +1886,7 @@ class UserController extends ActiveController
                 $goodmb->good_id = $good->id;
                 $goodmb->cate_id=$user_data['cate_id'];
                 $goodmb->brand_id=$user_data['brand_id'];
+                $goodmb->place_id=$user_data['place_id'];
                 $goodmb->created_at=time();
                 $goodmb->updated_at=time();
                 if(!$goodmb->save()){
