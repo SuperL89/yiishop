@@ -94,7 +94,7 @@ return [
                         'POST create-freight' => 'create-freight',
                         'POST update-freight' => 'update-freight',
                         'POST receiving-freight' => 'receiving-freight',
-                        'POST good-order' => 'good-order','POST good-order' => 'good-order',
+                        'POST good-order' => 'good-order',
                         'POST get-good-order' => 'get-good-order',
                         'POST get-user-order' => 'get-user-order',
                         'POST get-business-order' => 'get-business-order',

@@ -98,6 +98,6 @@ class Business extends \yii\db\ActiveRecord
      */
     public function getCate()
     {
-        return $this->hasOne(Category::className(), ['id' => 'cate_id']);
+        return $this->hasMany(Category::className(), ['id' => 'cate_id']);
     }
 }

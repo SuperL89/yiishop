@@ -524,15 +524,42 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         
-        $business_arr = Business::find()->select(['*'])->where(['user_id' => $user->id,'status' => 0])->asArray()->one();
+        $business_arr = Business::find()->select(['*'])->where(['user_id' => $user->id,'status' => 0])->with([
+            'user'=> function ($query){
+                $query->select(['id','username']);
+            },
+            'city'=> function ($query){
+                $query->select(['*']);
+            },
+        ])
+        ->asArray()
+        ->one();
+        
         if (empty($business_arr)){
             $data['code'] = '10001';
             $data['msg'] = '无此商家信息或未通过审核';
             return $data;
         }
+        
+        $cate_id_arr = explode(',', $business_arr['cate_id']);
+        //查询商家分类
+        $category_arr = Category::find()->select(['id','title'])->where(['id'=>$cate_id_arr])
+        ->asArray()
+        ->all();
+        
+        $business['status']=$business_arr['status'];
+        $business['name']=$business_arr['name'];
+        $business['phone']=$business_arr['user']['username'];
+        //发货城市
+        $business['city_id']=$business_arr['city']['id'];
+        $business['city_name']=$business_arr['city']['name'];
+        $business['city_name_en']=$business_arr['city']['name_en'];
+        $business['address']=$business_arr['address'];
+        $business['cate']=$category_arr;
+
         $data['code'] = '200';
         $data['msg'] = '';
-        $data['data'] = $business_arr;
+        $data['data'] = $business;
         return $data;   
     }
     /**

@@ -64,10 +64,14 @@ class MbgoodsController extends ActiveController
             ->asArray()
             ->one();
         if(!empty($good_arr)){
+            //获取商品图片
+            $goods['good_id']=$good_arr['id'];
             //获取商品标题
             $goods['good_title']=$good_arr['title'];
             //获取商品码
             $goods['good_num']=$good_arr['good_num'];
+            //获取商品图片
+            $goods['good_image']='';
             //获取商品品牌名
             $goods['brand_name']=$good_arr['brand']['title'];
             foreach ($good_arr['goodMb'] as $k => $v){
@@ -84,6 +88,19 @@ class MbgoodsController extends ActiveController
                 $goods['good_mb'][$k]['price_min'] = isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
                 //商品总库存
                 $goods['good_mb'][$k]['stock_sum'] = $this->actionArrvalsum($v['goodMbv'], 'stock_num');
+                
+                foreach ($v['goodMbv'] as $ks => $vs){
+                    //型号id
+                    $goods['good_mb'][$k]['good_mbv'][$ks]['model_id']=$vs['id'];
+                    //型号
+                    $goods['good_mb'][$k]['good_mbv'][$ks]['model_text']=$vs['model_text'];
+                    //价格
+                    $goods['good_mb'][$k]['good_mbv'][$ks]['price']=$vs['price'];
+                    //库存
+                    $goods['good_mb'][$k]['good_mbv'][$ks]['stock_num']=$vs['stock_num'];
+                    //条形码
+                    $goods['good_mb'][$k]['good_mbv'][$ks]['bar_code']=$vs['bar_code'];
+                }
             }
         }else{
             $good['code'] = '10002';
