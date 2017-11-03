@@ -48,6 +48,7 @@ use api\models\GoodMb;
 use api\models\Brand;
 use api\models\BusinessCreateGoodForm;
 use api\models\GoodImage;
+use Qiniu\Auth;
 
 class UserController extends ActiveController
 {
@@ -67,7 +68,8 @@ class UserController extends ActiveController
                         'resetpwd',
                         'get-place',
                         'get-category',
-                        'get-express'
+                        'get-express',
+                        'qiniu-token'
                     ],
                 ] 
         ] );
@@ -2159,6 +2161,23 @@ class UserController extends ActiveController
             $data['msg'] = '';
             $data['data'] = $goods;
             return $data;
+    }
+    /**
+     * 获取七牛token
+     */
+    public function actionQiniuToken()
+    {
+        $accessKey = '11mzx-yr7cstpbUZmSCCy8Gqcfq0JhbmL2filMl4';
+        $secretKey = 'WbxScyO40F11--hfqlvx2EgMgWE1LcRKKIzXjNBv';
+        $auth = new Auth($accessKey, $secretKey);
+        $bucket = 'hexintrade';
+        // 生成上传Token
+        $uploadtoken = $auth->uploadToken($bucket);
+        
+        $data['code'] = '200';
+        $data['msg'] = '';
+        $data['data']['uploadtoken'] = $uploadtoken;
+        return $data;
     }
     /**
      * 生成订单编码
