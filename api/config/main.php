@@ -91,10 +91,10 @@ return [
                         'POST get-category' => 'get-category',
                         'POST apply-business' => 'apply-business',
                         'POST update-business' => 'update-business',
-                        'POST good-order' => 'good-order',
                         'POST create-freight' => 'create-freight',
                         'POST update-freight' => 'update-freight',
                         'POST receiving-freight' => 'receiving-freight',
+                        'POST good-order' => 'good-order','POST good-order' => 'good-order',
                         'POST get-good-order' => 'get-good-order',
                         'POST get-user-order' => 'get-user-order',
                         'POST get-business-order' => 'get-business-order',
@@ -110,7 +110,12 @@ return [
                         'POST pay-type' => 'pay-type',
                         'POST payment-order' => 'payment-order',
                         'POST business-goodlist' => 'business-goodlist',
-
+                        'POST get-express' => 'get-express',
+                        'POST business-goodset' => 'business-goodset',
+                        'POST business-create-good' => 'business-create-good',
+                        'POST business-profile' => 'business-profile',
+                        'POST business-update-good' => 'business-update-good',
+                        'POST business-goodview' => 'business-goodview',
                     ]
                 ],
             ]

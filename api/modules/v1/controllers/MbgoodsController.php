@@ -5,11 +5,6 @@ namespace api\modules\v1\controllers;
 use Yii;
 use yii\rest\ActiveController;
 use yii\web\Response;
-use api\models\Brand;
-use api\models\GoodMb;
-use api\models\Freight;
-use api\models\Place;
-use api\models\GoodMbv;
 
 class MbgoodsController extends ActiveController
 {
@@ -37,39 +32,59 @@ class MbgoodsController extends ActiveController
             return $good;
         }
         $modelClass = $this->modelClass;
-        $goods = $modelClass::find()
-        ->select(['id','good_num','title','brand_id'])
-        ->where(['status' => 0,'id' => $id])
-        ->orderBy('order desc')
-        ->asArray()
-        ->one();
-        if(!empty($goods)){
+        //获取商家商品信息
+        $good_arr = $modelClass::find()->select(['*'])->where(['status'=>0,'id'=>$id])->with([
+            'goodMb'=> function ($query) {
+                $query->select(['*'])->where(['status'=>0])->with([
+                    'user'=> function ($query){
+                        $query->select(['*']);
+                    },
+                    'goodMbv'=> function ($query){
+                        $query->select(['*'])->where(['status'=> 0])->orderBy('price asc');
+                    },
+                    'freight'=> function ($query){
+                        $query->select(['*'])->with([
+                            'freightVars'=> function ($query){
+                                $query->select(['*'])->orderBy('freight asc');
+                            }
+                        ]);
+                    },
+                    'order'=> function ($query){
+                        $query->select(['id','mb_id','pay_num'])->where(['status' =>4])->count();
+                    },
+                    'place'=> function ($query){
+                        $query->select(['*']);
+                    },
+                ]);
+            },
+            'brand'=> function ($query){
+                $query->select(['*']);
+            },
+            ])
+            ->asArray()
+            ->one();
+        if(!empty($good_arr)){
+            //获取商品标题
+            $goods['good_title']=$good_arr['title'];
+            //获取商品码
+            $goods['good_num']=$good_arr['good_num'];
             //获取商品品牌名
-            $brand_name = Brand::find()->where(['id' => $goods['brand_id']])->select(['title'])->asArray()->one();
-            $goods['brand_name']=$brand_name['title'];
-            //获取该商品下的商家报价
-            $good_mb = GoodMb::find()->select(['id','user_id','place_id','freight_id','cate_id','brand_id'])->where(['status' => 0,'good_id' => $goods['id']])->asArray()->all();
-            $goods['good_mb']=array();
-            foreach ($good_mb as $k => $v){
+            $goods['brand_name']=$good_arr['brand']['title'];
+            foreach ($good_arr['goodMb'] as $k => $v){
                 $goods['good_mb'][$k]['mb_id']=$v['id'];
-                //查询商家名称 888（待做）
-                $goods['good_mb'][$k]['uesr_name']='Tony';
-                //查询商品已售数量 888（待做）
-                $goods['good_mb'][$k]['sold_num']='75';
-                //查询商品最低运费 888（待做）
-                $goods['good_mb'][$k]['freight']='15';
+                //商家昵称
+                $goods['good_mb'][$k]['uesr_name']=$v['user']['nickname'];
+                //查询商品已售数量
+                $goods['good_mb'][$k]['sold_num']=$this->actionArrvalsum($v['order'] , 'pay_num');
+                //查询商品最低运费 
+                $goods['good_mb'][$k]['freight']=isset($v['freight']['freightVars'][0]['freight'])?$v['freight']['freightVars'][0]['freight']:0;
                 //查询商品发货地
-                $place = Place::find()->select(['title'])->where(['status' => 0,'id' => $v['place_id']])->one();
-                $goods['good_mb'][$k]['place'] = $place['title'];
-                //查询商品价格以及库存
-                $mbv_arr = GoodMbv::find()->select(['price','stock_num'])->where(['status' => 0,'mb_id' => $v['id']])->asArray()->all();
-                //商品最低价格 888(有bug) min()为空？
-                //$goods['good_mb'][$k]['price_min'] = $this->actionArrvalmin($mbv_arr, 'price');
-                $goods['good_mb'][$k]['price_min'] ='100';
+                $goods['good_mb'][$k]['place'] = $v['place']['name'];
+                //商品最低价格
+                $goods['good_mb'][$k]['price_min'] = isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
                 //商品总库存
-                $goods['good_mb'][$k]['stock_sum'] = $this->actionArrvalsum($mbv_arr, 'stock_num');             
+                $goods['good_mb'][$k]['stock_sum'] = $this->actionArrvalsum($v['goodMbv'], 'stock_num');
             }
-            
         }else{
             $good['code'] = '10002';
             $good['msg'] = '商品不存在';

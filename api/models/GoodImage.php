@@ -31,7 +31,7 @@ class GoodImage extends \yii\db\ActiveRecord
         return [
             [['good_id', 'image_url'], 'required'],
             [['good_id'], 'integer'],
-            [['image_url'], 'string', 'max' => 255],
+            [['image_url'], 'string', 'max' => 5000],
             [['good_id'], 'exist', 'skipOnError' => true, 'targetClass' => Good::className(), 'targetAttribute' => ['good_id' => 'id']],
         ];
     }
