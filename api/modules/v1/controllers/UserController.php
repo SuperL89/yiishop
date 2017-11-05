@@ -792,7 +792,7 @@ class UserController extends ActiveController
         $model->setAttributes($user_data);
         if($user_data && $model->validate()){
             //获取用户购买商品信息
-            $good_arr = GoodMbv::find()->select(['id','mb_id','model_text','price','stock_num'])->where(['id'=>$user_data['goodmbv_id'],'status' => 0])->with([
+            $good_arr = GoodMbv::find()->select(['id','mb_id','model_text','price','stock_num'])->where(['id'=>$user_data['mbv_id'],'status' => 0])->with([
                 'goodMb'=> function ($query) {
                     $query->select(['id','user_id','good_id','freight_id'])->andWhere(['status' => 0])->with([
                         'good'=> function ($query){
@@ -806,6 +806,7 @@ class UserController extends ActiveController
                 }
             ])
             ->one();
+            //print_r($good_arr);exit();
             //验证商品订单信息
             $validateGoodOrderResult = $this->validateGoodOrder($good_arr, $user, $user_data['num']);
             if ($validateGoodOrderResult) return $validateGoodOrderResult;
@@ -833,7 +834,7 @@ class UserController extends ActiveController
             $goodData = array(
                 'goodmvb_id' => $good_arr->id,
                 'good_name' => $good_arr->goodMb->good->title,
-                'good_image' => Yii::$app->params['assetDomain'].$goodImage,
+                'good_image' =>$goodImage,
                 'good_model' => $good_arr->model_text,
                 'good_price' => $good_arr->price,
                 'good_num' => $user_data['num'],
@@ -883,7 +884,7 @@ class UserController extends ActiveController
         $model->setAttributes($user_data);
         if($user_data && $model->validate()){
             //获取用户购买商品信息
-            $good_arr = GoodMbv::find()->select(['id','mb_id','model_text','price','stock_num'])->where(['id'=>$user_data['goodmbv_id'],'status' => 0])->with([
+            $good_arr = GoodMbv::find()->select(['id','mb_id','model_text','price','stock_num'])->where(['id'=>$user_data['mbv_id'],'status' => 0])->with([
                 'goodMb'=> function ($query) {
                     $query->select(['id','user_id','good_id','freight_id'])->andWhere(['status' => 0])->with([
                         'good'=> function ($query){
@@ -926,7 +927,7 @@ class UserController extends ActiveController
                 //订单商品信息
                 $goodData = array();
                 $goodData['title'] = $good_arr->goodMb->good->title;
-                $goodData['good_image'] = Yii::$app->params['assetDomain'].$goodImage;
+                $goodData['good_image'] = $goodImage;
                 $goodData['model_text'] = $good_arr->model_text;
                    
                
@@ -1764,7 +1765,7 @@ class UserController extends ActiveController
                 $goodImageAry = $goodImageAry[0];
                 $goodImage = $goodImageAry->small;
             }
-            $goods['good'][$k]['goodimage']=Yii::$app->params['assetDomain'].$goodImage;
+            $goods['good'][$k]['goodimage']=$goodImage;
              
         }
         $good['code'] = '200';
