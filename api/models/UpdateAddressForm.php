@@ -99,10 +99,10 @@ class UpdateAddressForm extends \yii\db\ActiveRecord
         
         //变更默认地址
         if($this->status == 1){
-            $user = UserAddress::find()->select(['id'])->where(['user_id'=>$user_id,'status' => 1])->one();
-            if($user){
-                $user->status = 0;
-                $user->save();
+            $userAddress = UserAddress::find()->select(['id'])->where(['user_id'=>$user_id,'status' => 1])->one();
+            if($userAddress){
+                $userAddress->status = 0;
+                $userAddress->save();
             }
         }
         
