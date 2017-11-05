@@ -806,7 +806,6 @@ class UserController extends ActiveController
                 }
             ])
             ->one();
-            //print_r($good_arr);exit();
             //验证商品订单信息
             $validateGoodOrderResult = $this->validateGoodOrder($good_arr, $user, $user_data['num']);
             if ($validateGoodOrderResult) return $validateGoodOrderResult;
@@ -822,7 +821,7 @@ class UserController extends ActiveController
             
             //获取商品图片(小图)
             $goodImage = '';
-            $goodImageJson = $good_arr->goodMb->good->goodImage->image_url;
+            $goodImageJson = isset($good_arr->goodMb->good->goodImage->image_url)?$good_arr->goodMb->good->goodImage->image_url:'';
             if ($goodImageJson) {
                 $goodImageAry = json_decode($goodImageJson);
                 $goodImageAry = $goodImageAry[0];
@@ -918,7 +917,7 @@ class UserController extends ActiveController
                 
                 //获取商品图片(小图)
                 $goodImage = '';
-                $goodImageJson = $good_arr->goodMb->good->goodImage->image_url;
+                $goodImageJson = isset($good_arr->goodMb->good->goodImage->image_url)?$good_arr->goodMb->good->goodImage->image_url:'';
                 if ($goodImageJson) {
                     $goodImageAry = json_decode($goodImageJson);
                     $goodImageAry = $goodImageAry[0];
@@ -1759,7 +1758,7 @@ class UserController extends ActiveController
             $goods['good'][$k]['price']=isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
             //获取商品图片(小图)
             $goodImage = '';
-            $goodImageJson = $v['good']['goodImage']['image_url'];
+            $goodImageJson = isset($v['good']['goodImage']['image_url'])?$v['good']['goodImage']['image_url']:'';
             if ($goodImageJson) {
                 $goodImageAry = json_decode($goodImageJson);
                 $goodImageAry = $goodImageAry[0];
