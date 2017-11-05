@@ -2313,10 +2313,10 @@ class UserController extends ActiveController
         if ($address_arr) {
             $stateId = $address_arr->state_id;
         }
+        //计算州对应的运费模板
+        $stateFreightRule = array();
         //如果有运费规则且有州id
         if ($freight_arr && $stateId) {
-            //计算州对应的运费模板
-            $stateFreightRule = array();
             //运费规则
             $freightRules = $freight_arr->freightVars;
             foreach ($freightRules as $rule) {
