@@ -3,6 +3,7 @@
 namespace api\modules\v1\controllers;
 
 use Yii;
+use Qiniu\Auth;
 use api\models\LoginForm;
 use yii\rest\ActiveController;
 use yii\helpers\ArrayHelper;
@@ -48,7 +49,6 @@ use api\models\GoodMb;
 use api\models\Brand;
 use api\models\BusinessCreateGoodForm;
 use api\models\GoodImage;
-use Qiniu\Auth;
 
 class UserController extends ActiveController
 {
@@ -69,7 +69,8 @@ class UserController extends ActiveController
                         'get-place',
                         'get-category',
                         'get-express',
-                        'qiniu-token'
+                        'qiniu-token',
+                        'transfer-bin'
                     ],
                 ] 
         ] );
@@ -2178,6 +2179,37 @@ class UserController extends ActiveController
         $data['msg'] = '';
         $data['data']['uploadtoken'] = $uploadtoken;
         return $data;
+    }
+    /**
+     * 获取转运仓列表或某一个转运仓信息
+     */
+    public function actionTransferBin()
+    {
+        $user_data = Yii::$app->request->post();
+        $address_id = isset($user_data['address_id']) ? $user_data['address_id'] : '';
+        $address_arr = UserAddress::find()->select(['*'])->where(['user_id'=>0,'status'=>[0,1]])->filterWhere(['user_id'=>0,'status'=>[0,1],'id'=>$address_id])->asArray()->all();
+        if($address_arr){
+            foreach ($address_arr as $k => $v){
+                $data['code'] = '200';
+                $data['msg'] = '';
+                $data['data'][$k]['id'] = $v['id'];
+                $data['data'][$k]['name'] = $v['name'];
+                $data['data'][$k]['country_id'] = $v['country_id'];
+                $data['data'][$k]['state_id'] = $v['state_id'];
+                $data['data'][$k]['city_id'] = $v['city_id'];
+                $data['data'][$k]['csc_name'] = $v['csc_name'];
+                $data['data'][$k]['csc_name_en'] = $v['csc_name_en'];
+                $data['data'][$k]['street'] = $v['street'];
+                $data['data'][$k]['phone'] = $v['phone'];
+                $data['data'][$k]['status'] = $v['status'];
+            }
+            return $data;
+        }else{
+            $data['code'] = '200';
+            $data['msg'] = '';
+            $data['data'] =[];
+            return $data;
+        }
     }
     /**
      * 生成订单编码
