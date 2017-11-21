@@ -224,8 +224,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         // 如果token无效的话，
         if(!static::apiTokenIsValid($token)) {
-            $this->addError('token', 'token错误');
-            throw new \yii\web\UnauthorizedHttpException("token错误");
+            //$this->addError('token', 'token错误');
+            throw new \yii\web\UnauthorizedHttpException("token错误,请重新登录。");
         }
         
        return static::findOne(['api_token' => $token, 'status' => self::STATUS_ACTIVE]);

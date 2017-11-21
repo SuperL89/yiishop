@@ -120,12 +120,12 @@ class BannerController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
+//     public function actionDelete($id)
+//     {
+//         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
-    }
+//         return $this->redirect(['index']);
+//     }
 
     /**
      * Finds the Banner model based on its primary key value.

@@ -20,12 +20,22 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property string $api_token
+ * @property integer $login_at
+ * @property string $login_ip
+ * @property string $nickname
+ * @property integer $sex
+ * @property string $image_h
+ * @property string $money
+ * @property string $pay_pw
  */
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
-
+    
+    const USER_MAN = 1;
+    const USER_WOMAN = 0;
 
     /**
      * @inheritdoc
@@ -53,6 +63,36 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            
+            //用户信息
+            ['image_h', 'trim'],
+            ['nickname', 'trim'],
+            ['sex', 'trim'],
+        ];
+    }
+    public function attributeLabels()
+    {
+        return [
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            'id' => 'ID',
+            'username' => '用户名/手机号',
+//             'auth_key' => 'Auth Key',
+//             'password_hash' => 'Password Hash',
+//             'password_reset_token' => 'Password Reset Token',
+            'email' => '邮箱',
+            //'role' => 'Role',
+            'status' => '状态',
+            'created_at' => '注册时间',
+            'updated_at' => '更新时间',
+            'api_token' => 'Api Token',
+            'login_at' => '最后登陆时间',
+            'login_ip' => '登录ip',
+            'nickname' => '昵称',
+            'sex' => '性别',
+            'image_h' => '头像',
+            'money' => '余额',
+            //'pay_pw' => '支付密码',
         ];
     }
 
@@ -185,5 +225,33 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+    /**
+     * 设置用户状态显示常量
+     */
+    public static function allStatus()
+    {
+        return [self::STATUS_ACTIVE=>'正常',self::STATUS_DELETED=>'已禁用'];
+    }
+    /**
+     * 获得用户状态并转为中文显示
+     */
+    public function getStatusStr()
+    {
+        return $this->status==self::STATUS_ACTIVE?'正常':'已禁用';
+    }
+    /**
+     * 设置用户性别显示常量
+     */
+    public static function allSex()
+    {
+        return [self::USER_WOMAN=>'女',self::USER_MAN=>'男'];
+    }
+    /**
+     * 获得用户性别并转为中文显示
+     */
+    public function getSexStr()
+    {
+        return $this->sex==self::USER_WOMAN?'女':'男';
     }
 }

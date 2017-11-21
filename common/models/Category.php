@@ -47,9 +47,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['title'], 'required'],
-            [['parent_title'], 'in',
-            'range' => static::find()->select(['title'])->column(),
-            'message' => 'category "{value}" not found.'],
+            [['parent_title'], 'in','range' => static::find()->select(['title'])->column(),'message' => 'category "{value}" not found.'],
             [['parentid', 'status', 'order'], 'integer'],
             [['parentid'], 'filterParent', 'when' => function() {
                 return !$this->isNewRecord;
@@ -85,6 +83,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Category::className(), ['id' => 'parentid']);
     }
+    
     /**
      * Get Category children
      * @return \yii\db\ActiveQuery
@@ -127,5 +126,22 @@ class Category extends \yii\db\ActiveRecord
     public function getStatusStr()
     {
         return $this->status==self::STATUS_ACTIVE?'正常':'已禁用';
+    }
+    
+    
+    public $select_head = [
+        ["id"=>0, "title"=>"请选择"],
+        ["id"=>0, "title"=>"请选择一级类"],
+        ["id"=>0, "title"=>"请选择二级类"],
+        ["id"=>0, "title"=>"请选择三级类"],
+    ];
+    
+    /**
+     * 获取子列表
+     */
+    public static function getChildrenList($pid)
+    {
+        $x[] = (new static)->select_head[0];
+        return array_merge($x,static::findAll(['parentid'=>$pid]));
     }
 }

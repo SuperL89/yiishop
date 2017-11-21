@@ -65,4 +65,16 @@ class FreightVar extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Freight::className(), ['id' => 'freight_id']);
     }
+    
+    public function getPlace()
+    {
+        $place_id_arr = explode(',', $this->place_id_arr);
+        print_r($place_id_arr);
+        $place_names=Place::find()->select(['*'])->where(['in', 'id', $place_id_arr])->all();
+        foreach ($place_names as $k =>$v){
+            $place_name[$k] = $v->name;
+        }
+        $place_name = implode(',', $place_name);
+        return $place_name;
+    }
 }

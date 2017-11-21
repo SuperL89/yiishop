@@ -1,3 +1,4 @@
+$('#parentid').val(0);
 $('#parent_title').autocomplete({
     source: function (request, response) {
         var result = [];
@@ -24,10 +25,11 @@ $('#parent_title').autocomplete({
     select: function (event, ui) {
         $('#parent_title').val(ui.item.title);
         $('#parentid').val(ui.item.id);
+ 
         return false;
     },
     search: function () {
-        $('#parentid').val('');
+        $('#parentid').val(0);
     }
 }).autocomplete("instance")._renderItem = function (ul, item) {
     return $("<li>")

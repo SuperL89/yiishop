@@ -32,7 +32,8 @@ class CategorysController extends ActiveController
         //查询所有分类
         $allCategorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0])->orderBy('order desc')->asArray()->all();
         //查询所有一级分类
-        $categorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0, 'parentid' => null])->orderBy('order desc')->asArray()->all();
+        $categorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0, 'parentid' => 0])->orderBy('order desc')->asArray()->all();
+        
         if($ishot == 1){
             //查询一级分类下的热门品牌
             $categoryBrand = $modelBrand::find()->select(['id','title','image_url','cate_id'])->where(['status' => 0,'is_hot' => 1])->orderBy('order desc')->asArray()->all();
@@ -40,14 +41,21 @@ class CategorysController extends ActiveController
             //查询一级分类下的所有品牌
             $categoryBrand = $modelBrand::find()->select(['id','title','image_url','cate_id'])->where(['status' => 0])->orderBy('order desc')->asArray()->all();
         }
+        
         $child = array();
         //获取一级分类子分类
         $childTree = $this->actionCate($allCategorys, $child);
+        //print_r($childTree);exit();
         //获取一级分类品牌
         $brand = $this->actionBrand($categorys, $categoryBrand);
         //合并子分类和品牌
+        //print_r($childTree);exit();
         foreach ($childTree as $k => $v) {
-            $childTree[$k]['brand'] = $brand[$k]['brand'];
+            if(!empty($brand[$k]['brand'])){
+                $childTree[$k]['brand'] = $brand[$k]['brand'];
+            }else{
+                $childTree[$k]['brand']='';
+            }
         }
         
         $category['code'] = '200';
@@ -61,7 +69,7 @@ class CategorysController extends ActiveController
         $child = array();
         if(!empty($info) && !empty($brands)){
             foreach ($info as $k => &$v) {
-                if ($v['parentid'] == null) {
+                if ($v['parentid'] == 0) {
                     foreach ($brands as $bValue) {
                         if ($v['id'] == $bValue['cate_id']) {
                             $child[$v['id']]['brand'][] = $bValue;
@@ -75,7 +83,7 @@ class CategorysController extends ActiveController
         return $child;
     }
     
-    public function actionCate(&$info, $child, $pid = null)
+    public function actionCate(&$info, $child, $pid = 0)
     {
         $child = array();
         //当$info中的子类还没有被移光的时候

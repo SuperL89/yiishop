@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+//use api\models\Brand;
 
 /**
  * This is the model class for table "sp_brand".
@@ -37,7 +38,7 @@ class Brand extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title','cate_id'], 'required'],
+            [['title','cate_id','is_hot'], 'required'],
             [['cate_id', 'status', 'order', 'is_hot'], 'integer'],
             [['title'], 'string', 'max' => 55],
             [['image_url'], 'string', 'max' => 255],
@@ -102,5 +103,16 @@ class Brand extends \yii\db\ActiveRecord
     public function getHotStr()
     {
         return $this->is_hot==self::hot_yes?'是':'否';
+    }
+    /**
+     * 查询分类下的品牌
+     */
+    public $select_head = [
+        ["id"=>0, "title"=>"请选择"]
+    ];
+    public static function getBrandByCate($cate_id)
+    {
+        $x[] = (new static)->select_head[0];
+        return array_merge($x,static::findAll(['cate_id'=>$cate_id]));
     }
 }

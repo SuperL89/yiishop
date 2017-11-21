@@ -6,23 +6,23 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
 
-$this->title = $model->id;
+$this->title = $model->username;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?php //Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?php /* Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
                 'method' => 'post',
             ],
-        ]) ?>
+        ]) */?>
     </p>
 
     <?= DetailView::widget([
@@ -30,14 +30,27 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'username',
-            'auth_key',
-            'password_hash',
-            'password_reset_token',
-            'email:email',
-            'role',
-            'status',
-            'created_at',
-            'updated_at',
+            [
+                'attribute' => 'sex',
+                'value'=>$model->SexStr,
+            ],
+            'money',
+            [
+                'attribute' => 'image_h',
+                'format' => ['image',['width'=>'60','height'=>'60',]],
+            ],
+            [
+                'attribute'=>'created_at',
+                'format'=>['date','php:Y-m-d H:i:s'],
+            ],
+            [
+                'attribute'=>'updated_at',
+                'format'=>['date','php:Y-m-d H:i:s'],
+            ],
+            [
+                'attribute'=>'status',
+                'value'=>$model->StatusStr,
+            ],
         ],
     ]) ?>
 

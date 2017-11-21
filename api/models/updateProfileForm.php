@@ -29,6 +29,8 @@ class updateProfileForm extends Model
            
             ['sex', 'trim'],
             ['sex', 'required', 'message' => '性别不能为空.'],
+            
+            ['sex', 'string'],
         ];
     }
     

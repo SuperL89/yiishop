@@ -8,7 +8,8 @@ use common\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use common\models\ResetpwdForm;
+use api\models\UserAddress;
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -83,16 +84,34 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            //print_r(array_values($model->getFirstErrors()));exit();
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
             ]);
         }
     }
-
+    
+    /*重置密码*/
+    public function actionResetpwd($id)
+    {
+        $user = User::findOne($id);
+        $username = $user->username;
+        //print_r($username);exit();
+        $model = new ResetpwdForm();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if($model->resetPassword($id)){
+                return $this->redirect(['index']);
+            }
+        } else {
+            return $this->render('resetpwd', [
+                'model' => $model,
+                'username'=>$username,
+            ]);
+        }
+    }
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

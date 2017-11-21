@@ -18,8 +18,9 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'role', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
+            [['id', 'role', 'status','sex' /*'created_at', 'updated_at'*/], 'integer'],
+            [['money'], 'number'],
+            [['username','nickname', 'login_ip','login_at','created_at'/*'auth_key','password_hash', 'password_reset_token', 'email'*/], 'safe'],
         ];
     }
 
@@ -62,15 +63,28 @@ class UserSearch extends User
             'id' => $this->id,
             'role' => $this->role,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'sex' => $this->sex,
+            'money' => $this->money,
+            'login_ip' => $this->login_ip,
+            //'created_at' => $this->created_at,
+            //'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'email', $this->email]);
+              ->andFilterWhere(['like', 'nickname', $this->nickname])
+//             ->andFilterWhere(['like', 'auth_key', $this->auth_key])
+//             ->andFilterWhere(['like', 'password_hash', $this->password_hash])
+//             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
+             ->andFilterWhere(['like', 'email', $this->email]);
+        
+        if (!empty($this->created_at)) {
+              $query->andFilterCompare('created_at', strtotime(explode('/', $this->created_at)[0]), '>=');//起始时间
+              $query->andFilterCompare('created_at', (strtotime(explode('/', $this->created_at)[1]) + 86400), '<');//结束时间
+        }
+        if (!empty($this->login_at)) {
+            $query->andFilterCompare('login_at', strtotime(explode('/', $this->login_at)[0]), '>=');//起始时间
+            $query->andFilterCompare('login_at', (strtotime(explode('/', $this->login_at)[1]) + 86400), '<');//结束时间
+        }
 
         return $dataProvider;
     }

@@ -118,6 +118,7 @@ return [
                         'POST business-goodview' => 'business-goodview',
                         'POST qiniu-token' => 'qiniu-token',
                         'POST transfer-bin' => 'transfer-bin',
+                        'POST business-counts' => 'business-counts',
                     ]
                 ],
             ]

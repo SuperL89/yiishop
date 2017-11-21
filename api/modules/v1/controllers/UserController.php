@@ -49,6 +49,7 @@ use api\models\GoodMb;
 use api\models\Brand;
 use api\models\BusinessCreateGoodForm;
 use api\models\GoodImage;
+use api\models\GoodClicks;
 
 class UserController extends ActiveController
 {
@@ -62,7 +63,6 @@ class UserController extends ActiveController
                     'tokenParam' => 'token',
                     'optional' => [
                         'login',
-                        'signup-test',
                         'register',
                         'send-verifycode',
                         'resetpwd',
@@ -79,23 +79,6 @@ class UserController extends ActiveController
     {
         $action =  parent::actions(); 
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
-    }
-
-    /**
-     * 添加测试用户
-     */
-    public function actionSignupTest()
-    {
-        $user = new User();
-        $user->generateAuthKey();
-        $user->setPassword('qq123456');
-        $user->username = '187671929281';
-        $user->email = '111@111.com';
-        $user->save(false);
-    
-        return [
-            'code' => 0
-        ];
     }
     
     /**
@@ -206,6 +189,7 @@ class UserController extends ActiveController
         }
         $data['code'] = '200';
         $data['msg'] = '';
+        $data['data']['code']=$code;
         return $data;
     }
     /**
@@ -611,6 +595,7 @@ class UserController extends ActiveController
             return $data;
         }
     }
+    // {"Freight": {"title": "模版"},"FreightVar": ["place_id_arr:0,num:1,freight:1.00,numadd:2,freightadd:2.00,place_names:0", "place_id_arr:337,num:,freight:0.00,numadd:,freightadd:0.00,place_names:'纽约1 纽约2 纽约3'"]}
     /**
      * 新增商家运费模版
      */
@@ -638,18 +623,27 @@ class UserController extends ActiveController
             $freight = new Freight();
             $freight->user_id=$user->id;
             $freight->title=$freight_arr['Freight']['title'];
-            
+            //print_r($freight_arr['FreightVar']);exit();
             if($freight->save())
             {
                 $freightArr = array();
-                foreach ($freight_arr['FreightVar'] as $key => $attributes) {
-                    $freightArr[$key] = $attributes;
-                    $freightArr[$key]['freight_id'] = $freight->id;
+                foreach($freight_arr['FreightVar'] as $key => $value) {
+                    if ($value) {
+                        $val = explode(",", $value);
+                        if ($val) {
+                            $freightArr[$key]['freight_id'] = $freight->id;
+                            foreach($val as $v) {
+                                list($k, $vv) = explode(":", $v);
+                                $freightArr[$key][$k] = $vv;
+                            }
+                        }
+                    }
                 }
+                
                 if ($freightArr) {
                     $connection = \Yii::$app->db;
                     //数据批量入库
-                    $connection->createCommand()->batchInsert('{{%freight_var}}',['place_id_arr','num','freight','numadd','freightadd','freight_id'],$freightArr)->execute();
+                    $connection->createCommand()->batchInsert('{{%freight_var}}',['freight_id','place_id_arr','num','freight','numadd','freightadd','place_names'],$freightArr)->execute();
                 }
                 $transaction->commit();
                 
@@ -711,14 +705,22 @@ class UserController extends ActiveController
                     FreightVar::deleteAll(['freight_id'=>$freight->id]);
                     
                     $freightArr = array();
-                    foreach ($freight_arr['FreightVar'] as $key => $attributes) {
-                        $freightArr[$key] = $attributes;
-                        $freightArr[$key]['freight_id'] = $freight->id;
+                    foreach($freight_arr['FreightVar'] as $key => $value) {
+                        if ($value) {
+                            $val = explode(",", $value);
+                            if ($val) {
+                                $freightArr[$key]['freight_id'] = $freight->id;
+                                foreach($val as $v) {
+                                    list($k, $vv) = explode(":", $v);
+                                    $freightArr[$key][$k] = $vv;
+                                }
+                            }
+                        }
                     }
                     if ($freightArr) {
                         $connection = \Yii::$app->db;
                         //数据批量入库
-                        $connection->createCommand()->batchInsert('{{%freight_var}}',['place_id_arr','num','freight','numadd','freightadd','freight_id'],$freightArr)->execute();
+                        $connection->createCommand()->batchInsert('{{%freight_var}}',['freight_id','place_id_arr','num','freight','numadd','freightadd','place_names'],$freightArr)->execute();
                     }
                     $transaction->commit();
         
@@ -768,11 +770,11 @@ class UserController extends ActiveController
         $freight_arr = Freight::find()->select(['*'])->where(['user_id'=>$user->id])->with([
             'freightVars'=> function ($query) {
                 $query->select('*');
-                }
+            }
         ])
         ->asArray()
         ->all();
-       
+        
         $data['code'] = '200';
         $data['msg'] = '';
         $data['data'] =$freight_arr;
@@ -820,20 +822,20 @@ class UserController extends ActiveController
             ->one();
             
             //获取商品图片(小图)
-            $goodImage = '';
-            $goodImageJson = isset($good_arr->goodMb->good->goodImage->image_url)?$good_arr->goodMb->good->goodImage->image_url:'';
-            if ($goodImageJson) {
-                $goodImageAry = json_decode($goodImageJson);
-                $goodImageAry = $goodImageAry[0];
-                $goodImage = $goodImageAry->small;
-            }
+//             $goodImage = '';
+//             $goodImageJson = isset($good_arr->goodMb->good->goodImage->image_url)?$good_arr->goodMb->good->goodImage->image_url:'';
+// //             if ($goodImageJson) {
+// //                 $goodImageAry = json_decode($goodImageJson);
+// //                 $goodImageAry = $goodImageAry[0];
+// //                 $goodImage = $goodImageAry->small;
+// //             }
             //计算运费
             $orderFare = $this->calculateOrderFare($freight_arr, $address_arr, $user_data['num']);
             //商品信息
             $goodData = array(
                 'goodmvb_id' => $good_arr->id,
                 'good_name' => $good_arr->goodMb->good->title,
-                'good_image' =>$goodImage,
+                'good_image' =>isset($good_arr->goodMb->good->goodImage->image_url)?$good_arr->goodMb->good->goodImage->image_url:'',
                 'good_model' => $good_arr->model_text,
                 'good_price' => $good_arr->price,
                 'good_num' => $user_data['num'],
@@ -916,17 +918,17 @@ class UserController extends ActiveController
                 $orderFare = $this->calculateOrderFare($freight_arr, $address_arr, $user_data['num']);
                 
                 //获取商品图片(小图)
-                $goodImage = '';
-                $goodImageJson = isset($good_arr->goodMb->good->goodImage->image_url)?$good_arr->goodMb->good->goodImage->image_url:'';
-                if ($goodImageJson) {
-                    $goodImageAry = json_decode($goodImageJson);
-                    $goodImageAry = $goodImageAry[0];
-                    $goodImage = $goodImageAry->small;
-                }
+//                 $goodImage = '';
+//                 $goodImageJson = isset($good_arr->goodMb->good->goodImage->image_url)?$good_arr->goodMb->good->goodImage->image_url:'';
+//                 if ($goodImageJson) {
+//                     $goodImageAry = json_decode($goodImageJson);
+//                     $goodImageAry = $goodImageAry[0];
+//                     $goodImage = $goodImageAry->small;
+//                 }
                 //订单商品信息
                 $goodData = array();
                 $goodData['title'] = $good_arr->goodMb->good->title;
-                $goodData['good_image'] = $goodImage;
+                $goodData['good_image'] = isset($good_arr->goodMb->good->goodImage->image_url)?$good_arr->goodMb->good->goodImage->image_url:'';
                 $goodData['model_text'] = $good_arr->model_text;
                    
                
@@ -1050,6 +1052,8 @@ class UserController extends ActiveController
                 $orderInfo[$key]['order_total_price'] = $value->order_total_price;
                 $orderInfo[$key]['order_status'] = $value->status;
                 $orderInfo[$key]['pay_type'] = $value->pay_type;
+                $orderInfo[$key]['express_name'] = $value->express_name;
+                $orderInfo[$key]['express_num'] = $value->express_num;
                 $orderInfo[$key]['created_at'] = date('Y.m.d H:i', $value->created_at);
                 $orderInfo[$key]['pay_at'] = isset($value->pay_at) ? date('Y.m.d H:i', $value->pay_at) : '';
                 $orderInfo[$key]['deliver_at'] = isset($value->deliver_at) ? date('Y.m.d H:i', $value->deliver_at) : '';
@@ -1139,6 +1143,8 @@ class UserController extends ActiveController
                 $orderInfo[$key]['order_total_price'] = $value->order_total_price;
                 $orderInfo[$key]['order_status'] = $value->status;
                 $orderInfo[$key]['pay_type'] = $value->pay_type;
+                $orderInfo[$key]['express_name'] = $value->express_name;
+                $orderInfo[$key]['express_num'] = $value->express_num;
                 $orderInfo[$key]['created_at'] = date('Y.m.d H:i', $value->created_at);
                 $orderInfo[$key]['pay_at'] = isset($value->pay_at) ? date('Y.m.d H:i', $value->pay_at) : '';
                 $orderInfo[$key]['deliver_at'] = isset($value->deliver_at) ? date('Y.m.d H:i', $value->deliver_at) : '';
@@ -1744,6 +1750,8 @@ class UserController extends ActiveController
         foreach ($good_arr as $k => $v){
             //商家报价id
             $goods['good'][$k]['mb_id']=$v['id'];
+            //商品id
+            $goods['good'][$k]['good_id']=$v['good']['id'];
             //商品名称
             $goods['good'][$k]['title']=$v['good']['title'];
             //商品码
@@ -1756,15 +1764,8 @@ class UserController extends ActiveController
             $goods['good'][$k]['sales_volume'] = $this->actionArrvalsum($v['order'] , 'pay_num');
             //商品最低价格
             $goods['good'][$k]['price']=isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
-            //获取商品图片(小图)
-            $goodImage = '';
-            $goodImageJson = isset($v['good']['goodImage']['image_url'])?$v['good']['goodImage']['image_url']:'';
-            if ($goodImageJson) {
-                $goodImageAry = json_decode($goodImageJson);
-                $goodImageAry = $goodImageAry[0];
-                $goodImage = $goodImageAry->small;
-            }
-            $goods['good'][$k]['goodimage']=$goodImage;
+            //获取商品图片
+            $goods['good'][$k]['goodimage']=$v['good']['goodImage']['image_url'];
              
         }
         $good['code'] = '200';
@@ -1872,6 +1873,15 @@ class UserController extends ActiveController
                     return $data;
                 }
                 
+                $goodclicks = new GoodClicks();
+                $goodclicks->good_id=$good->id;
+                if(!$goodclicks->save()){
+                    $data['code'] = '10001';
+                    $msg = array_values($good->getFirstErrors())[0];
+                    $data['msg'] = $msg;
+                    return $data;
+                }
+                
                 $goodimage = new GoodImage();
                 $goodimage->good_id=$good->id;
                 $goodimage->image_url=$user_data['image_url'];
@@ -1901,12 +1911,16 @@ class UserController extends ActiveController
                 
                 $goodmbvArr = array();
                 foreach ($goodmbv_arr['goodmbv'] as $key => $attributes) {
-                    $goodmbvArr[$key] = $attributes;
+                    //print_r($attributes);exit();
+                    $goodmbvArr[$key]['model_text'] = $attributes['model_text'];
+                    $goodmbvArr[$key]['price'] = $attributes['price'];
+                    $goodmbvArr[$key]['stock_num'] = $attributes['stock_num'];
+                    $goodmbvArr[$key]['bar_code'] = $attributes['bar_code'];
                     $goodmbvArr[$key]['mb_id'] = $goodmb->id;
                     $goodmbvArr[$key]['created_at'] = time();
                     $goodmbvArr[$key]['updated_at'] = time();
                 }
-                
+                //print_r($goodmbvArr);exit();
                 if ($goodmbvArr) {
                     $connection = \Yii::$app->db;
                     //数据批量入库
@@ -2168,10 +2182,10 @@ class UserController extends ActiveController
      */
     public function actionQiniuToken()
     {
-        $accessKey = '11mzx-yr7cstpbUZmSCCy8Gqcfq0JhbmL2filMl4';
-        $secretKey = 'WbxScyO40F11--hfqlvx2EgMgWE1LcRKKIzXjNBv';
+        $accessKey = 'r1Mi9A9K5ACE7UrBB2Y5Hk5xF05OABhzgGt_mEQz';
+        $secretKey = 'EpTrcmszAYQUfjQ2FlgV7yV2E0B9u65YH2NciqQB';
         $auth = new Auth($accessKey, $secretKey);
-        $bucket = 'hexintrade';
+        $bucket = 'hexin-image';
         // 生成上传Token
         $uploadtoken = $auth->uploadToken($bucket);
         
@@ -2210,6 +2224,32 @@ class UserController extends ActiveController
             $data['data'] =[];
             return $data;
         }
+    }
+    
+    /**
+     * 获取商家统计信息  token
+     */
+    public function actionBusinessCounts()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+        //验证是否为商家用户
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        if(!$business){
+            $data['code'] = '10001';
+            $data['msg'] = '不是商家用户或未通过商家审核';
+            return $data;
+        }
+        
+        $businessCounts['good_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id])->count();
+        $businessCounts['order_counts'] = Order::find()->select(['id'])->where(['business_id'=>$user->id,'status'=>2])->count();
+        $businessCounts['goodup_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id,'status'=>0])->count();
+        $businessCounts['gooddw_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id,'status'=>1])->count();
+        $data['code'] = '200';
+        $data['msg'] = '';
+        $data['data'] = $businessCounts;
+        return $data;
     }
     /**
      * 生成订单编码

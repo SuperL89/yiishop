@@ -51,8 +51,10 @@ class ViewgoodsController extends ActiveController
             $goods['image_url']=$image_url['image_url'];
             //增加该商品的点击数
             $goodclicks=GoodClicks::find()->where(['good_id' => $goods['id']])->one();
-            $goodclicks->clicks += 1;
-            $goodclicks->save();
+            if(!empty($goodclicks)){
+                $goodclicks->clicks += 1;
+                $goodclicks->save();
+            }            
         }else{
             $good['code'] = '10002';
             $good['msg'] = '商品不存在或者已下架';

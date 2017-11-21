@@ -64,4 +64,5 @@ class Freight extends \yii\db\ActiveRecord
     {
         return $this->hasMany(FreightVar::className(), ['freight_id' => 'id']);
     }
+    
 }

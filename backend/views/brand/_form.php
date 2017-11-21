@@ -22,7 +22,7 @@ use common\models\Category;
     <?= $form->field($model, 'cate_id')
              ->dropDownList(Category::find()
              ->select(['title','id'])
-             ->where(['parentid'=>null])
+             ->where(['parentid'=>0])
              ->orderBy('order')
              ->indexBy('id')
              ->column(),
