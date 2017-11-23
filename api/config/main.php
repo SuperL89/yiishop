@@ -119,6 +119,7 @@ return [
                         'POST qiniu-token' => 'qiniu-token',
                         'POST transfer-bin' => 'transfer-bin',
                         'POST business-counts' => 'business-counts',
+                        'POST del-freight' => 'del-freight',
                     ]
                 ],
             ]

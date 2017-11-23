@@ -208,6 +208,9 @@ class UserController extends ActiveController
         $data['data']['nickname'] = $user->nickname;
         $data['data']['sex'] = $user->sex;
         $data['data']['image_h'] = $user->image_h;
+        //查询用户是否为商家
+        $status = Business::find(['status'])->where(['user_id' =>$user->id,'status'=>1])->one();
+        $data['data']['business_status'] = isset($status)?$status:0;
         return $data;
         
     }
@@ -534,7 +537,6 @@ class UserController extends ActiveController
         ->asArray()
         ->all();
         
-        $business['status']=$business_arr['status'];
         $business['name']=$business_arr['name'];
         $business['phone']=$business_arr['user']['username'];
         //发货城市
@@ -604,7 +606,7 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -623,6 +625,7 @@ class UserController extends ActiveController
             $freight = new Freight();
             $freight->user_id=$user->id;
             $freight->title=$freight_arr['Freight']['title'];
+            $freight->status = 0;
             //print_r($freight_arr['FreightVar']);exit();
             if($freight->save())
             {
@@ -675,7 +678,7 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -699,6 +702,7 @@ class UserController extends ActiveController
                 
                 $freight->user_id=$user->id;
                 $freight->title=$freight_arr['Freight']['title'];
+                $freight->status = 0;
         
                 if($freight->save())
                 {
@@ -759,7 +763,7 @@ class UserController extends ActiveController
         $user = User::findIdentityByAccessToken($token);
         
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -767,7 +771,7 @@ class UserController extends ActiveController
         }
 
         $freight_id = isset($user_data['freight_id']) ? $user_data['freight_id'] : '';
-        $freight_arr = Freight::find()->select(['*'])->where(['user_id'=>$user->id])->with([
+        $freight_arr = Freight::find()->select(['*'])->where(['user_id'=>$user->id,'status' => 0])->with([
             'freightVars'=> function ($query) {
                 $query->select('*');
             }
@@ -779,6 +783,46 @@ class UserController extends ActiveController
         $data['msg'] = '';
         $data['data'] =$freight_arr;
         return $data;
+    }
+    /**
+     * 删除商家运费模版 token 模版id
+     */
+    public function actionDelFreight(){
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+        //验证是否为商家用户
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
+        if(!$business){
+            $data['code'] = '10001';
+            $data['msg'] = '不是商家用户或未通过商家审核';
+            return $data;
+        }
+        $freight_id = isset($user_data['freight_id']) ? $user_data['freight_id'] : 0;
+        //查询该模版是否在使用中
+        $goodmb = GoodMb::find()->where(['user_id'=>$user->id,'freight_id' =>$freight_id ])->one();
+        if($goodmb){
+            $data['code'] = '10001';
+            $data['msg'] = '此运费模版正在使用中，无法删除。请先去修改相关商品的中的运费模版。';
+            return $data;
+        }
+        $freight = Freight::findOne($freight_id);
+        if(empty($freight)){
+            $data['code'] = '10001';
+            $data['msg'] = '运费模版不存在';
+            return $data;
+        }
+        $freight->status = 1;
+        if($freight->save()){
+            $data['code'] = '200';
+            $data['msg'] = '';
+            $data['data'] ='';
+            return $data;
+        }else{
+            $data['code'] = '10001';
+            $data['msg'] = '操作失败';
+            return $data;
+        }
     }
     
     /**
@@ -1077,7 +1121,7 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -1272,7 +1316,7 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -1330,7 +1374,7 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -1384,7 +1428,7 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -1706,7 +1750,7 @@ class UserController extends ActiveController
         $user = User::findIdentityByAccessToken($token);
         $good_status = isset($user_data['good_status']) && $user_data['good_status'] ? $user_data['good_status'] : 0;
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -1721,11 +1765,11 @@ class UserController extends ActiveController
         //分页
         $pagination = new Pagination([
             'defaultPageSize' => 10,
-            'totalCount' => GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'status'=>$good_status])->count(),
+            'totalCount' => GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>$good_status])->count(),
             'page' =>$page - 1,
         ]);
         //获取商家商品信息
-        $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'status'=>$good_status])->with([
+        $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>$good_status])->with([
             'good'=> function ($query) {
                 $query->select(['*'])->with([
                     'goodImage'=> function ($query){
@@ -1766,7 +1810,6 @@ class UserController extends ActiveController
             $goods['good'][$k]['price']=isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
             //获取商品图片
             $goods['good'][$k]['goodimage']=$v['good']['goodImage']['image_url'];
-             
         }
         $good['code'] = '200';
         $good['msg'] = '';
@@ -1799,24 +1842,24 @@ class UserController extends ActiveController
         $user = User::findIdentityByAccessToken($token);
         $mb_id = isset($user_data['mb_id']) && $user_data['mb_id'] ? $user_data['mb_id'] : 0;
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
             return $data;
         }
-        $goodmb = GoodMb::find()->select(['*'])->where(['status'=>[0,1],'user_id' => $user->id,'id' => $mb_id])->one();
+        $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'user_id' => $user->id,'id' => $mb_id])->one();
         if (!$goodmb){
             $data['code'] = '10001';
             $data['msg'] = '无此报价信息';
             return $data;
         }
-        if($goodmb->status == 0){
-            $status = 1;
-        }elseif($goodmb->status == 1){
-            $status = 0;
+        if($goodmb->mb_status == 0){
+            $mb_status = 1;
+        }elseif($goodmb->mb_status == 1){
+            $mb_status = 0;
         }
-        $goodmb->status = $status;
+        $goodmb->mb_status = $mb_status;
         if($goodmb->save()){
             $data['code'] = '200';
             $data['msg'] = '';
@@ -1838,7 +1881,7 @@ class UserController extends ActiveController
         $user = User::findIdentityByAccessToken($token);
 
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -1900,6 +1943,7 @@ class UserController extends ActiveController
                 $goodmb->cate_id=$user_data['cate_id'];
                 $goodmb->brand_id=$user_data['brand_id'];
                 $goodmb->place_id=$user_data['place_id'];
+                $goodmb->mb_status=0;
                 $goodmb->created_at=time();
                 $goodmb->updated_at=time();
                 if(!$goodmb->save()){
@@ -1958,7 +2002,7 @@ class UserController extends ActiveController
         $user = User::findIdentityByAccessToken($token);
         $mb_id = isset($user_data['mb_id']) && $user_data['mb_id'] ? $user_data['mb_id'] : 0;
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -2032,6 +2076,7 @@ class UserController extends ActiveController
                 $goodmb->cate_id=$user_data['cate_id'];
                 $goodmb->brand_id=$user_data['brand_id'];
                 $goodmb->place_id=$user_data['place_id'];
+                $goodmb->mb_status=0;
                 $goodmb->updated_at=time();
                 if(!$goodmb->save()){
                     $data['code'] = '10001';
@@ -2107,7 +2152,7 @@ class UserController extends ActiveController
         $user = User::findIdentityByAccessToken($token);
         $mb_id = isset($user_data['mb_id']) && $user_data['mb_id'] ? $user_data['mb_id'] : 0;
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';
@@ -2235,7 +2280,7 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>0])->one();
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
         if(!$business){
             $data['code'] = '10001';
             $data['msg'] = '不是商家用户或未通过商家审核';

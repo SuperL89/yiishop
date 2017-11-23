@@ -35,27 +35,30 @@ class MbgoodsController extends ActiveController
         //获取商家商品信息
         $good_arr = $modelClass::find()->select(['*'])->where(['status'=>0,'id'=>$id])->with([
             'goodMb'=> function ($query) {
-                $query->select(['*'])->where(['status'=>0])->with([
-                    'user'=> function ($query){
-                        $query->select(['*']);
-                    },
-                    'goodMbv'=> function ($query){
-                        $query->select(['*'])->where(['status'=> 0])->orderBy('price asc');
-                    },
-                    'freight'=> function ($query){
-                        $query->select(['*'])->with([
-                            'freightVars'=> function ($query){
-                                $query->select(['*'])->orderBy('freight asc');
-                            }
-                        ]);
-                    },
-                    'order'=> function ($query){
-                        $query->select(['id','mb_id','pay_num'])->where(['status' =>4])->count();
-                    },
-                    'place'=> function ($query){
-                        $query->select(['*']);
-                    },
-                ]);
+                $query->select(['*'])->where(['status'=>0,'mb_status'=>0])->with([
+                        'user'=> function ($query){
+                            $query->select(['*']);
+                        },
+                        'goodMbv'=> function ($query){
+                            $query->select(['*'])->where(['status'=> 0])->orderBy('price asc');
+                        },
+                        'freight'=> function ($query){
+                            $query->select(['*'])->with([
+                                    'freightVars'=> function ($query){
+                                        $query->select(['*'])->orderBy('freight asc');
+                                    }
+                                ]);
+                        },
+                        'order'=> function ($query){
+                            $query->select(['id','mb_id','pay_num'])->where(['status' =>4])->count();
+                        },
+                        'place'=> function ($query){
+                            $query->select(['*']);
+                        },
+                    ]);
+            },
+            'goodImage'=> function ($query){
+                $query->select(['*']);
             },
             'brand'=> function ($query){
                 $query->select(['*']);
@@ -64,14 +67,14 @@ class MbgoodsController extends ActiveController
             ->asArray()
             ->one();
         if(!empty($good_arr)){
-            //获取商品图片
+            //获取商品id
             $goods['good_id']=$good_arr['id'];
             //获取商品标题
             $goods['good_title']=$good_arr['title'];
             //获取商品码
             $goods['good_num']=$good_arr['good_num'];
             //获取商品图片
-            $goods['good_image']='';
+            $goods['good_image']=$good_arr['goodImage']['image_url'];;
             //获取商品品牌名
             $goods['brand_name']=$good_arr['brand']['title'];
             foreach ($good_arr['goodMb'] as $k => $v){

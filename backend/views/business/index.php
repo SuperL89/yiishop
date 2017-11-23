@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'=>Business::allStatus(),
                 'contentOptions' =>function($model)
                 {
-                    return ($model->status==1)?['class' => 'bg-danger']:[];
+                    return ($model->status==0)?['class' => 'bg-danger']:[];
                 }
             ],
             'score',

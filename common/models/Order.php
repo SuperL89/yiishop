@@ -143,8 +143,8 @@ class Order extends \yii\db\ActiveRecord
         return $this->hasOne(GoodMbv::className(), ['id' => 'mbv_id']);
     }
     
-    const PAY_TYPE = 1;//余额支付
-    const PAY_TYPE_ALIPAY = 2;//支付宝
+    const PAY_TYPE = 0;//余额支付
+    const PAY_TYPE_ALIPAY = 1;//支付宝
     /**
      * 设置用户支付方式常量
      */

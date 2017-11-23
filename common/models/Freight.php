@@ -30,7 +30,7 @@ class Freight extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'title'], 'required'],
+            [['user_id', 'title','status'], 'required'],
             [['user_id'], 'integer'],
             [['title'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -46,6 +46,7 @@ class Freight extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'title' => 'Title',
+            'status' => 'Status',
         ];
     }
 

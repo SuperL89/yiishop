@@ -22,7 +22,7 @@ class GoodMbSearch extends GoodMb
     public function rules()
     {
         return [
-            [['id', 'user_id', 'place_id', 'freight_id', 'good_id', 'cate_id', 'brand_id', 'status'/*, 'created_at', 'updated_at'*/], 'integer'],
+            [['id', 'user_id', 'place_id', 'freight_id', 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status'/*, 'created_at', 'updated_at'*/], 'integer'],
             [['username','good_title','city_name','freight_name', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -45,7 +45,7 @@ class GoodMbSearch extends GoodMb
      */
     public function search($params)
     {
-        $query = GoodMb::find()->where(['<', '{{%good_mb}}.status', '3']);
+        $query = GoodMb::find();
         $query->joinWith(['user','good','place','freight']);
         // add conditions that should always apply here
 
@@ -72,6 +72,7 @@ class GoodMbSearch extends GoodMb
             'brand_id' => $this->brand_id,
             //'status' => $this->status,
             '{{%good_mb}}.status' => $this->status,
+            '{{%good_mb}}.mb_status' => $this->mb_status,
 //             'created_at' => $this->created_at,
 //             'updated_at' => $this->updated_at,
         ]);

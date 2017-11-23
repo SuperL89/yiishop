@@ -64,6 +64,8 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             
+            ['commission_fee', 'default', 'value' => 5],
+            
             //用户信息
             ['image_h', 'trim'],
             ['nickname', 'trim'],
@@ -75,6 +77,9 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            
+            ['commission_fee', 'default', 'value' => 5],
+            
             'id' => 'ID',
             'username' => '用户名/手机号',
 //             'auth_key' => 'Auth Key',
@@ -92,7 +97,7 @@ class User extends ActiveRecord implements IdentityInterface
             'sex' => '性别',
             'image_h' => '头像',
             'money' => '余额',
-            //'pay_pw' => '支付密码',
+            'commission_fee' => '提现手续费',
         ];
     }
 

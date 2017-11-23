@@ -42,7 +42,7 @@ class GoodMb extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'place_id', 'freight_id', 'good_id', 'cate_id', 'brand_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'place_id', 'freight_id', 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status','created_at', 'updated_at'], 'integer'],
             [['good_id', 'cate_id', 'brand_id'], 'required'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id']],
@@ -67,6 +67,7 @@ class GoodMb extends \yii\db\ActiveRecord
             'cate_id' => 'Cate ID',
             'brand_id' => 'Brand ID',
             'status' => 'Status',
+            'mb_status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

@@ -41,7 +41,7 @@ class GoodMb extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'place_id', 'freight_id', 'good_id', 'cate_id', 'brand_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'place_id', 'freight_id', 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status', 'created_at', 'updated_at'], 'integer'],
             [['good_id', 'cate_id', 'brand_id'], 'required'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['good_id'], 'exist', 'skipOnError' => true, 'targetClass' => Good::className(), 'targetAttribute' => ['good_id' => 'id']],
@@ -66,6 +66,7 @@ class GoodMb extends \yii\db\ActiveRecord
             'cate_id' => '分类id',
             'brand_id' => '品牌id',
             'status' => '状态',
+            'mb_status' => '商家商品状态',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];
@@ -135,16 +136,14 @@ class GoodMb extends \yii\db\ActiveRecord
         return $this->hasMany(Order::className(), ['mb_id' => 'id']);
     }
     const STATUS_ACTIVE = 0;
-    const STATUS_DW = 1;
-    const STATUS_ACTIVEING = 2;
-    /*const STATUS_DELETED = 3;*/
+    const STATUS_ACTIVEING = 1;
     
     /**
      * 设置商家报价状态显示常量
      */
     public static function allStatus()
     {
-        return [self::STATUS_ACTIVE=>'审核通过',self::STATUS_DW=>'已下架',self::STATUS_ACTIVEING=>'待审核'/*,self::STATUS_DELETED=>'已删除'*/];
+        return [self::STATUS_ACTIVE=>'审核通过',self::STATUS_ACTIVEING=>'待审核'];
     }
     /**
      * 获得商家报价状态并转为中文显示
@@ -153,16 +152,35 @@ class GoodMb extends \yii\db\ActiveRecord
     {
         if($this->status==self::STATUS_ACTIVE){
             return '审核通过';
-        }elseif ($this->status==self::STATUS_DW){
-            return '已下架';
         }elseif ($this->status==self::STATUS_ACTIVEING){
             return '待审核';
-        }/*elseif ($this->status==self::STATUS_DELETED){
-            return '已删除';
-        }*/else{
+        }else{
             return '未知';
         }
-        //return $this->status==self::STATUS_ACTIVE?'正常':'已禁用';
+    }
+    
+    const STATUS_UP = 0;
+    const STATUS_DW = 1;
+    
+    /**
+     * 设置商家报价状态显示常量
+     */
+    public static function allStatusUpDw()
+    {
+        return [self::STATUS_UP=>'商家发布中',self::STATUS_DW=>'商家已下架'];
+    }
+    /**
+     * 获得商家报价状态并转为中文显示
+     */
+    public function getStatusUpDwStr()
+    {
+        if($this->mb_status==self::STATUS_UP){
+            return '商家发布中';
+        }elseif ($this->mb_status==self::STATUS_DW){
+            return '商家已下架';
+        }else{
+            return '未知';
+        }
     }
     //获得地区联动
     public $place_id_1  = 0;

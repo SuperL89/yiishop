@@ -104,8 +104,8 @@ class Business extends \yii\db\ActiveRecord
     }
     
     const STATUS_DELETED = 2;
-    const STATUS_ACTIVE = 0;
-    const STATUS_ACTIVEING = 1;
+    const STATUS_ACTIVE = 1;
+    const STATUS_ACTIVEING = 0;
     /**
      * 设置商家状态显示常量
      */
@@ -122,8 +122,10 @@ class Business extends \yii\db\ActiveRecord
             return '审核通过';
         }elseif ($this->status==self::STATUS_ACTIVEING){
             return '待审核';
-        }else{
+        }elseif($this->status==self::STATUS_DELETED){
             return '审核拒绝';
+        }else{
+            return '未知';
         }
         //return $this->status==self::STATUS_ACTIVE?'正常':'已禁用';
     }

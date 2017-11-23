@@ -72,8 +72,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter'=>GoodMb::allStatus(),
                 'contentOptions' =>function($model)
                 {
-                    return ($model->status==2)?['class' => 'bg-danger']:[];
+                    return ($model->status==1)?['class' => 'bg-danger']:[];
                 }
+            ],
+            [
+                'attribute'=>'mb_status',
+                'value'=>'statusUpDwStr',
+                'filter'=>GoodMb::allStatusUpDw(),
             ],
             //'created_at',
             [

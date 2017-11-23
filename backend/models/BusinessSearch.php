@@ -97,7 +97,7 @@ class BusinessSearch extends Business
         
         $dataProvider->sort->defaultOrder=
         [
-            'status' => SORT_DESC,
+            'status' => SORT_ASC,
             'created_at' =>SORT_DESC,
         ];
         

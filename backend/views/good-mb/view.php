@@ -88,8 +88,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => '商品报价状态',
             'value'=>$model->StatusStr,
             ],
-            'created_at',
-            'updated_at',
+            [
+                'attribute'=>'created_at',
+                'format'=>['date','php:Y-m-d H:i:s'],
+            ],
+            [
+                'attribute'=>'updated_at',
+                'format'=>['date','php:Y-m-d H:i:s'],
+            ],
             [
             'attribute' => 'goodmbv',
             'label' => '商品属性',
