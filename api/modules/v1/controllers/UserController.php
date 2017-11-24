@@ -2390,6 +2390,7 @@ class UserController extends ActiveController
             foreach ($withdrawals_arr as $k =>$v){
                 $data['code'] = '200';
                 $data['msg'] = '';
+                $data['data'][$k]['id'] = $v->id;
                 $data['data'][$k]['type'] = $v->type;
                 $data['data'][$k]['account'] = $v->account;
                 $data['data'][$k]['realname'] = $v->realname;
