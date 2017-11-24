@@ -120,6 +120,11 @@ return [
                         'POST transfer-bin' => 'transfer-bin',
                         'POST business-counts' => 'business-counts',
                         'POST del-freight' => 'del-freight',
+                        'POST user-withdrawals' => 'user-withdrawals',
+                        'POST create-withdrawals-account' => 'create-withdrawals-account',
+                        'POST del-withdrawals-account' => 'del-withdrawals-account',
+                        'POST get-withdrawals-account' => 'get-withdrawals-account',
+                        'POST withdrawals-apply' => 'withdrawals-apply',
                     ]
                 ],
             ]

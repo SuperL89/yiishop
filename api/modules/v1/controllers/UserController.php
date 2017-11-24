@@ -50,6 +50,8 @@ use api\models\Brand;
 use api\models\BusinessCreateGoodForm;
 use api\models\GoodImage;
 use api\models\GoodClicks;
+use api\models\UserAccount;
+use api\models\UserWithdrawalsapply;
 
 class UserController extends ActiveController
 {
@@ -209,8 +211,8 @@ class UserController extends ActiveController
         $data['data']['sex'] = $user->sex;
         $data['data']['image_h'] = $user->image_h;
         //查询用户是否为商家
-        $status = Business::find(['status'])->where(['user_id' =>$user->id,'status'=>1])->one();
-        $data['data']['business_status'] = isset($status)?$status:0;
+        $status = Business::find()->where(['user_id' =>$user->id,'status'=>1])->one();
+        $data['data']['business_status'] = isset($status->status)?$status->status:0;
         return $data;
         
     }
@@ -514,7 +516,7 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         
-        $business_arr = Business::find()->select(['*'])->where(['user_id' => $user->id,'status' => 0])->with([
+        $business_arr = Business::find()->select(['*'])->where(['user_id' => $user->id,'status' => 1])->with([
             'user'=> function ($query){
                 $query->select(['id','username']);
             },
@@ -545,6 +547,7 @@ class UserController extends ActiveController
         $business['city_name_en']=$business_arr['city']['name_en'];
         $business['address']=$business_arr['address'];
         $business['cate']=$category_arr;
+        //$business['business_status'] = isset($business_arr['status'])?$business_arr['status']:0;
 
         $data['code'] = '200';
         $data['msg'] = '';
@@ -2294,6 +2297,184 @@ class UserController extends ActiveController
         $data['code'] = '200';
         $data['msg'] = '';
         $data['data'] = $businessCounts;
+        return $data;
+    }
+    /**
+     * 获取用户提现信息  token
+     */
+    public function actionUserWithdrawals()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+
+        $data['code'] = '200';
+        $data['msg'] = '';
+        $data['data']['money'] =$user->money;
+        $data['data']['commission_fee'] =$user->commission_fee;
+        return $data; 
+    }
+    /**
+     * 创建用户提现账户  token type account realname account_bank verifycode
+     */
+    public function actionCreateWithdrawalsAccount()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+        $model = new UserAccount();
+        $model->setAttributes($user_data);
+        if ($user_data && $model->validate()) {
+            $model->user_id = $user->id;
+            $model->type = $user_data['type'];
+            $model->account = $user_data['account'];
+            $model->realname = $user_data['realname'];
+            $model->account_bank = isset($user_data['account_bank'])?$user_data['account_bank']:'';
+            $model->created_at = time();
+            $model->updated_at = time();
+            if($model->save()){
+                $data['code'] = '200';
+                $data['msg'] = '';
+                return $data;
+            }else {
+                $data['code'] = '10001';
+                $data['msg'] = '操作失败';
+                return $data;
+            } 
+        }else {
+                $data['code'] = '10001';
+                $msg =array_values($model->getFirstErrors())[0];
+                $data['msg'] = $msg;
+                return $data;
+            }   
+    }
+    /**
+     * 删除用户提现账户  token id
+     */
+    public function actionDelWithdrawalsAccount()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+        $withdrawals_id = isset($user_data['withdrawals_id']) ? $user_data['withdrawals_id'] : 0;
+        //查询该条记录
+        $withdrawals = UserAccount::find()->where(['user_id' => $user->id ,'id'=>$withdrawals_id ,'status' => 0])->one();
+        if(empty($withdrawals)){
+            $data['code'] = '10001';
+            $data['msg'] = '提现账户不存在';
+            return $data;
+        }
+        $withdrawals->status= 1;
+        $withdrawals->updated_at = time();
+        if($withdrawals->save()){
+            $data['code'] = '200';
+            $data['msg'] = '';
+            return $data;
+        }else {
+            $data['code'] = '10001';
+            $data['msg'] = '操作失败';
+            return $data;
+        }
+    }
+    /**
+     * 获得用户提现账户列表  token
+     */
+    public function actionGetWithdrawalsAccount()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+        
+        $withdrawals_arr = UserAccount::find()->where(['user_id' => $user->id,'status' => 0])->all();
+        if($withdrawals_arr){
+            foreach ($withdrawals_arr as $k =>$v){
+                $data['code'] = '200';
+                $data['msg'] = '';
+                $data['data'][$k]['type'] = $v->type;
+                $data['data'][$k]['account'] = $v->account;
+                $data['data'][$k]['realname'] = $v->realname;
+                $data['data'][$k]['account_bank'] = $v->account_bank;
+            }
+            //$data['data']['username'] = $user->username;
+            return $data;
+        }else{
+                $data['code'] = '200';
+                $data['msg'] = '';
+                $data['data'] =[];
+                return $data;
+        }
+    }
+    /**
+     * 提交提现申请  token account_id money_w
+     */
+    public function actionWithdrawalsApply()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+        
+        $model = new UserWithdrawalsapply();
+        $model->setAttributes($user_data);
+        if ($user_data && $model->validate()) {
+            //验证提现账户是否属于该用户
+            $user_account = UserAccount::find()->where(['user_id' => $user->id , 'id' =>$user_data['account_id'],'status'=>0])->one();
+            if(empty($user_account)){
+                $data['code'] = '10001';
+                $data['msg'] = '提现账户有误,请您核实.';
+                return $data;
+            }
+            //验证用户余额是否足够提现
+            if($user->money < $user_data['money_w']){
+                $data['code'] = '10001';
+                $data['msg'] = '提现金额不能大于您的余额.';
+                return $data;
+            }
+            //计算所需手续费
+            $commission_money = $user_data['money_w'] * ($user->commission_fee / 100);
+            //计算用户实得金额
+            $user_money = $user_data['money_w'] - $commission_money;
+            //事务处理
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                //修改用户金额
+                $userData = new User();
+                $userDatacount = $userData->updateAllCounters(array('money'=>-$user_data['money_w']), 'id=:id', array(':id' => $user->id)); //自动加减余额
+                if ($userDatacount <= 0) {
+                    $data['code'] = '10001';
+                    $msg = '操作失败';
+                    $data['msg'] = $msg;
+                    return $data;
+                }
+                
+                $model->account_id = $user_data['account_id'];
+                $model->user_id = $user->id;
+                $model->money_w = $user_data['money_w'];
+                $model->commission_fee = $user->commission_fee;
+                $model->commission_money = $commission_money;
+                $model->user_money =$user_money;
+                $model->created_at = time();
+                if(!$model->save()){
+                    $data['code'] = '10001';
+                    $data['msg'] = '操作失败';
+                    return $data;
+                }
+                $transaction->commit();
+            } catch (Exception $e) {
+                # 回滚事务
+                $transaction->rollback();
+                $data['code'] = '10001';
+                $data['msg'] = $e->getMessage();
+                return $data;
+            }
+        }else{
+            $data['code'] = '10001';
+            $msg =array_values($model->getFirstErrors())[0];
+            $data['msg'] = $msg;
+            return $data;
+        }
+        
+        $data['code'] = '200';
+        $data['msg'] = '';
         return $data;
     }
     /**
