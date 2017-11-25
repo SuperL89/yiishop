@@ -2330,6 +2330,7 @@ class UserController extends ActiveController
             $model->account = $user_data['account'];
             $model->realname = $user_data['realname'];
             $model->account_bank = isset($user_data['account_bank'])?$user_data['account_bank']:'';
+            $model->status = 0;
             $model->created_at = time();
             $model->updated_at = time();
             if($model->save()){
