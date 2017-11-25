@@ -21,6 +21,7 @@ class UserAccount extends \yii\db\ActiveRecord
 {
     const  VERCODE_USAGE = 'account';
     public $verifycode;
+    public $username;
     /**
      * @inheritdoc
      */
@@ -36,6 +37,11 @@ class UserAccount extends \yii\db\ActiveRecord
     {
         return [
             //[['type', 'account', 'realname', 'status', 'created_at', 'updated_at'], 'required'],
+            
+            ['username', 'trim'],
+            ['username', 'required','message' => '手机号/用户名不能为空.'],
+            ['username', 'exist', 'targetClass' => '\api\models\User', 'message' => '该用户不存在.'],
+            
             ['type', 'in', 'range' => [1, 2], 'message' => '提现账户类型错误.'],
             [['type'], 'integer','message' => '提现账户类型错误.'],
             ['type', 'required','message' => '提现账户类型不能为空.'],

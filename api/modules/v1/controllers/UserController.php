@@ -2323,6 +2323,8 @@ class UserController extends ActiveController
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
         $model = new UserAccount();
+        $user_data['username'] = $user->username;
+        //print_r($user_data);exit;
         $model->setAttributes($user_data);
         if ($user_data && $model->validate()) {
             $model->user_id = $user->id;
