@@ -57,4 +57,29 @@ class UserAccount extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+    
+    const ALIPAY = 1;
+    const BANK = 2;
+    
+    /**
+     * 设置提现申请状态显示常量
+     */
+    public static function allType()
+    {
+        return [self::ALIPAY=>'支付宝',self::BANK=>'银行卡'];
+    }
+    /**
+     * 获得提现申请并转为中文显示
+     */
+    public function getTypeStr()
+    {
+        if($this->type==self::ALIPAY){
+            return '支付宝';
+        }elseif ($this->type==self::BANK){
+            return '银行卡';
+        }else{
+            return '未知';
+        }
+        //return $this->status==self::STATUS_ACTIVE?'正常':'已禁用';
+    }
 }
