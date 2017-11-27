@@ -86,7 +86,7 @@ class UserWithdrawalsapply extends \yii\db\ActiveRecord
      */
     public static function allStatus()
     {
-        return [self::STATUS_ACTIVEING=>'待审核',self::STATUS_ACTIVE=>'审核通过',self::STATUS_SUCCESS=>'已完成提现',self::STATUS_DELETED=>'审核拒绝'];
+        return [self::STATUS_ACTIVEING=>'待审核',self::STATUS_ACTIVE=>'审核通过',self::STATUS_SUCCESS=>'提现完成',self::STATUS_DELETED=>'审核拒绝'];
     }
     /**
      * 获得提现申请并转为中文显示
@@ -96,7 +96,7 @@ class UserWithdrawalsapply extends \yii\db\ActiveRecord
         if($this->status==self::STATUS_ACTIVE){
             return '审核通过';
         }elseif ($this->status==self::STATUS_SUCCESS){
-            return '已完成提现';
+            return '提现完成';
         }elseif ($this->status==self::STATUS_ACTIVEING){
             return '待审核';
         }elseif($this->status==self::STATUS_DELETED){

@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use common\models\UserWithdrawalsapply;
 use common\models\UserAccount;
 use kartik\daterange\DateRangePicker;
+use yii\bootstrap\Alert;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\UserWithdrawalsapplySearch */
@@ -19,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?php // Html::a('Create User Withdrawalsapply', ['create'], ['class' => 'btn btn-success']) ?>
+         <?php // Html::a('Create User Withdrawalsapply', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -140,7 +141,54 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]
             ]),
             ],
-            ['class' => 'yii\grid\ActionColumn'],
+            //['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn',
+            'template'=>'{status-ok}{status-no}{status-success}',
+            'buttons'=>[
+                'status-ok'=>function($url,$model,$key)
+                {
+                    if($model->status == 0){
+                        $options =[
+                            'title'=>Yii::t('yii','审核通过'),
+                            'aria-label'=>yii::t('yii','审核通过'),
+                            'data-confirm' => "确认要通过吗？",
+                            'data-method' => 'post',
+                            'data-pjax'=>'0',
+                        ];
+                        //return Html::a('<span class="glyphicon glyphicon-ok"></span>',$url,$options);
+                        return Html::a('<span class="glyphicon glyphicon-ok"></span>', $url, $options);
+                    }
+                },
+                'status-no'=>function($url,$model,$key)
+                {
+                    if($model->status == 0){
+                        $options =[
+                            'title'=>Yii::t('yii','审核拒绝'),
+                            'aria-label'=>yii::t('yii','审核拒绝'),
+                            'data-confirm' => "确认要拒绝吗？",
+                            'data-method' => 'post',
+                            'data-pjax'=>'0',
+                        ];
+                        return Html::a('<span class="glyphicon glyphicon-remove"></span>',$url,$options);
+                    }
+                     
+                },
+                'status-success'=>function($url,$model,$key)
+                {
+                    if($model->status == 1){
+                        $options =[
+                            'title'=>Yii::t('yii','提现完成'),
+                            'aria-label'=>yii::t('yii','提现完成'),
+                            'data-confirm' => "确认要完成吗？",
+                            'data-method' => 'post',
+                            'data-pjax'=>'0',
+                        ];
+                        return Html::a('<span class="glyphicon glyphicon-check"></span>',$url,$options);
+                    }
+                     
+                },
+            ],
+            ],
         ],
     ]); ?>
 </div>

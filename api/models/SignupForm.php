@@ -17,6 +17,7 @@ class SignupForm extends Model
     public $password;
     public $nickname;
     public $sex;
+    public $image_h;
 
 
     /**
@@ -45,6 +46,7 @@ class SignupForm extends Model
             //用户信息
             ['nickname', 'trim'],
             ['sex', 'trim'],
+            ['image_h', 'trim'],
         ];
     }
     
@@ -56,6 +58,7 @@ class SignupForm extends Model
             'verifycode' => '验证码',
             'nickname' => '昵称',
             'sex' => '性别',
+            'image_h'=>'头像',
         ];
     }
 
@@ -70,6 +73,7 @@ class SignupForm extends Model
         $user->username = $this->username;
         $user->nickname = $this->nickname;
         $user->sex = $this->sex ?: 2;
+        $user->image_h = $this->image_h;
         $user->created_at = time();
         $user->updated_at = time();
         $user->setPassword($this->password);

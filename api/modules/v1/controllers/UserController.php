@@ -1793,31 +1793,37 @@ class UserController extends ActiveController
         ->Asarray()
         ->all();
         //print_r($good_arr);exit();
-    
-        foreach ($good_arr as $k => $v){
-            //商家报价id
-            $goods['good'][$k]['mb_id']=$v['id'];
-            //商品id
-            $goods['good'][$k]['good_id']=$v['good']['id'];
-            //商品名称
-            $goods['good'][$k]['title']=$v['good']['title'];
-            //商品码
-            $goods['good'][$k]['good_num']=$v['good']['good_num'];
-            //发布时间
-            $goods['good'][$k]['created_at']=$v['created_at'];
-            //总库存
-            $goods['good'][$k]['stock_sum'] = $this->actionArrvalsum($v['goodMbv'] , 'stock_num');
-            //总销量
-            $goods['good'][$k]['sales_volume'] = $this->actionArrvalsum($v['order'] , 'pay_num');
-            //商品最低价格
-            $goods['good'][$k]['price']=isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
-            //获取商品图片
-            $goods['good'][$k]['goodimage']=$v['good']['goodImage']['image_url'];
+        if($good_arr){
+            foreach ($good_arr as $k => $v){
+                //商家报价id
+                $goods['good'][$k]['mb_id']=$v['id'];
+                //商品id
+                $goods['good'][$k]['good_id']=$v['good']['id'];
+                //商品名称
+                $goods['good'][$k]['title']=$v['good']['title'];
+                //商品码
+                $goods['good'][$k]['good_num']=$v['good']['good_num'];
+                //发布时间
+                $goods['good'][$k]['created_at']=$v['created_at'];
+                //总库存
+                $goods['good'][$k]['stock_sum'] = $this->actionArrvalsum($v['goodMbv'] , 'stock_num');
+                //总销量
+                $goods['good'][$k]['sales_volume'] = $this->actionArrvalsum($v['order'] , 'pay_num');
+                //商品最低价格
+                $goods['good'][$k]['price']=isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
+                //获取商品图片
+                $goods['good'][$k]['goodimage']=$v['good']['goodImage']['image_url'];
+            }
+            $good['code'] = '200';
+            $good['msg'] = '';
+            $good['data'] = $goods;
+            return $good;
+        }else{
+            $good['code'] = '200';
+            $good['msg'] = '';
+            $good['data'] = [];
+            return $good;
         }
-        $good['code'] = '200';
-        $good['msg'] = '';
-        $good['data'] = $goods;
-        return $good;
     }
     /**
      * 获取快递公司信息
@@ -2359,7 +2365,7 @@ class UserController extends ActiveController
         $user_data = Yii::$app->request->post();
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
-        $withdrawals_id = isset($user_data['withdrawals_id']) ? $user_data['withdrawals_id'] : 0;
+        $withdrawals_id = isset($user_data['id']) ? $user_data['id'] : 0;
         //查询该条记录
         $withdrawals = UserAccount::find()->where(['user_id' => $user->id ,'id'=>$withdrawals_id ,'status' => 0])->one();
         if(empty($withdrawals)){
@@ -2456,6 +2462,7 @@ class UserController extends ActiveController
                 $model->commission_fee = $user->commission_fee;
                 $model->commission_money = $commission_money;
                 $model->user_money =$user_money;
+                $model->status = 0;
                 $model->created_at = time();
                 if(!$model->save()){
                     $data['code'] = '10001';
