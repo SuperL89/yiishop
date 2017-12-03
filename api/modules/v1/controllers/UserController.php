@@ -54,6 +54,10 @@ use api\models\UserAccount;
 use api\models\UserWithdrawalsapply;
 use api\models\GoodCode;
 use api\models\BusinessUpdateGoodForm;
+use api\models\AlipaymentOrderForm;
+//支付宝
+use common\components\alipay\aop\AopClient;
+use common\components\alipay\aop\request\AlipayTradeAppPayRequest;
 
 class UserController extends ActiveController
 {
@@ -74,7 +78,8 @@ class UserController extends ActiveController
                         'get-category',
                         'get-express',
                         'qiniu-token',
-                        'transfer-bin'
+                        'transfer-bin',
+                        'ali-payment-notify-order'
                     ],
                 ] 
         ] );
@@ -1644,7 +1649,7 @@ class UserController extends ActiveController
     }
     
     /**
-     * 用户支付订单  token order_id pay_pw
+     * 用户余额支付订单  token order_id pay_pw
      */
     public function actionPaymentOrder()
     {
@@ -1676,6 +1681,7 @@ class UserController extends ActiveController
             }
             //验证库存是否充足
             $goodmbv = GoodMbv::findOne($order_arr->mbv_id);
+            if ( ! $goodmbv) return array('code' => '10001', 'msg' => '商品信息不存在');
             $goodmbv->refresh();
             if($goodmbv->stock_num < $order_arr->pay_num){
                 return array('code' => '10001', 'msg' => '库存不足');
@@ -1689,11 +1695,6 @@ class UserController extends ActiveController
                 $orderData->pay_at = time();
                 $orderData->save();
                 //修改用户金额
-//                 $userData = User::findOne($order_arr->user_id);
-//                 $userData->refresh();
-//                 $userData->money = $userData->money - $order_arr->order_total_price;
-//                 $userData->save();
-                //修改用户金额
                 $userData = new User();
                 $userDatacount = $userData->updateAllCounters(array('money'=>-$order_arr->order_total_price), 'id=:id', array(':id' => $order_arr->user_id)); //自动加减余额
                 if ($userDatacount <= 0) {
@@ -1703,10 +1704,6 @@ class UserController extends ActiveController
                     return $data;
                 }
                 //修改商品库存
-                //$goodmbv = GoodMbv::findOne($order_arr->mbv_id);
-                //$goodmbv->refresh();
-                //$goodmbv->stock_num = $goodmbv->stock_num - $order_arr->pay_num;
-                //$goodmbv->save();
                 $goodmbv = new GoodMbv();
                 $goodmbvcount = $goodmbv->updateAllCounters(array('stock_num'=>-$order_arr->pay_num), 'id=:id', array(':id' => $order_arr->mbv_id)); //自动加减库存
                 if ($goodmbvcount <= 0) {
@@ -1745,6 +1742,190 @@ class UserController extends ActiveController
         }
     }
     
+    /**
+     * 用户支付宝支付订单  token order_id 
+     */
+    public function actionAliPaymentOrder()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+    
+        $user_data['username'] = $user->username;
+    
+        $model = new AlipaymentOrderForm();
+        
+        $model->setAttributes($user_data);
+        if ($user_data && $model->validate()) {
+            //查询订单信息
+            $order_arr = Order::find()->select(['*'])->where(['order_num'=>$user_data['order_id']])->one();
+            //验证订单是否是当前用户
+            if ($order_arr->user_id != $user->id) {
+                return array('code' => '10001', 'msg' => '您无权限操作该订单');
+            }
+            //验证订单状态
+            switch ($order_arr->status) {
+                case 2: return array('code' => '10001', 'msg' => '该订单为待发货状态,不可支付'); break;
+                case 3: return array('code' => '10001', 'msg' => '该订单为发货状态,不可支付'); break;
+                case 4: return array('code' => '10001', 'msg' => '该订单为已完成状态,不可支付'); break;
+                case 5: return array('code' => '10001', 'msg' => '该订单为已取消状态,不可支付'); break;
+            }
+            //验证库存是否充足
+            $goodmbv = GoodMbv::findOne($order_arr->mbv_id);
+            if ( ! $goodmbv) return array('code' => '10001', 'msg' => '商品信息不存在');
+            $goodmbv->refresh();
+            if($goodmbv->stock_num < $order_arr->pay_num){
+                return array('code' => '10001', 'msg' => '库存不足');
+            }
+            //支付宝 开始
+            $aop = new AopClient;
+            $aop->gatewayUrl = Yii::$app->params['gatewayUrl'];
+            $aop->appId = Yii::$app->params['appId'];
+            $aop->rsaPrivateKey = Yii::$app->params['rsaPrivateKey'];
+            $aop->format = Yii::$app->params['format'];
+            //$aop->charset = Yii::$app->params['charset'];
+            $aop->signType = Yii::$app->params['signType'];
+            $aop->alipayrsaPublicKey = Yii::$app->params['alipayrsaPublicKey'];
+            //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
+            $request = new AlipayTradeAppPayRequest();
+            //SDK已经封装掉了公共参数，这里只需要传入业务参数
+            $bizcontent = json_encode([
+                'body'=>$user_data['order_id'],
+                'subject'=>'App支付测试',
+                'out_trade_no'=>$user_data['order_id'],//此订单号为商户唯一订单号
+                'total_amount'=> 0.01,//保留两位小数
+                'product_code'=>'QUICK_MSECURITY_PAY'
+            ]);
+            $request->setNotifyUrl("http://api.hexintrade.com/v1/user/ali-payment-notify-order");
+            $request->setBizContent($bizcontent);
+            //这里和普通的接口调用不同，使用的是sdkExecute
+            $response = $aop->sdkExecute($request);
+            //htmlspecialchars是为了输出到页面时防止被浏览器将关键参数html转义，实际打印到日志以及http传输不会有这个问题echo htmlspecialchars($response);
+            //echo htmlspecialchars($response);//就是orderString 可以直接给客户端请求，无需再做处理。
+            //支付宝结束
+            
+            $data['code'] = '200';
+            $data['msg'] = '';
+            $data['data'] = htmlspecialchars($response);
+            return $data;
+        } else {
+            $data['code'] = '10001';
+            $msg = array_values($model->getFirstErrors())[0];
+            $data['msg'] = $msg;
+            return $data;
+        }
+    }
+    /**
+     * 用户支付宝支付订单异步通知 
+     */
+    public function actionAliPaymentNotifyOrder()
+    {
+        $aop = new AopClient;
+        $aop->alipayrsaPublicKey = Yii::$app->params['alipayrsaPublicKey'];
+        $signVerified = $aop->rsaCheckV1(Yii::$app->request->post(), NULL, "RSA2");
+        if ($signVerified) {
+            $app_id = Yii::$app->request->post('app_id');
+            $out_trade_no = Yii::$app->request->post('out_trade_no');
+            $total_amount = Yii::$app->request->post('total_amount');
+            $trade_status = Yii::$app->request->post('trade_status');
+            if ($app_id != Yii::$app->params['appId']) {
+                echo 'fail';
+                $data['code'] = '10001';
+                $data['msg'] = 'appid验证失败';
+                return $data;
+            }
+            if ( ! $out_trade_no) {
+                echo 'fail';
+                $data['code'] = '10001';
+                $data['msg'] = '异步通知信息错误';
+                return $data;
+            }
+            //查询订单信息
+            $order_arr = Order::find()->select(['*'])->where(['order_num'=>$out_trade_no])->one();
+            if ( ! $order_arr) {
+                echo 'fail';
+                $data['code'] = '10001';
+                $data['msg'] = '订单信息不存在';
+                return $data;
+            }
+            if ($total_amount != $order_arr->order_total_price) {
+                echo 'fail';
+                $data['code'] = '10001';
+                $data['msg'] = '支付金额不符';
+                return $data;
+            }
+            switch ($order_arr->status) {
+                case 2: case 3: case 4: case 5:
+                    echo 'success';
+                    $data['code'] = '200';
+                    $data['msg'] = '';
+                    return $data;
+                    break;
+            }
+            switch ($trade_status) {
+                case 'TRADE_SUCCESS':
+                case 'TRADE_FINISHED':
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        //订单信息
+                        $orderData = Order::findOne($order_arr->id);
+                        $orderData->status = 2; //订单已支付
+                        $orderData->pay_at = time();
+                        $orderData->save();
+                        //修改商品库存
+                        $goodmbv = new GoodMbv();
+                        $goodmbvcount = $goodmbv->updateAllCounters(array('stock_num'=>-$order_arr->pay_num), 'id=:id', array(':id' => $order_arr->mbv_id)); //自动加减库存
+                        if ($goodmbvcount <= 0) {
+                            echo 'fail';
+                            $data['code'] = '10001';
+                            $data['msg'] = '操作失败';
+                            return $data;
+                        }
+                        //添加交易记录
+                        $usertradelog = new UserTradelog;
+                        $usertradelog->user_id = $order_arr->user_id;
+                        $usertradelog->type = 2;
+                        $usertradelog->order_num = $order_arr->order_num;
+                        $usertradelog->created_at = time();
+                        $usertradelog->money = - $order_arr->order_total_price;
+                        $usertradelog->save();
+                    
+                        $transaction->commit();
+                    
+                        echo 'success';
+                        $data['code'] = '200';
+                        $data['msg'] = '';
+                        return $data;
+                    }  catch(Exception $e) {
+                        # 回滚事务
+                        $transaction->rollback();
+                    
+                        echo 'fail';
+                        $data['code'] = '10001';
+                        $data['msg'] = $e->getMessage();
+                        return $data;
+                    }
+                    break;
+                case 'TRADE_CLOSED':
+                    echo 'success';
+                    $data['code'] = '10001';
+                    $data['msg'] = '订单交易关闭';
+                    return $data;
+                    break;
+                case 'WAIT_BUYER_PAY':
+                    echo 'success';
+                    $data['code'] = '10001';
+                    $data['msg'] = '订单待支付';
+                    return $data;
+                    break;
+            }
+        } else {
+            echo 'fail';
+            $data['code'] = '10001';
+            $data['msg'] = '签名验证失败';
+            return $data;
+        }
+    }
     /**
      * 获取商家商品列表  token page good_status
      */

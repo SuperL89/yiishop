@@ -1,8 +1,10 @@
 <?php
+namespace common\components\alipay\aop;
+//require_once 'AopEncrypt.php';
+use yii\base\Component;
+use common\components\alipay\aop\AopEncrypt;
 
-require_once 'AopEncrypt.php';
-
-class AopClient {
+class AopClient extends Component {
 	//应用ID
 	public $appId;
 	
