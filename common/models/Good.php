@@ -59,7 +59,7 @@ class Good extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'good_num' => '商品码',
+            'good_num' => 'SKU',
             'title' => '商品标题',
             'description' => '商品详细信息',
             'cate_id' => '分类',

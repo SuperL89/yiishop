@@ -132,10 +132,23 @@ $this->params['breadcrumbs'][] = $this->title;
                             'aria-label'=>yii::t('yii','查看商品属性'),
                             'data-pjax'=>'0',
                         ];
+                        //return Html::a('<span class="glyphicon glyphicon-object-align-horizontal"></span><span class="label label-danger">9</span>',$url,$options);
                         return Html::a('<span class="glyphicon glyphicon-object-align-horizontal"></span>',$url,$options);
-                },
+                    },
                 ],
             ],
         ],
     ]); ?>
 </div>
+<style type="text/css">
+.table td {position: relative;}
+.label {
+    position: absolute;
+    top: 1px;
+    right: 7px;
+    text-align: center;
+    font-size: 9px;
+    padding: 2px 3px;
+    line-height: .9;
+}
+</style>

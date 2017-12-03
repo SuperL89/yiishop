@@ -11,8 +11,9 @@ use common\models\GoodMbv;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\base\Exception;
 use backend\models\GoodMbvSearch;
+use api\models\GoodCode;
 
 /**
  * GoodMbController implements the CRUD actions for GoodMb model.
@@ -98,16 +99,16 @@ class GoodMbController extends Controller
         $imagemodel = $this->findGoodImageModel($goodmodel->id);
         
         //获取报价状态
-        $goodmb = Yii::$app->request->post('GoodMb');
-        $goodmb_status = $goodmb['status'];
+//         $goodmb = Yii::$app->request->post('GoodMb');
+//         $goodmb_status = $goodmb['status'];
         //print_r($goodmb_status);exit();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             //如果商家报价状态为0 则同步商品状态为0
-            if($goodmb_status == 0){
-                $goodmodel->status = 0;
-                //商品改为后台发布
-                $goodmodel->user_id = 0;
-            }
+//             if($goodmb_status == 0){
+//                 $goodmodel->status = 0;
+//                 //商品改为后台发布
+//                 $goodmodel->user_id = 0;
+//             }
             //商品
             if ($goodmodel->load(Yii::$app->request->post()) && $goodmodel->save()) {
                 //商品图片
@@ -218,6 +219,65 @@ class GoodMbController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    
+    //审核通过
+    public function actionStatusOk($id)
+    {
+        $model = $this->findGoodMbvModel($id);
+        if($model->status != 2){
+            Yii::$app->getSession()->setFlash('error', '非法操作！');
+            return $this->redirect(['good-mbv','id'=>$mb_id->mb_id]);
+        }
+        
+        //查询商品报价信息
+        $goodmbv = GoodMbv::find()->where(['id'=>$id])->one();
+        $goodmb = GoodMb::find()->where(['id'=>$goodmbv->mb_id])->one();
+        $goodcode = new GoodCode();
+        
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            //更改商品属性状态
+            $model->status = 0;
+            $model->updated_at=time();
+            $model->save();
+            
+            //更改商家报价的状态
+            $goodmb->status = 0;
+            $goodmb->updated_at=time();
+            $goodmb->save();
+            
+            //添加进商品条形码库
+            $goodcode->model_text=$model->model_text;
+            $goodcode->bar_code=$model->bar_code;
+            $goodcode->good_id = $goodmb->good_id;
+            $goodcode->created_at=time();
+            $goodcode->updated_at=time();
+            $goodcode->save();
+            
+            $transaction->commit();
+            Yii::$app->getSession()->setFlash('success', '操作成功！');
+            return $this->redirect(['good-mbv','id'=>$goodmbv->mb_id]);
+        } catch(Exception $e) {
+            # 回滚事务
+            $transaction->rollback();
+            Yii::$app->getSession()->setFlash('error', '操作失败，请重试。');
+            return $this->redirect(['good-mbv','id'=>$goodmbv->mb_id]);
+            
+            //return $e->getMessage();
+        }
+        
+        
+//         $model->status = 0;
+//         $model->updated_at=time();
+//         if ($model->save()) {
+//             Yii::$app->getSession()->setFlash('success', '操作成功！');
+//             return $this->redirect(['good-mbv','id'=>$goodmb->mb_id]);
+//         } else {
+//             Yii::$app->getSession()->setFlash('error', '操作失败，请重试。');
+//             return $this->redirect(['good-mbv','id'=>$goodmb->mb_id]);
+//         }
+    }
+    
     /**
      * Finds the GoodMbv model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

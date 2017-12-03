@@ -117,7 +117,10 @@ class Good extends \yii\db\ActiveRecord
     {
         return $this->hasMany(GoodMb::className(), ['good_id' => 'id']);
     }
-    
+    public function getGoodCode()
+    {
+        return $this->hasMany(GoodCode::className(), ['good_id' => 'id']);
+    }
     // 明确列出每个字段，适用于你希望数据表或
     // 模型属性修改时不导致你的字段修改（保持后端API兼容性）
 //     public function fields()

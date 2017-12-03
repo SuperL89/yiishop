@@ -43,11 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'address',
             //'cate_id',
-            [
-                'attribute'=>'cate_name',
-                'label'=>'经营分类',
-                'value'=>'cates',
-            ],
+//             [
+//                 'attribute'=>'cate_name',
+//                 'label'=>'经营分类',
+//                 'value'=>'cates',
+//             ],
             //'status',
             [
                 'attribute'=>'status',

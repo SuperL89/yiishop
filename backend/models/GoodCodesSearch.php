@@ -5,23 +5,21 @@ namespace backend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\GoodMbv;
+use common\models\GoodCode;
 
 /**
- * GoodMbvSearch represents the model behind the search form about `common\models\GoodMbv`.
+ * GoodCodeSearch represents the model behind the search form about `common\models\GoodCode`.
  */
-class GoodMbvSearch extends GoodMbv
+class GoodCodesSearch extends GoodCode
 {
-    //public $id;
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'mb_id', 'stock_num', 'bar_code_status', 'status', /*'created_at', 'updated_at'*/], 'integer'],
+            [['id', 'good_id'], 'integer'],
             [['model_text', 'bar_code','created_at', 'updated_at'], 'safe'],
-            [['price'], 'number'],
         ];
     }
 
@@ -43,8 +41,7 @@ class GoodMbvSearch extends GoodMbv
      */
     public function search($params)
     {
-        //print_r($params);exit();
-        $query = GoodMbv::find()->where(['mb_id' => $params['id']]);
+        $query = GoodCode::find()->where(['good_id' => $params['id']]);
 
         // add conditions that should always apply here
 
@@ -63,31 +60,23 @@ class GoodMbvSearch extends GoodMbv
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'mb_id' => $this->mb_id,
-            'price' => $this->price,
-            'stock_num' => $this->stock_num,
-            //'bar_code_status' => $this->bar_code_status,
-            'status' => $this->status,
+            'good_id' => $this->good_id,
             'bar_code' => $this->bar_code,
+            //'created_at' => $this->created_at,
             //'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'model_text', $this->model_text]);
         
-      if (!empty($this->created_at)) {
-          $query->andFilterCompare('created_at', strtotime(explode('/', $this->created_at)[0]), '>=');//起始时间
-          $query->andFilterCompare('created_at', (strtotime(explode('/', $this->created_at)[1]) + 86400), '<');//结束时间
-      }
-      
-      if (!empty($this->updated_at)) {
-          $query->andFilterCompare('updated_at', strtotime(explode('/', $this->updated_at)[0]), '>=');//起始时间
-          $query->andFilterCompare('updated_at', (strtotime(explode('/', $this->updated_at)[1]) + 86400), '<');//结束时间
-      }
-      
-      $dataProvider->sort->defaultOrder=
-      [
-          'status' =>SORT_DESC,
-      ];
+        if (!empty($this->created_at)) {
+            $query->andFilterCompare('created_at', strtotime(explode('/', $this->created_at)[0]), '>=');//起始时间
+            $query->andFilterCompare('created_at', (strtotime(explode('/', $this->created_at)[1]) + 86400), '<');//结束时间
+        }
+        
+        if (!empty($this->updated_at)) {
+            $query->andFilterCompare('updated_at', strtotime(explode('/', $this->updated_at)[0]), '>=');//起始时间
+            $query->andFilterCompare('updated_at', (strtotime(explode('/', $this->updated_at)[1]) + 86400), '<');//结束时间
+        }
 
         return $dataProvider;
     }

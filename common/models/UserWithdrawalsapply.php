@@ -3,7 +3,6 @@
 namespace common\models;
 
 use Yii;
-
 /**
  * This is the model class for table "{{%user_withdrawalsapply}}".
  *
@@ -21,6 +20,7 @@ use Yii;
  */
 class UserWithdrawalsapply extends \yii\db\ActiveRecord
 { 
+    public $complete_at;
     /**
      * @inheritdoc
      */

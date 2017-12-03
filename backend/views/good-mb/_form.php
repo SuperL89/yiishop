@@ -130,7 +130,7 @@ use common\models\Freight;
 
     <?php // $form->field($model, 'brand_id')->textInput() ?>
 
-    <?= $form->field($model, 'status')->dropDownList(GoodMb::allStatus(),['prompt'=>'请选择状态']) ?>
+    <?php // $form->field($model, 'status')->dropDownList(GoodMb::allStatus(),['prompt'=>'请选择状态']) ?>
 
     <?php // $form->field($model, 'created_at')->textInput() ?>
 

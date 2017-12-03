@@ -125,6 +125,8 @@ return [
                         'POST del-withdrawals-account' => 'del-withdrawals-account',
                         'POST get-withdrawals-account' => 'get-withdrawals-account',
                         'POST withdrawals-apply' => 'withdrawals-apply',
+                        'POST business-code-good' => 'business-code-good',
+                        'POST business-create-good-mb' => 'business-create-good-mb',
                     ]
                 ],
             ]

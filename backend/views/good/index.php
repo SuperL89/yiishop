@@ -91,10 +91,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'headerOptions' => ['width' => '12%'],
             //时间筛选
             'filter' => DateRangePicker::widget([
-                'name' => 'GoodSearch[created_at]',
+                'name' => 'GoodSearch[updated_at]',
                 'options' => ['placeholder' => '','class' => 'form-control'],
                 //注意，该方法更新的时候你需要指定value值
-                'value' => Yii::$app->request->get('GoodSearch')['created_at'],
+                'value' => Yii::$app->request->get('GoodSearch')['updated_at'],
                 'convertFormat' => true,
                 'pluginOptions' => [
                     'autoclose' => true,
@@ -114,7 +114,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'order',
 
             ['class' => 'yii\grid\ActionColumn',
-                'template'=>'{view}{update}',
+                'template'=>'{view}{update}{good-code}',
+                'buttons'=>[
+                    'good-code'=>function($url,$model,$key)
+                    {
+                        $options =[
+                            'title'=>Yii::t('yii','查看商品条形码库'),
+                            'aria-label'=>yii::t('yii','查看商品条形码库'),
+                            'data-pjax'=>'0',
+                        ];
+                        return Html::a('<span class="glyphicon glyphicon-list-alt"></span>',$url,$options);
+                },
+                ],
             ],
         ],
     ]); ?>

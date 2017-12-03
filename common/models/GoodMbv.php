@@ -86,7 +86,7 @@ class GoodMbv extends \yii\db\ActiveRecord
      */
     public static function allStatus()
     {
-        return [self::STATUS_ACTIVE=>'正常',self::STATUS_DELETED=>'已删除'];
+        return [self::STATUS_ACTIVE=>'正常',self::STATUS_DELETED=>'待审核'];
     }
     /**
      * 获得商品属性状态并转为中文显示
@@ -96,7 +96,7 @@ class GoodMbv extends \yii\db\ActiveRecord
         if($this->status==self::STATUS_ACTIVE){
             return '正常';
         }elseif ($this->status==self::STATUS_DELETED){
-            return '已删除';
+            return '待审核';
         }else{
         return '未知';
         }

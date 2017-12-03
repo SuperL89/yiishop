@@ -71,7 +71,7 @@ class GoodSearch extends Good
             'is_hot' => $this->is_hot,
 //             'created_at' => $this->created_at,
 //             'updated_at' => $this->updated_at,
-            'user_id' => 0,
+            //'user_id' => 0,
             'order' => $this->order,
         ]);
 

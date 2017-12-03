@@ -71,7 +71,7 @@ class UserWithdrawalsapplySearch extends UserWithdrawalsapply
             '{{%user_account}}.account' => $this->account,
             'money_w' => $this->money_w,
             'commission_fee' => $this->commission_fee,
-            'status' => $this->status,
+            '{{%user_withdrawalsapply}}.status' => $this->status,
             //'created_at' => $this->created_at,
             //'updated_at' => $this->updated_at,
             //'complete_at' => $this->complete_at,

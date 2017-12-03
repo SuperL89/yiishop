@@ -52,6 +52,8 @@ use api\models\GoodImage;
 use api\models\GoodClicks;
 use api\models\UserAccount;
 use api\models\UserWithdrawalsapply;
+use api\models\GoodCode;
+use api\models\BusinessUpdateGoodForm;
 
 class UserController extends ActiveController
 {
@@ -183,7 +185,7 @@ class UserController extends ActiveController
             //发送验证码
             $phone = $sms->to;
             $code1 = $sms->code;
-            //Yii::$app->smser->send($phone , '【合心意】您的验证码是'.$code1);
+            Yii::$app->smser->send($phone , '【合心意】您的验证码是'.$code1);
         }else{
                 $data['code'] = '10004';
                 $data['msg'] = '验证码发送失败';
@@ -1880,7 +1882,193 @@ class UserController extends ActiveController
         }
     }
     /**
-     * 商家发布商品 token image_url title description good_num cate_id brand_id freight_id place_id date
+     * 条形码搜索商品 token bar_code
+     */
+    public function actionBusinessCodeGood()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+        //验证是否为商家用户
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
+        if(!$business){
+            $data['code'] = '10001';
+            $data['msg'] = '不是商家用户或未通过商家审核';
+            return $data;
+        }
+        $bar_code = isset($user_data['bar_code']) && $user_data['bar_code'] ? $user_data['bar_code'] : '';
+        if(!$bar_code){
+            $data['code'] = '10001';
+            $data['msg'] = '条形码不能为空';
+            return $data;
+        }
+        //根据条形码去条形码库中查找商品
+        $goodcode = GoodCode::find(['good_id'])->where(['bar_code' =>$bar_code])->one();
+        $good_id = $goodcode['good_id'];
+        //查询商品信息
+        $good_arr = Good::find()->select(['*'])->where(['id'=>$good_id])->with([
+            'goodImage'=> function ($query){
+                $query->select(['image_url']);
+            },
+            'cate'=> function ($query){
+                $query->select(['*']);
+            },
+            'brand'=> function ($query){
+                $query->select(['*']);
+            },
+            'goodCode'=> function ($query){
+                $query->select(['*']);
+            },
+        ])
+        ->one();
+        if(!$good_arr){
+            $data['code'] = '200';
+            $data['msg'] = '';
+            $data['data'] =[];
+            return $data;
+        }
+        //商品属性信息
+        $goodMbv = array();
+        $goodCode = isset($good_arr->goodCode) ? $good_arr->goodCode : array();
+        if ($goodCode) {
+            foreach ($goodCode as $codeKey => $codeValue) {
+                $goodMbv[$codeKey]['model_text'] = $codeValue->model_text;
+                $goodMbv[$codeKey]['price'] = 0;
+                $goodMbv[$codeKey]['stock_num'] = 0;
+                $goodMbv[$codeKey]['bar_code'] = $codeValue->bar_code;
+            }
+        }
+        //商品id
+        $goods['good_id'] = $good_arr->id;
+        //商品标题
+        $goods['title'] = $good_arr->title;
+        //商品图片
+        $goods['goodimage']=$good_arr->goodImage;
+        //商品详细
+        $goods['description']=$good_arr->description;
+        //商品码
+        $goods['good_num']=$good_arr->good_num;
+        //分类id及名称
+        $goods['cate_id']=$good_arr->cate->id;
+        $goods['cate_name']=$good_arr->cate->title;
+        //品牌id及名称
+        $goods['brand_id']=$good_arr->brand->id;
+        $goods['brand_name']=$good_arr->brand->title;
+        
+        $goods['goodmbv'] = $goodMbv;
+        
+        $data['code'] = '200';
+        $data['msg'] = '';
+        $data['data'] = $goods;
+        return $data;
+        
+    }
+    /**
+     * 商家添加报价 token good_id freight_id place_id date
+     * {"goodmbv":[{"model_text":"型号1","price":"111","stock_num":"50","bar_code":"21231231231"},{"model_text":"型号2","price":"222","stock_num":"50","bar_code":"3123123123123"}]}
+     */
+    public function actionBusinessCreateGoodMb()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+    
+        //验证是否为商家用户
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
+        if(!$business){
+            $data['code'] = '10001';
+            $data['msg'] = '不是商家用户或未通过商家审核';
+            return $data;
+        }
+        //验证该商品是否存在
+        $good = Good::find()->where(['id' => $user_data['good_id']])->one();
+        if(!$good){
+            $data['code'] = '10001';
+            $data['msg'] = '商品不存在';
+            return $data;
+        }
+        //查询该商品的所有条形码
+        $bar_code = array();
+        $bar_codes = GoodCode::find()->select(['bar_code'])->where(['good_id' => $good['id']])->all();
+        foreach ($bar_codes as $key => $v){
+            $bar_code[$key] = $v->bar_code;
+        }
+        
+        $model = new BusinessUpdateGoodForm();
+        $model->setAttributes($user_data);
+        if ($user_data && $model->validate()) {
+    
+            if(empty($user_data['data'])){
+                $data['code'] = '10001';
+                $data['msg'] = '商品属性数据不能为空';
+                return $data;
+            }
+            $goodmbv_arr = json_decode($user_data['data'],true);
+    
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+
+                $goodmb = new GoodMb();
+                $goodmb->user_id=$user->id;
+                $goodmb->freight_id=$user_data['freight_id'];
+                $goodmb->good_id = $good->id;
+                $goodmb->cate_id=$good->cate_id;
+                $goodmb->brand_id=$good->brand_id;
+                $goodmb->place_id=$user_data['place_id'];
+                $goodmb->mb_status=0;
+                $goodmb->created_at=time();
+                $goodmb->updated_at=time();
+                if(!$goodmb->save()){
+                    $data['code'] = '10001';
+                    $msg = array_values($goodmb->getFirstErrors())[0];
+                    $data['msg'] = $msg;
+                    return $data;
+                }
+    
+                $goodmbvArr = array();
+                foreach ($goodmbv_arr['goodmbv'] as $key => $attributes) {
+                    $goodmbvArr[$key]['model_text'] = $attributes['model_text'];
+                    $goodmbvArr[$key]['price'] = $attributes['price'];
+                    $goodmbvArr[$key]['stock_num'] = $attributes['stock_num'];
+                    $goodmbvArr[$key]['bar_code'] = $attributes['bar_code'];
+                    $goodmbvArr[$key]['mb_id'] = $goodmb->id;
+                    $goodmbvArr[$key]['created_at'] = time();
+                    $goodmbvArr[$key]['updated_at'] = time();
+                    if(!in_array($attributes['bar_code'], $bar_code)){
+                        $goodmbvArr[$key]['status'] = 2;
+                    }else{
+                        $goodmbvArr[$key]['status'] = 0;
+                    }
+                    
+                }
+                //print_r($goodmbvArr);exit();
+                if ($goodmbvArr) {
+                    $connection = \Yii::$app->db;
+                    //数据批量入库
+                    $connection->createCommand()->batchInsert('{{%good_mbv}}',['model_text','price','stock_num','bar_code','mb_id','created_at','updated_at','status'],$goodmbvArr)->execute();
+                }
+                $transaction->commit();
+    
+                $data['code'] = '200';
+                $data['msg'] = '';
+                return $data;
+            }  catch(Exception $e) {
+                # 回滚事务
+                $transaction->rollback();
+    
+                $data['code'] = '10001';
+                $data['msg'] = $e->getMessage();
+                return $data;
+            }
+        } else {
+            $data['code'] = '10001';
+            $msg = array_values($model->getFirstErrors())[0];
+            $data['msg'] = $msg;
+            return $data;
+        }
+    }
+    /**
+     * 商家发布新商品 token image_url title description good_num cate_id brand_id freight_id place_id date
      * {"goodmbv":[{"model_text":"型号1","price":"111","stock_num":"50","bar_code":"21231231231"},{"model_text":"型号2","price":"222","stock_num":"50","bar_code":"3123123123123"}]}
      */
     public function actionBusinessCreateGood()
@@ -1952,6 +2140,7 @@ class UserController extends ActiveController
                 $goodmb->cate_id=$user_data['cate_id'];
                 $goodmb->brand_id=$user_data['brand_id'];
                 $goodmb->place_id=$user_data['place_id'];
+                $goodmb->status=1;
                 $goodmb->mb_status=0;
                 $goodmb->created_at=time();
                 $goodmb->updated_at=time();
@@ -2001,8 +2190,8 @@ class UserController extends ActiveController
     }
      
     /**
-     * 商家更新商品 token mb_id image_url title description good_num cate_id brand_id place_id freight_id date
-     * {"goodmbv": [{"id":"21","model_text": "型号1","price": "111","stock_num": "50","bar_code": "21231231231","is_del":"1"},{"id":"22","model_text": "型号2","price": "222","stock_num": "50","bar_code": "3123123123123","is_del":"0"},{"id":"","model_text": "型号3","price": "333","stock_num": "50","bar_code": "3123123123123","is_del":"0"}]}
+     * 商家更新商品 token mb_id place_id freight_id date
+     * {"goodmbv": [{"id":"21","model_text": "型号1","price": "111","stock_num": "50","bar_code": "21231231231","is_del":"1"},{"id":"22","model_text": "型号2","price": "222","stock_num": "50","bar_code": "3123123123123"},{"id":"","model_text": "型号3","price": "333","stock_num": "50","bar_code": "3123123123123"}]}
      */
     public function actionBusinessUpdateGood()
     {
@@ -2023,7 +2212,13 @@ class UserController extends ActiveController
             $data['msg'] = '无此报价信息';
             return $data;
         }
-        $model = new BusinessCreateGoodForm();
+        //查询该商品的所有条形码
+        $bar_code = array();
+        $bar_codes = GoodCode::find()->select(['bar_code'])->where(['good_id' => $good['id']])->all();
+        foreach ($bar_codes as $key => $v){
+            $bar_code[$key] = $v->bar_code;
+        }
+        $model = new BusinessUpdateGoodForm();
         $model->setAttributes($user_data);
         if ($user_data && $model->validate()) {
             //更新数据
@@ -2036,121 +2231,253 @@ class UserController extends ActiveController
             //获取商家商品信息
             $good_arr = GoodMb::find()->select(['id','good_id'])->where(['user_id'=>$user->id,'status'=>[0,1]])->with([
                 'good'=> function ($query) {
-                    $query->select(['id'])->with([
-                        'goodImage'=> function ($query){
-                            $query->select(['id','good_id']);
-                        }
+                $query->select(['id'])->with([
+                    'goodImage'=> function ($query){
+                        $query->select(['id','good_id']);
+                    }
                     ]);
                 }
-            ])
-            ->one();
-            if (empty($good_arr)) {
-                $data['code'] = '10001';
-                $data['msg'] = '无此报价信息';
-                return $data;
-            }
-            
-            $transaction = \Yii::$app->db->beginTransaction();
-            try {
-                $good = Good::findOne($good_arr->good->id);
-                $good->user_id=$user->id;
-                $good->good_num=$user_data['good_num'];
-                $good->title=$user_data['title'];
-                $good->description=$user_data['description'];
-                $good->cate_id=$user_data['cate_id'];
-                $good->brand_id=$user_data['brand_id'];
-                $good->updated_at=time();
-                if(!$good->save()){
+                ])
+                ->one();
+                if (empty($good_arr)) {
                     $data['code'] = '10001';
-                    $msg = array_values($good->getFirstErrors())[0];
-                    $data['msg'] = $msg;
+                    $data['msg'] = '无此报价信息';
                     return $data;
                 }
-                 
-                $goodimage = GoodImage::findOne($good_arr->good->goodImage->id);
-                $goodimage->good_id=$good->id;
-                $goodimage->image_url=$user_data['image_url'];
-                $goodimage->save();
-                if(!$goodimage->save()){
-                    $data['code'] = '10001';
-                    $msg = array_values($goodimage->getFirstErrors())[0];
-                    $data['msg'] = $msg;
-                    return $data;
-                }
-                 
-                $goodmb = GoodMb::findOne($good_arr->id);
-                $goodmb->user_id=$user->id;
-                $goodmb->freight_id=$user_data['freight_id'];
-                $goodmb->good_id = $good->id;
-                $goodmb->cate_id=$user_data['cate_id'];
-                $goodmb->brand_id=$user_data['brand_id'];
-                $goodmb->place_id=$user_data['place_id'];
-                $goodmb->mb_status=0;
-                $goodmb->updated_at=time();
-                if(!$goodmb->save()){
-                    $data['code'] = '10001';
-                    $msg = array_values($goodmb->getFirstErrors())[0];
-                    $data['msg'] = $msg;
-                    return $data;
-                }
-                
-                $goodmbvArr = array();
-                foreach($goodmbv_arr['goodmbv'] as $key => $attributes) {
-                    if ( ! isset($attributes['model_text']) ||  ! isset($attributes['price']) ||  ! isset($attributes['stock_num']) ||  ! isset($attributes['bar_code'])) {
+    
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    $good = Good::findOne($good_arr->good->id);
+                    $good->updated_at=time();
+                    if(!$good->save()){
                         $data['code'] = '10001';
-                        $data['msg'] = '商品属性有误';
+                        $msg = array_values($good->getFirstErrors())[0];
+                        $data['msg'] = $msg;
                         return $data;
                     }
-                    //修改数据
-                    $goodmbvEditArr = array();
-                    $goodmbvEditArr['model_text'] = $attributes['model_text'];
-                    $goodmbvEditArr['price'] = $attributes['price'];
-                    $goodmbvEditArr['stock_num'] = $attributes['stock_num'];
-                    $goodmbvEditArr['bar_code'] = $attributes['bar_code'];
-                    $goodmbvEditArr['updated_at'] = time();
-                    if(isset($attributes['is_del']) && $attributes['is_del'] == 1 && isset($attributes['id']) && $attributes['id']){
-                        $goodmbvEditArr['status'] = 3;
+                                          
+                    $goodmb = GoodMb::findOne($good_arr->id);
+                    $goodmb->freight_id=$user_data['freight_id'];
+                    $goodmb->place_id=$user_data['place_id'];
+                    $goodmb->mb_status=0;
+                    $goodmb->updated_at=time();
+                    if(!$goodmb->save()){
+                        $data['code'] = '10001';
+                        $msg = array_values($goodmb->getFirstErrors())[0];
+                        $data['msg'] = $msg;
+                        return $data;
                     }
-                    if(isset($attributes['id']) && $attributes['id']){
-                        GoodMbv::updateAll($goodmbvEditArr, 'mb_id=:mb_id AND id=:id', array(':mb_id' => $good_arr->id, ':id' => $attributes['id']));
+    
+                    $goodmbvArr = array();
+                    foreach($goodmbv_arr['goodmbv'] as $key => $attributes) {
+                        if ( ! isset($attributes['model_text']) ||  ! isset($attributes['price']) ||  ! isset($attributes['stock_num']) ||  ! isset($attributes['bar_code'])) {
+                            $data['code'] = '10001';
+                            $data['msg'] = '商品属性有误';
+                            return $data;
+                        }
+                        //修改数据
+                        $goodmbvEditArr = array();
+                        $goodmbvEditArr['model_text'] = $attributes['model_text'];
+                        $goodmbvEditArr['price'] = $attributes['price'];
+                        $goodmbvEditArr['stock_num'] = $attributes['stock_num'];
+                        $goodmbvEditArr['bar_code'] = $attributes['bar_code'];
+                        $goodmbvEditArr['updated_at'] = time();
+                        if(isset($attributes['id']) && $attributes['id']){
+                            GoodMbv::updateAll($goodmbvEditArr, 'mb_id=:mb_id AND id=:id', array(':mb_id' => $good_arr->id, ':id' => $attributes['id']));
+                        }
+                        if ( ! isset($attributes['id']) || (isset($attributes['id']) && empty($attributes['id']))) {
+                            //添加数据
+                            $goodmbvArr[$key]['model_text'] = $attributes['model_text'];
+                            $goodmbvArr[$key]['price'] = $attributes['price'];
+                            $goodmbvArr[$key]['stock_num'] = $attributes['stock_num'];
+                            $goodmbvArr[$key]['bar_code'] = $attributes['bar_code'];
+                            $goodmbvArr[$key]['mb_id'] = $good_arr->id;
+                            $goodmbvArr[$key]['created_at'] = time();
+                            $goodmbvArr[$key]['updated_at'] = time();
+                            if (!in_array($attributes['bar_code'], $bar_code)) {
+                                $goodmbvArr[$key]['status'] = 2;
+                            } else {
+                                $goodmbvArr[$key]['status'] = 0;
+                            }
+                        }
                     }
-                    if ( ! isset($attributes['id']) || (isset($attributes['id']) && empty($attributes['id']))) {
-                        //添加数据
-                        $goodmbvArr[$key]['model_text'] = $attributes['model_text'];
-                        $goodmbvArr[$key]['price'] = $attributes['price'];
-                        $goodmbvArr[$key]['stock_num'] = $attributes['stock_num'];
-                        $goodmbvArr[$key]['bar_code'] = $attributes['bar_code'];
-                        $goodmbvArr[$key]['mb_id'] = $good_arr->id;
-                        $goodmbvArr[$key]['created_at'] = time();
-                        $goodmbvArr[$key]['updated_at'] = time();
+                     
+                    if ($goodmbvArr) {
+                        $connection = \Yii::$app->db;
+                        //数据批量入库
+                        $connection->createCommand()->batchInsert('{{%good_mbv}}',['model_text','price','stock_num','bar_code','mb_id','created_at','updated_at', 'status'],$goodmbvArr)->execute();
                     }
+                    $transaction->commit();
+                     
+                    $data['code'] = '200';
+                    $data['msg'] = '';
+                    return $data;
+                } catch(Exception $e) {
+                    # 回滚事务
+                    $transaction->rollback();
+    
+                    $data['code'] = '10001';
+                    $data['msg'] = $e->getMessage();
+                    return $data;
                 }
-                 
-                if ($goodmbvArr) {
-                    $connection = \Yii::$app->db;
-                    //数据批量入库
-                    $connection->createCommand()->batchInsert('{{%good_mbv}}',['model_text','price','stock_num','bar_code','mb_id','created_at','updated_at'],$goodmbvArr)->execute();
-                }
-                $transaction->commit();
-                 
-                $data['code'] = '200';
-                $data['msg'] = '';
-                return $data;
-            } catch(Exception $e) {
-                # 回滚事务
-               $transaction->rollback();
-            
-               $data['code'] = '10001';
-               $data['msg'] = $e->getMessage();
-               return $data;
-           }
         } else {
-           $data['code'] = '10001';
-           $msg = array_values($model->getFirstErrors())[0];
-           $data['msg'] = $msg;
-           return $data;
-        }  
+            $data['code'] = '10001';
+            $msg = array_values($model->getFirstErrors())[0];
+            $data['msg'] = $msg;
+            return $data;
+        }
     }
+       /**
+        * 商家更新商品 token mb_id image_url title description good_num cate_id brand_id place_id freight_id date
+        * {"goodmbv": [{"id":"21","model_text": "型号1","price": "111","stock_num": "50","bar_code": "21231231231"},{"id":"22","model_text": "型号2","price": "222","stock_num": "50","bar_code": "3123123123123"},{"id":"","model_text": "型号3","price": "333","stock_num": "50","bar_code": "3123123123123"}]}
+       */
+//     public function actionBusinessUpdateGood()
+//     {
+//         $user_data = Yii::$app->request->post();
+//         $token = $user_data['token'];
+//         $user = User::findIdentityByAccessToken($token);
+//         $mb_id = isset($user_data['mb_id']) && $user_data['mb_id'] ? $user_data['mb_id'] : 0;
+//         //验证是否为商家用户
+//         $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
+//         if(!$business){
+//             $data['code'] = '10001';
+//             $data['msg'] = '不是商家用户或未通过商家审核';
+//             return $data;
+//         }
+//         $goodmb = GoodMb::find()->select(['*'])->where(['status'=>[0,1],'user_id' => $user->id,'id' => $mb_id])->one();
+//         if (!$goodmb){
+//             $data['code'] = '10001';
+//             $data['msg'] = '无此报价信息';
+//             return $data;
+//         }
+//         $model = new BusinessCreateGoodForm();
+//         $model->setAttributes($user_data);
+//         if ($user_data && $model->validate()) {
+//             //更新数据
+//             if(empty($user_data['data'])){
+//                 $data['code'] = '10001';
+//                 $data['msg'] = '商品属性数据不能为空';
+//                 return $data;
+//             }
+//             $goodmbv_arr = json_decode($user_data['data'],true);
+//             //获取商家商品信息
+//             $good_arr = GoodMb::find()->select(['id','good_id'])->where(['user_id'=>$user->id,'status'=>[0,1]])->with([
+//                 'good'=> function ($query) {
+//                     $query->select(['id'])->with([
+//                         'goodImage'=> function ($query){
+//                             $query->select(['id','good_id']);
+//                         }
+//                     ]);
+//                 }
+//             ])
+//             ->one();
+//             if (empty($good_arr)) {
+//                 $data['code'] = '10001';
+//                 $data['msg'] = '无此报价信息';
+//                 return $data;
+//             }
+            
+//             $transaction = \Yii::$app->db->beginTransaction();
+//             try {
+//                 $good = Good::findOne($good_arr->good->id);
+//                 $good->user_id=$user->id;
+//                 $good->good_num=$user_data['good_num'];
+//                 $good->title=$user_data['title'];
+//                 $good->description=$user_data['description'];
+//                 $good->cate_id=$user_data['cate_id'];
+//                 $good->brand_id=$user_data['brand_id'];
+//                 $good->updated_at=time();
+//                 if(!$good->save()){
+//                     $data['code'] = '10001';
+//                     $msg = array_values($good->getFirstErrors())[0];
+//                     $data['msg'] = $msg;
+//                     return $data;
+//                 }
+                 
+//                 $goodimage = GoodImage::findOne($good_arr->good->goodImage->id);
+//                 $goodimage->good_id=$good->id;
+//                 $goodimage->image_url=$user_data['image_url'];
+//                 $goodimage->save();
+//                 if(!$goodimage->save()){
+//                     $data['code'] = '10001';
+//                     $msg = array_values($goodimage->getFirstErrors())[0];
+//                     $data['msg'] = $msg;
+//                     return $data;
+//                 }
+                 
+//                 $goodmb = GoodMb::findOne($good_arr->id);
+//                 $goodmb->user_id=$user->id;
+//                 $goodmb->freight_id=$user_data['freight_id'];
+//                 $goodmb->good_id = $good->id;
+//                 $goodmb->cate_id=$user_data['cate_id'];
+//                 $goodmb->brand_id=$user_data['brand_id'];
+//                 $goodmb->place_id=$user_data['place_id'];
+//                 $goodmb->mb_status=0;
+//                 $goodmb->updated_at=time();
+//                 if(!$goodmb->save()){
+//                     $data['code'] = '10001';
+//                     $msg = array_values($goodmb->getFirstErrors())[0];
+//                     $data['msg'] = $msg;
+//                     return $data;
+//                 }
+                
+//                 $goodmbvArr = array();
+//                 foreach($goodmbv_arr['goodmbv'] as $key => $attributes) {
+//                     if ( ! isset($attributes['model_text']) ||  ! isset($attributes['price']) ||  ! isset($attributes['stock_num']) ||  ! isset($attributes['bar_code'])) {
+//                         $data['code'] = '10001';
+//                         $data['msg'] = '商品属性有误';
+//                         return $data;
+//                     }
+//                     //修改数据
+//                     $goodmbvEditArr = array();
+//                     $goodmbvEditArr['model_text'] = $attributes['model_text'];
+//                     $goodmbvEditArr['price'] = $attributes['price'];
+//                     $goodmbvEditArr['stock_num'] = $attributes['stock_num'];
+//                     $goodmbvEditArr['bar_code'] = $attributes['bar_code'];
+//                     $goodmbvEditArr['updated_at'] = time();
+//                     if(isset($attributes['is_del']) && $attributes['is_del'] == 1 && isset($attributes['id']) && $attributes['id']){
+//                         $goodmbvEditArr['status'] = 3;
+//                     }
+//                     if(isset($attributes['id']) && $attributes['id']){
+//                         GoodMbv::updateAll($goodmbvEditArr, 'mb_id=:mb_id AND id=:id', array(':mb_id' => $good_arr->id, ':id' => $attributes['id']));
+//                     }
+//                     if ( ! isset($attributes['id']) || (isset($attributes['id']) && empty($attributes['id']))) {
+//                         //添加数据
+//                         $goodmbvArr[$key]['model_text'] = $attributes['model_text'];
+//                         $goodmbvArr[$key]['price'] = $attributes['price'];
+//                         $goodmbvArr[$key]['stock_num'] = $attributes['stock_num'];
+//                         $goodmbvArr[$key]['bar_code'] = $attributes['bar_code'];
+//                         $goodmbvArr[$key]['mb_id'] = $good_arr->id;
+//                         $goodmbvArr[$key]['created_at'] = time();
+//                         $goodmbvArr[$key]['updated_at'] = time();
+//                     }
+//                 }
+                 
+//                 if ($goodmbvArr) {
+//                     $connection = \Yii::$app->db;
+//                     //数据批量入库
+//                     $connection->createCommand()->batchInsert('{{%good_mbv}}',['model_text','price','stock_num','bar_code','mb_id','created_at','updated_at'],$goodmbvArr)->execute();
+//                 }
+//                 $transaction->commit();
+                 
+//                 $data['code'] = '200';
+//                 $data['msg'] = '';
+//                 return $data;
+//             } catch(Exception $e) {
+//                 # 回滚事务
+//                $transaction->rollback();
+            
+//                $data['code'] = '10001';
+//                $data['msg'] = $e->getMessage();
+//                return $data;
+//            }
+//         } else {
+//            $data['code'] = '10001';
+//            $msg = array_values($model->getFirstErrors())[0];
+//            $data['msg'] = $msg;
+//            return $data;
+//         }  
+//     }
     /**
      * 获取商家商品详细  token  mb_id
      */
@@ -2173,17 +2500,20 @@ class UserController extends ActiveController
                 $query->select(['*'])->with([
                     'goodImage'=> function ($query){
                         $query->select(['id','good_id','image_url']);
-                    }
+                    },
+                    'cate'=> function ($query){
+                        $query->select(['*']);
+                    },
+                    'brand'=> function ($query){
+                        $query->select(['*']);
+                    },
+                    'goodCode'=> function ($query){
+                        $query->select(['*']);
+                    },
                 ]);
             },
             'goodMbv'=> function ($query){
-                $query->select(['*'])->where(['status'=> [0,1]])->orderBy('price asc');
-            },
-            'cate'=> function ($query){
-                $query->select(['*']);
-            },
-            'brand'=> function ($query){
-                $query->select(['*']);
+                $query->select(['*'])->orderBy('price asc');
             },
             'place'=> function ($query){
                 $query->select(['*']);
@@ -2201,6 +2531,31 @@ class UserController extends ActiveController
                 $data['msg'] = '无此报价信息';
                 return $data;
             }
+            
+            $goodMbvs  = array();
+            //商品条形码信息
+            $goodBarCode = isset($good_arr['good']['goodCode']) ? $good_arr['good']['goodCode'] : array();
+            //商品属性信息
+            $goodMbv = isset($good_arr['goodMbv']) ? $good_arr['goodMbv'] : array();
+            if ($goodBarCode && $goodMbv) {
+                foreach ($goodBarCode as $barcodeKey => $barcodeValue) {
+                    foreach ($goodMbv as $goodMbvValue) {
+                        $goodMbvs[$barcodeKey]['id'] = 0;
+                        $goodMbvs[$barcodeKey]['model_text'] = $barcodeValue['model_text'];
+                        $goodMbvs[$barcodeKey]['price'] = 0;
+                        $goodMbvs[$barcodeKey]['stock_num'] = 0;
+                        $goodMbvs[$barcodeKey]['bar_code'] = $barcodeValue['bar_code'];
+                        if ($goodMbvValue['bar_code'] == $barcodeValue['bar_code']) {
+                            $goodMbvs[$barcodeKey]['id'] = $goodMbvValue['id'];
+                            $goodMbvs[$barcodeKey]['model_text'] = $goodMbvValue['model_text'];
+                            $goodMbvs[$barcodeKey]['price'] = $goodMbvValue['price'];
+                            $goodMbvs[$barcodeKey]['stock_num'] = $goodMbvValue['stock_num'];
+                            $goodMbvs[$barcodeKey]['bar_code'] = $goodMbvValue['bar_code'];
+                            break;
+                        }
+                    }
+                }
+            }
             //商家报价id
             $goods['good']['mb_id']=$good_arr['id'];
             //商品图片
@@ -2212,11 +2567,11 @@ class UserController extends ActiveController
             //商品码
             $goods['good']['good_num']=$good_arr['good']['good_num'];
             //分类id及名称
-            $goods['good']['cate_id']=$good_arr['cate']['id'];
-            $goods['good']['cate_name']=$good_arr['cate']['title'];
+            $goods['good']['cate_id']=$good_arr['good']['cate']['id'];
+            $goods['good']['cate_name']=$good_arr['good']['cate']['title'];
             //品牌id及名称
-            $goods['good']['brand_id']=$good_arr['brand']['id'];
-            $goods['good']['brand_name']=$good_arr['brand']['title'];
+            $goods['good']['brand_id']=$good_arr['good']['brand']['id'];
+            $goods['good']['brand_name']=$good_arr['good']['brand']['title'];
             //发货地id及名称
             $goods['good']['place_id']=$good_arr['place']['id'];
             $goods['good']['place_name']=$good_arr['place']['name'];
@@ -2225,7 +2580,7 @@ class UserController extends ActiveController
             $goods['good']['freight_id']=$good_arr['freight']['id'];
             $goods['good']['freight_name']=$good_arr['freight']['title'];
             //商品属性
-            $goods['good']['data'] = $good_arr['goodMbv'];
+            $goods['good']['data'] = $goodMbvs;
             $data['code'] = '200';
             $data['msg'] = '';
             $data['data'] = $goods;

@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             //'image_url:url',
             [
-            'label' => '商品图片',
+            'label' => '认证图片',
             'format' => ['html'],
             'value' => function($model){
             $image_url='';
