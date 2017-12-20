@@ -2736,7 +2736,7 @@ class UserController extends ActiveController
                     }
                 }
             }
-            print_r($goodMbv);exit();
+            //print_r($good_arr);exit();
             //商家报价id
             $goods['good']['mb_id']=$good_arr['id'];
             //商品图片
