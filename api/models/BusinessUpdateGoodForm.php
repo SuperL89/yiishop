@@ -6,7 +6,7 @@ use Yii;
 
 class BusinessUpdateGoodForm extends \yii\db\ActiveRecord
 {
-    public $freight_id;//运费模版
+    //public $freight_id;//运费模版
     public $place_id;//运费模版
     
 
@@ -17,10 +17,10 @@ class BusinessUpdateGoodForm extends \yii\db\ActiveRecord
     {
         return [
             
-            ['freight_id', 'trim'],
+//             ['freight_id', 'trim'],
             
-            ['freight_id', 'required', 'message' => '运费模版不能为空.'],
-            ['freight_id', 'integer','message' => '运费模版类型不正确.'],
+//             ['freight_id', 'required', 'message' => '运费模版不能为空.'],
+//             ['freight_id', 'integer','message' => '运费模版类型不正确.'],
             
             ['place_id', 'trim'],
             

@@ -66,7 +66,7 @@ class OrderSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            '{{%order}}.id' => $this->id,
             //'user_id' => $this->user_id,
             //'business_id' => $this->business_id,
             //'good_id' => $this->good_id,

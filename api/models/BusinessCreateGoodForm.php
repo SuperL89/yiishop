@@ -25,7 +25,7 @@ class BusinessCreateGoodForm extends \yii\db\ActiveRecord
             ['good_num', 'trim'],
             ['cate_id', 'trim'],
             ['brand_id', 'trim'],
-            ['freight_id', 'trim'],
+            //['freight_id', 'trim'],
             
             ['image_url', 'required', 'message' => '商品图片不能为空.'],
             ['title', 'required', 'message' => '商品标题不能为空.'],
@@ -41,13 +41,13 @@ class BusinessCreateGoodForm extends \yii\db\ActiveRecord
             ['brand_id', 'required', 'message' => '发货地不能为空.'],
             ['brand_id', 'integer','message' => '发货地类型不正确.'],
             
-            ['freight_id', 'required', 'message' => '运费模版不能为空.'],
-            ['freight_id', 'integer','message' => '运费模版类型不正确.'],
+//             ['freight_id', 'required', 'message' => '运费模版不能为空.'],
+//             ['freight_id', 'integer','message' => '运费模版类型不正确.'],
             
             [['cate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['cate_id' => 'id'],'message' => '商品分类不存在.'],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id'],'message' => '商品品牌不存在.'],
             [['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id'],'message' => '发货地不存在.'],
-            [['freight_id'], 'exist', 'skipOnError' => true, 'targetClass' => Freight::className(), 'targetAttribute' => ['freight_id' => 'id'],'message' => '运费模版不存在.'],
+            //[['freight_id'], 'exist', 'skipOnError' => true, 'targetClass' => Freight::className(), 'targetAttribute' => ['freight_id' => 'id'],'message' => '运费模版不存在.'],
         ];
     }
 }

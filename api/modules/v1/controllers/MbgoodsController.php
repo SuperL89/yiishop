@@ -42,19 +42,19 @@ class MbgoodsController extends ActiveController
                         'goodMbv'=> function ($query){
                             $query->select(['*'])->where(['status'=> 0])->orderBy('price asc');
                         },
-                        'freight'=> function ($query){
-                            $query->select(['*'])->with([
-                                    'freightVars'=> function ($query){
-                                        $query->select(['*'])->orderBy('freight asc');
-                                    }
-                                ]);
-                        },
+//                         'freight'=> function ($query){
+//                             $query->select(['*'])->with([
+//                                     'freightVars'=> function ($query){
+//                                         $query->select(['*'])->orderBy('freight asc');
+//                                     }
+//                                 ]);
+//                         },
                         'order'=> function ($query){
                             $query->select(['id','mb_id','pay_num'])->where(['status' =>4])->count();
                         },
-                        'place'=> function ($query){
-                            $query->select(['*']);
-                        },
+//                         'place'=> function ($query){
+//                             $query->select(['*']);
+//                         },
                     ]);
             },
             'goodImage'=> function ($query){
@@ -84,9 +84,9 @@ class MbgoodsController extends ActiveController
                 //查询商品已售数量
                 $goods['good_mb'][$k]['sold_num']=$this->actionArrvalsum($v['order'] , 'pay_num');
                 //查询商品最低运费 
-                $goods['good_mb'][$k]['freight']=isset($v['freight']['freightVars'][0]['freight'])?$v['freight']['freightVars'][0]['freight']:0;
+                //$goods['good_mb'][$k]['freight']=isset($v['freight']['freightVars'][0]['freight'])?$v['freight']['freightVars'][0]['freight']:0;
                 //查询商品发货地
-                $goods['good_mb'][$k]['place'] = $v['place']['name'];
+                //$goods['good_mb'][$k]['place'] = $v['place']['name'];
                 //商品最低价格
                 $goods['good_mb'][$k]['price_min'] = isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
                 //商品总库存

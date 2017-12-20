@@ -98,8 +98,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute'=>'complete_at',
             'format'=>['date','php:Y-m-d H:i:s'],
             ],
+            [
+            'attribute'=>'library_at',
+            'format'=>['date','php:Y-m-d H:i:s'],
+            ],
             //'good_var',
-            'cancel_text',
+            //'cancel_text',
             'message',
         ],
     ]) ?>

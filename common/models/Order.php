@@ -54,19 +54,19 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_num', 'user_id', 'business_id', 'good_id', 'mb_id', 'mbv_id', 'user_address', 'good_price', 'pay_num', 'good_total_price', 'order_fare', 'order_total_price', 'created_at'], 'required'],
-            [['user_id', 'business_id', 'good_id', 'mb_id', 'mbv_id', 'pay_type', 'pay_num', 'status', 'created_at', 'pay_at', 'deliver_at', 'complete_at'], 'integer'],
-            [['good_price', 'good_total_price', 'order_fare', 'order_total_price'], 'number'],
-            [['order_num'], 'string', 'max' => 128],
-            [['user_address', 'good_var'], 'string', 'max' => 1000],
-            [['express_name', 'express_num'], 'string', 'max' => 50],
-            [['cancel_text'], 'string', 'max' => 100],
-            [['message'], 'string', 'max' => 300],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['business_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['business_id' => 'id']],
-            [['good_id'], 'exist', 'skipOnError' => true, 'targetClass' => Good::className(), 'targetAttribute' => ['good_id' => 'id']],
-            [['mb_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodMb::className(), 'targetAttribute' => ['mb_id' => 'id']],
-            [['mbv_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodMbv::className(), 'targetAttribute' => ['mbv_id' => 'id']],
+//             [['order_num', 'user_id', 'business_id', 'good_id', 'mb_id', 'mbv_id', 'user_address', 'good_price', 'pay_num', 'good_total_price', 'order_fare', 'order_total_price', 'created_at'], 'required'],
+//             [['user_id', 'business_id', 'good_id', 'mb_id', 'mbv_id', 'pay_type', 'pay_num', 'status', 'created_at', 'pay_at', 'deliver_at', 'complete_at'], 'integer'],
+//             [['good_price', 'good_total_price', 'order_fare', 'order_total_price'], 'number'],
+//             [['order_num'], 'string', 'max' => 128],
+//             [['user_address', 'good_var'], 'string', 'max' => 1000],
+//             [['express_name', 'express_num'], 'string', 'max' => 50],
+//             [['cancel_text'], 'string', 'max' => 100],
+//             [['message'], 'string', 'max' => 300],
+//             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+//             [['business_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['business_id' => 'id']],
+//             [['good_id'], 'exist', 'skipOnError' => true, 'targetClass' => Good::className(), 'targetAttribute' => ['good_id' => 'id']],
+//             [['mb_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodMb::className(), 'targetAttribute' => ['mb_id' => 'id']],
+//             [['mbv_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodMbv::className(), 'targetAttribute' => ['mbv_id' => 'id']],
         ];
     }
 
@@ -100,6 +100,7 @@ class Order extends \yii\db\ActiveRecord
             'good_var' => '商品信息',
             'cancel_text' => '订单取消原因',
             'message' => '用户留言',
+            'library_at' => '出库时间',
         ];
     }
     
@@ -171,13 +172,13 @@ class Order extends \yii\db\ActiveRecord
     const STATUS_2 = 2;//待发货
     const STATUS_3 = 3;//已发货
     const STATUS_4 = 4;//已完成
-    const STATUS_5 = 5;//已取消
+    const STATUS_5 = 5;//已出库
     /**
      * 设置订单状态常量
      */
     public static function allStatus()
     {
-        return [self::STATUS_1=>'待支付',self::STATUS_2=>'待发货',self::STATUS_3=>'已发货',self::STATUS_4=>'已完成',self::STATUS_5=>'已取消'];
+        return [self::STATUS_1=>'待支付',self::STATUS_2=>'待发货',self::STATUS_3=>'已发货',self::STATUS_4=>'已完成',self::STATUS_5=>'已出库'];
     }
     /**
      * 获得订单状态并转为中文显示
@@ -207,7 +208,7 @@ class Order extends \yii\db\ActiveRecord
               $status = '已完成';
               break;
             case 5:
-              $status = '已取消';
+              $status = '已出库';
               break;
        }
        return $status;

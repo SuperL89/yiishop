@@ -884,7 +884,9 @@ class UserController extends ActiveController
 // //                 $goodImage = $goodImageAry->small;
 // //             }
             //计算运费
-            $orderFare = $this->calculateOrderFare($freight_arr, $address_arr, $user_data['num']);
+            //$orderFare = $this->calculateOrderFare($freight_arr, $address_arr, $user_data['num']);
+            
+            $orderFare = 0;
             //商品信息
             $goodData = array(
                 'goodmvb_id' => $good_arr->id,
@@ -969,7 +971,9 @@ class UserController extends ActiveController
                 ])
                 ->one();
                 //计算运费
-                $orderFare = $this->calculateOrderFare($freight_arr, $address_arr, $user_data['num']);
+                //$orderFare = $this->calculateOrderFare($freight_arr, $address_arr, $user_data['num']);
+                
+                $orderFare =0;
                 
                 //获取商品图片(小图)
 //                 $goodImage = '';
@@ -1032,7 +1036,7 @@ class UserController extends ActiveController
     }
     
     /**
-     * 获得用户购买订单列表 入参  token 订单状态 order_status 1待支付 2待发货 3已发货 4已完成 5已取消   $page
+     * 获得用户购买订单列表 入参  token 订单状态 order_status 1待支付 2待发货 3已发货 4已完成 5已出库   $page
      */
     public function actionGetUserOrder()
     {
@@ -1123,7 +1127,7 @@ class UserController extends ActiveController
         return $data;
     }
     /**
-     * 获得商家销售订单列表 入参  token 订单状态 order_status 1待支付 2待发货 3已发货 4已完成 5已取消 page
+     * 获得商家销售订单列表 入参  token 订单状态 order_status 1待支付 2待发货 3已发货 4已完成 5已出库 page
      */
     public function actionGetBusinessOrder()
     {
@@ -1237,10 +1241,10 @@ class UserController extends ActiveController
                 case 1: return array('code' => '10001', 'msg' => '该订单为未支付状态,不可确认收货'); break;
                 case 2: return array('code' => '10001', 'msg' => '该订单为待发货状态,不可确认收货'); break;
                 case 4: return array('code' => '10001', 'msg' => '该订单为已完成状态,不可确认收货'); break;
-                case 5: return array('code' => '10001', 'msg' => '该订单为已取消状态,不可确认收货'); break;
+                case 5: return array('code' => '10001', 'msg' => '该订单为已出库状态,不可确认收货'); break;
             }
             //计算评分
-            $businessScore = $this->calculateBusinessScore($user_data);
+            //$businessScore = $this->calculateBusinessScore($user_data);
             
             $transaction = \Yii::$app->db->beginTransaction();
             try {
@@ -1250,29 +1254,24 @@ class UserController extends ActiveController
                 $orderData->complete_at = time();
                 $orderData->save();
                 //评分信息
-                $businessStarData = new BusinessStar;
-                $businessStarData->user_id = $order_arr->user_id;
-                $businessStarData->business_id = $order_arr->business_id;
-                $businessStarData->order_id = $order_arr->id;
-                $businessStarData->good_star = $user_data['good_star'];
-                $businessStarData->business_star = $user_data['business_star'];
-                $businessStarData->created_at = time();
-                $businessStarData->save();
-                //修改商家评分
-//                 $businessData = Business::findOne(['user_id' => $order_arr->business_id]);
-//                 $businessData->refresh();
-//                 $businessData->score = $businessData->score + $businessScore;
-//                 $businessData->save();
+//                 $businessStarData = new BusinessStar;
+//                 $businessStarData->user_id = $order_arr->user_id;
+//                 $businessStarData->business_id = $order_arr->business_id;
+//                 $businessStarData->order_id = $order_arr->id;
+//                 $businessStarData->good_star = $user_data['good_star'];
+//                 $businessStarData->business_star = $user_data['business_star'];
+//                 $businessStarData->created_at = time();
+//                 $businessStarData->save();
                 
                 //修改商家评分
-                $businessData = new Business();
-                $businessDatacount = $businessData->updateAllCounters(array('score'=>$businessScore), 'user_id=:user_id', array(':user_id' => $order_arr->business_id)); //自动加减评分
-                if ($businessDatacount <= 0) {
-                    $data['code'] = '10001';
-                    $msg = '操作失败';
-                    $data['msg'] = $msg;
-                    return $data;
-                }
+//                 $businessData = new Business();
+//                 $businessDatacount = $businessData->updateAllCounters(array('score'=>$businessScore), 'user_id=:user_id', array(':user_id' => $order_arr->business_id)); //自动加减评分
+//                 if ($businessDatacount <= 0) {
+//                     $data['code'] = '10001';
+//                     $msg = '操作失败';
+//                     $data['msg'] = $msg;
+//                     return $data;
+//                 }
                 //修改商家用户金额
 //                 $userData = User::findOne($order_arr->business_id);
 //                 $userData->refresh();
@@ -1347,7 +1346,7 @@ class UserController extends ActiveController
                 case 1: return array('code' => '10001', 'msg' => '该订单为未支付状态,不可发货'); break;
                 case 3: return array('code' => '10001', 'msg' => '该订单为已发货状态,不可发货'); break;
                 case 4: return array('code' => '10001', 'msg' => '该订单为已完成状态,不可发货'); break;
-                case 5: return array('code' => '10001', 'msg' => '该订单为已取消状态,不可发货'); break;
+                case 5: return array('code' => '10001', 'msg' => '该订单为已出库状态,不可发货'); break;
             }
             //查询快递公司信息
             $express_arr = Express::find()->select(['*'])->where(['id' => $user_data['express_id'],'status' => 0])->one();
@@ -1378,56 +1377,56 @@ class UserController extends ActiveController
     /**
      * 商家取消订单  token order_id cancel_msg
      */
-    public function actionBusinessCancel()
-    {
-        $user_data = Yii::$app->request->post();
-        $token = $user_data['token'];
-        $user = User::findIdentityByAccessToken($token);
-        //验证是否为商家用户
-        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
-        if(!$business){
-            $data['code'] = '10001';
-            $data['msg'] = '不是商家用户或未通过商家审核';
-            return $data;
-        }
+//     public function actionBusinessCancel()
+//     {
+//         $user_data = Yii::$app->request->post();
+//         $token = $user_data['token'];
+//         $user = User::findIdentityByAccessToken($token);
+//         //验证是否为商家用户
+//         $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
+//         if(!$business){
+//             $data['code'] = '10001';
+//             $data['msg'] = '不是商家用户或未通过商家审核';
+//             return $data;
+//         }
         
-        $model = new BusinessCancelForm();
-        $model->setAttributes($user_data);
-        if ($user_data && $model->validate()) {
-            //查询订单信息
-            $order_arr = Order::find()->select(['*'])->where(['order_num'=>$user_data['order_id']])->one();
-            //验证订单是否是当前用户
-            if ($order_arr->business_id != $user->id) {
-                return array('code' => '10001', 'msg' => '您无权限操作该订单');
-            }
-            //验证订单状态
-            switch ($order_arr->status) {
-                case 2: return array('code' => '10001', 'msg' => '该订单为待发货状态,不可取消'); break;
-                case 3: return array('code' => '10001', 'msg' => '该订单为已发货状态,不可取消'); break;
-                case 4: return array('code' => '10001', 'msg' => '该订单为已完成状态,不可取消'); break;
-                case 5: return array('code' => '10001', 'msg' => '该订单为已取消状态,不可取消'); break;
-            }
-            //订单信息
-            $orderData = Order::findOne($order_arr->id);
-            $orderData->status = 5; //订单已取消
-            $orderData->complete_at = time();
-            $orderData->cancel_text = $user_data['cancel_msg'];
-            if ($orderData->save()) {
-                $data['code'] = '200';
-                $data['msg'] = '';
-                return $data;
-            } else {
-                $data['code'] = '10001';
-                $data['msg'] = '操作失败';
-                return $data;
-            }
-        } else {
-            $data['code'] = '10001';
-            $msg = array_values($model->getFirstErrors())[0];
-            $data['msg'] = $msg;
-            return $data;
-        }
-    }
+//         $model = new BusinessCancelForm();
+//         $model->setAttributes($user_data);
+//         if ($user_data && $model->validate()) {
+//             //查询订单信息
+//             $order_arr = Order::find()->select(['*'])->where(['order_num'=>$user_data['order_id']])->one();
+//             //验证订单是否是当前用户
+//             if ($order_arr->business_id != $user->id) {
+//                 return array('code' => '10001', 'msg' => '您无权限操作该订单');
+//             }
+//             //验证订单状态
+//             switch ($order_arr->status) {
+//                 case 2: return array('code' => '10001', 'msg' => '该订单为待发货状态,不可取消'); break;
+//                 case 3: return array('code' => '10001', 'msg' => '该订单为已发货状态,不可取消'); break;
+//                 case 4: return array('code' => '10001', 'msg' => '该订单为已完成状态,不可取消'); break;
+//                 case 5: return array('code' => '10001', 'msg' => '该订单为已取消状态,不可取消'); break;
+//             }
+//             //订单信息
+//             $orderData = Order::findOne($order_arr->id);
+//             $orderData->status = 5; //订单已取消
+//             $orderData->complete_at = time();
+//             $orderData->cancel_text = $user_data['cancel_msg'];
+//             if ($orderData->save()) {
+//                 $data['code'] = '200';
+//                 $data['msg'] = '';
+//                 return $data;
+//             } else {
+//                 $data['code'] = '10001';
+//                 $data['msg'] = '操作失败';
+//                 return $data;
+//             }
+//         } else {
+//             $data['code'] = '10001';
+//             $msg = array_values($model->getFirstErrors())[0];
+//             $data['msg'] = $msg;
+//             return $data;
+//         }
+//     }
     
     /**
      * 查看商家评价  token order_id
@@ -1625,7 +1624,7 @@ class UserController extends ActiveController
                 case 2: return array('code' => '10001', 'msg' => '该订单为待发货状态,不可支付'); break;
                 case 3: return array('code' => '10001', 'msg' => '该订单为发货状态,不可支付'); break;
                 case 4: return array('code' => '10001', 'msg' => '该订单为已完成状态,不可支付'); break;
-                case 5: return array('code' => '10001', 'msg' => '该订单为已取消状态,不可支付'); break;
+                case 5: return array('code' => '10001', 'msg' => '该订单为已出库状态,不可支付'); break;
             }
             
             $paytype['money'] = $user->money;
@@ -1673,7 +1672,7 @@ class UserController extends ActiveController
                 case 2: return array('code' => '10001', 'msg' => '该订单为待发货状态,不可支付'); break;
                 case 3: return array('code' => '10001', 'msg' => '该订单为发货状态,不可支付'); break;
                 case 4: return array('code' => '10001', 'msg' => '该订单为已完成状态,不可支付'); break;
-                case 5: return array('code' => '10001', 'msg' => '该订单为已取消状态,不可支付'); break;
+                case 5: return array('code' => '10001', 'msg' => '该订单为已出库状态,不可支付'); break;
             }
             //验证用户余额是否充足
             if($user->money <= $order_arr->order_total_price){
@@ -1768,7 +1767,7 @@ class UserController extends ActiveController
                 case 2: return array('code' => '10001', 'msg' => '该订单为待发货状态,不可支付'); break;
                 case 3: return array('code' => '10001', 'msg' => '该订单为发货状态,不可支付'); break;
                 case 4: return array('code' => '10001', 'msg' => '该订单为已完成状态,不可支付'); break;
-                case 5: return array('code' => '10001', 'msg' => '该订单为已取消状态,不可支付'); break;
+                case 5: return array('code' => '10001', 'msg' => '该订单为已出库状态,不可支付'); break;
             }
             //验证库存是否充足
             $goodmbv = GoodMbv::findOne($order_arr->mbv_id);
@@ -2124,7 +2123,7 @@ class UserController extends ActiveController
         //商品标题
         $goods['title'] = $good_arr->title;
         //商品图片
-        $goods['goodimage']=$good_arr->goodImage;
+        $goods['goodimage']=$good_arr->goodImage->image_url;
         //商品详细
         $goods['description']=$good_arr->description;
         //商品码
@@ -2316,7 +2315,7 @@ class UserController extends ActiveController
                 
                 $goodmb = new GoodMb();
                 $goodmb->user_id=$user->id;
-                $goodmb->freight_id=$user_data['freight_id'];
+                //$goodmb->freight_id=$user_data['freight_id'];
                 $goodmb->good_id = $good->id;
                 $goodmb->cate_id=$user_data['cate_id'];
                 $goodmb->brand_id=$user_data['brand_id'];
@@ -2438,7 +2437,7 @@ class UserController extends ActiveController
                     }
                                           
                     $goodmb = GoodMb::findOne($good_arr->id);
-                    $goodmb->freight_id=$user_data['freight_id'];
+                    //$goodmb->freight_id=$user_data['freight_id'];
                     $goodmb->place_id=$user_data['place_id'];
                     $goodmb->mb_status=0;
                     $goodmb->updated_at=time();
@@ -2696,12 +2695,12 @@ class UserController extends ActiveController
             'goodMbv'=> function ($query){
                 $query->select(['*'])->orderBy('price asc');
             },
-            'place'=> function ($query){
-                $query->select(['*']);
-            },
-            'freight'=> function ($query){
-                $query->select(['*']);
-            },
+//             'place'=> function ($query){
+//                 $query->select(['*']);
+//             },
+//             'freight'=> function ($query){
+//                 $query->select(['*']);
+//             },
             
             ])
             ->Asarray()
@@ -2737,6 +2736,7 @@ class UserController extends ActiveController
                     }
                 }
             }
+            print_r($goodMbv);exit();
             //商家报价id
             $goods['good']['mb_id']=$good_arr['id'];
             //商品图片
@@ -2754,12 +2754,12 @@ class UserController extends ActiveController
             $goods['good']['brand_id']=$good_arr['good']['brand']['id'];
             $goods['good']['brand_name']=$good_arr['good']['brand']['title'];
             //发货地id及名称
-            $goods['good']['place_id']=$good_arr['place']['id'];
-            $goods['good']['place_name']=$good_arr['place']['name'];
-            $goods['good']['place_name_en']=$good_arr['place']['name_en'];
+//             $goods['good']['place_id']=$good_arr['place']['id'];
+//             $goods['good']['place_name']=$good_arr['place']['name'];
+//             $goods['good']['place_name_en']=$good_arr['place']['name_en'];
             //运费模版id及名称
-            $goods['good']['freight_id']=$good_arr['freight']['id'];
-            $goods['good']['freight_name']=$good_arr['freight']['title'];
+//             $goods['good']['freight_id']=$good_arr['freight']['id'];
+//             $goods['good']['freight_name']=$good_arr['freight']['title'];
             //商品属性
             $goods['good']['data'] = $goodMbvs;
             $data['code'] = '200';
