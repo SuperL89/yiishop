@@ -948,7 +948,7 @@ class UserController extends ActiveController
             //获取用户购买商品信息
             $good_arr = GoodMbv::find()->select(['id','mb_id','model_text','price','stock_num'])->where(['id'=>$user_data['mbv_id'],'status' => 0])->with([
                 'goodMb'=> function ($query) {
-                    $query->select(['id','user_id','good_id','freight_id'])->andWhere(['status' => 0])->with([
+                    $query->select(['id','user_id','good_id','freight_id','address_id'])->andWhere(['status' => 0])->with([
                         'good'=> function ($query){
                             $query->select(['id','title'])->andWhere(['status' => 0])->with([
                                 'goodImage'=> function ($query){
@@ -970,7 +970,8 @@ class UserController extends ActiveController
                 $address_arr = $good_arr->goodMb->address;
                 //$address_arr = UserAddress::find()->select(['id','name','city_id','state_id','csc_name','csc_name_en','street','phone'])->where(['user_id'=>$user->id,'id'=>$user_data['address_id']])->one();
                 //验证收获地址
-                $validateOrderAddressResult = $this->validateOrderAddress($address_arr, $user);
+                //$validateOrderAddressResult = $this->validateOrderAddress($address_arr, $user);
+                $validateOrderAddressResult = $this->validateOrderAddress($address_arr);
                 if ($validateOrderAddressResult) return $validateOrderAddressResult;
                 //获取商家运费模版
 //                 $freight_arr = Freight::find()->select(['*'])->where(['id'=>$good_arr->goodMb->freight_id,'user_id'=>$good_arr->goodMb->user_id])->with([
@@ -3180,11 +3181,11 @@ class UserController extends ActiveController
             return $data;
         }
         //验证用户是否选择自己的收获地址
-        if ($address_arr->user_id == $user->id) {
-            $data['code'] = '10001';
-            $data['msg'] = '请选择您自己的收获地址';
-            return $data;
-        }
+//         if ($address_arr->user_id == $user->id) {
+//             $data['code'] = '10001';
+//             $data['msg'] = '请选择您自己的收获地址';
+//             return $data;
+//         }
     }
     
     /**
