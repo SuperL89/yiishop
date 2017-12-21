@@ -14,6 +14,7 @@ class BusinessCreateGoodForm extends \yii\db\ActiveRecord
     public $brand_id;//商品品牌
     public $place_id;//发货地
     public $freight_id;//运费模版
+    public $address_id;//仓库
     
 
     /**
@@ -43,6 +44,8 @@ class BusinessCreateGoodForm extends \yii\db\ActiveRecord
             
 //             ['freight_id', 'required', 'message' => '运费模版不能为空.'],
 //             ['freight_id', 'integer','message' => '运费模版类型不正确.'],
+            ['address_id', 'required', 'message' => '仓库不能为空.'],
+            ['address_id', 'integer','message' => '仓库类型不正确.'],
             
             [['cate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['cate_id' => 'id'],'message' => '商品分类不存在.'],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id'],'message' => '商品品牌不存在.'],

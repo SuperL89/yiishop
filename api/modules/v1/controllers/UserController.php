@@ -836,7 +836,7 @@ class UserController extends ActiveController
     }
     
     /**
-     * 获得商品订单数据 入参  token  mbv_id num address_id
+     * 获得商品订单数据 入参  token  mbv_id num 
      */
     public function actionGoodOrder(){
     
@@ -850,30 +850,35 @@ class UserController extends ActiveController
             //获取用户购买商品信息
             $good_arr = GoodMbv::find()->select(['id','mb_id','model_text','price','stock_num'])->where(['id'=>$user_data['mbv_id'],'status' => 0])->with([
                 'goodMb'=> function ($query) {
-                    $query->select(['id','user_id','good_id','freight_id'])->andWhere(['status' => 0])->with([
+                    $query->select(['id','user_id','good_id','freight_id','address_id'])->andWhere(['status' => 0])->with([
                         'good'=> function ($query){
                             $query->select(['id','title'])->andWhere(['status' => 0])->with([
                                 'goodImage'=> function ($query){
                                     $query->select(['id','good_id','image_url']);
                                 }
                             ]);
+                        },
+                        'address'=> function ($query){
+                            $query->select(['id','name','city_id','state_id','csc_name','csc_name_en','street','phone'])->andWhere(['status' => 0]);
                         }
                     ]);
                 }
             ])
             ->one();
+            //print_r($good_arr);exit();
             //验证商品订单信息
             $validateGoodOrderResult = $this->validateGoodOrder($good_arr, $user, $user_data['num']);
             if ($validateGoodOrderResult) return $validateGoodOrderResult;
             //获取用户默认收货地址
-            $address_arr = UserAddress::find()->select(['id','name','city_id','state_id','csc_name','csc_name_en','street','phone'])->where(['user_id'=>$user->id,'status'=>1])->filterWhere(['user_id'=>$user->id,'id'=>$address_id])->one();
+            $address_arr = $good_arr->goodMb->address;
+            //$address_arr = UserAddress::find()->select(['id','name','city_id','state_id','csc_name','csc_name_en','street','phone'])->where(['user_id'=>$user->id,'status'=>1])->filterWhere(['user_id'=>$user->id,'id'=>$address_id])->one();
             //获取商家运费模版
-            $freight_arr = Freight::find()->select(['*'])->where(['id'=>$good_arr->goodMb->freight_id,'user_id'=>$good_arr->goodMb->user_id])->with([
-                'freightVars'=>function ($query){
-                    $query->select(['id','freight_id','place_id_arr','num','freight','numadd','freightadd']);
-                }
-            ])
-            ->one();
+//             $freight_arr = Freight::find()->select(['*'])->where(['id'=>$good_arr->goodMb->freight_id,'user_id'=>$good_arr->goodMb->user_id])->with([
+//                 'freightVars'=>function ($query){
+//                     $query->select(['id','freight_id','place_id_arr','num','freight','numadd','freightadd']);
+//                 }
+//             ])
+//             ->one();
             
             //获取商品图片(小图)
 //             $goodImage = '';
@@ -929,7 +934,7 @@ class UserController extends ActiveController
     }
     
     /**
-     * 提交商品订单数据 入参  token  mbv_id num address_id message
+     * 提交商品订单数据 入参  token  mbv_id num message
      */
     public function actionGetGoodOrder(){
     
@@ -950,7 +955,10 @@ class UserController extends ActiveController
                                         $query->select(['id','good_id','image_url']);
                                     }
                                 ]);
-                            }
+                            },
+                        'address'=> function ($query){
+                            $query->select(['id','name','city_id','state_id','csc_name','csc_name_en','street','phone'])->andWhere(['status' => 0]);
+                        }
                         ]);
                     }
                 ])
@@ -959,17 +967,18 @@ class UserController extends ActiveController
                 $validateGoodOrderResult = $this->validateGoodOrder($good_arr, $user, $user_data['num']);
                 if ($validateGoodOrderResult) return $validateGoodOrderResult;
                 //获取用户收货地址
-                $address_arr = UserAddress::find()->select(['id','name','city_id','state_id','csc_name','csc_name_en','street','phone'])->where(['user_id'=>$user->id,'id'=>$user_data['address_id']])->one();
+                $address_arr = $good_arr->goodMb->address;
+                //$address_arr = UserAddress::find()->select(['id','name','city_id','state_id','csc_name','csc_name_en','street','phone'])->where(['user_id'=>$user->id,'id'=>$user_data['address_id']])->one();
                 //验证收获地址
                 $validateOrderAddressResult = $this->validateOrderAddress($address_arr, $user);
                 if ($validateOrderAddressResult) return $validateOrderAddressResult;
                 //获取商家运费模版
-                $freight_arr = Freight::find()->select(['*'])->where(['id'=>$good_arr->goodMb->freight_id,'user_id'=>$good_arr->goodMb->user_id])->with([
-                    'freightVars'=>function ($query){
-                        $query->select(['id','freight_id','place_id_arr','num','freight','numadd','freightadd']);
-                    }
-                ])
-                ->one();
+//                 $freight_arr = Freight::find()->select(['*'])->where(['id'=>$good_arr->goodMb->freight_id,'user_id'=>$good_arr->goodMb->user_id])->with([
+//                     'freightVars'=>function ($query){
+//                         $query->select(['id','freight_id','place_id_arr','num','freight','numadd','freightadd']);
+//                     }
+//                 ])
+//                 ->one();
                 //计算运费
                 //$orderFare = $this->calculateOrderFare($freight_arr, $address_arr, $user_data['num']);
                 
@@ -2248,7 +2257,7 @@ class UserController extends ActiveController
         }
     }
     /**
-     * 商家发布新商品 token image_url title description good_num cate_id brand_id freight_id place_id date
+     * 商家发布新商品 token image_url title description good_num cate_id brand_id freight_id address_id place_id date
      * {"goodmbv":[{"model_text":"型号1","price":"111","stock_num":"50","bar_code":"21231231231"},{"model_text":"型号2","price":"222","stock_num":"50","bar_code":"3123123123123"}]}
      */
     public function actionBusinessCreateGood()
@@ -2316,6 +2325,7 @@ class UserController extends ActiveController
                 $goodmb = new GoodMb();
                 $goodmb->user_id=$user->id;
                 //$goodmb->freight_id=$user_data['freight_id'];
+                $goodmb->address_id=$user_data['address_id'];
                 $goodmb->good_id = $good->id;
                 $goodmb->cate_id=$user_data['cate_id'];
                 $goodmb->brand_id=$user_data['brand_id'];
@@ -2370,7 +2380,7 @@ class UserController extends ActiveController
     }
      
     /**
-     * 商家更新商品 token mb_id place_id freight_id date
+     * 商家更新商品 token mb_id place_id freight_id address_id date
      * {"goodmbv": [{"id":"21","model_text": "型号1","price": "111","stock_num": "50","bar_code": "21231231231","is_del":"1"},{"id":"22","model_text": "型号2","price": "222","stock_num": "50","bar_code": "3123123123123"},{"id":"","model_text": "型号3","price": "333","stock_num": "50","bar_code": "3123123123123"}]}
      */
     public function actionBusinessUpdateGood()
@@ -2438,6 +2448,7 @@ class UserController extends ActiveController
                                           
                     $goodmb = GoodMb::findOne($good_arr->id);
                     //$goodmb->freight_id=$user_data['freight_id'];
+                    $goodmb->address_id=$user_data['address_id'];
                     $goodmb->place_id=$user_data['place_id'];
                     $goodmb->mb_status=0;
                     $goodmb->updated_at=time();
@@ -2701,7 +2712,9 @@ class UserController extends ActiveController
 //             'freight'=> function ($query){
 //                 $query->select(['*']);
 //             },
-            
+            'address'=> function ($query){
+                $query->select(['*']);
+            },
             ])
             ->Asarray()
             ->one();
@@ -2760,6 +2773,9 @@ class UserController extends ActiveController
             //运费模版id及名称
 //             $goods['good']['freight_id']=$good_arr['freight']['id'];
 //             $goods['good']['freight_name']=$good_arr['freight']['title'];
+            //仓库id及名称
+            $goods['good']['address_id']=$good_arr['address']['id'];
+            $goods['good']['address_name']=$good_arr['address']['name'];
             //商品属性
             $goods['good']['data'] = $goodMbvs;
             $data['code'] = '200';

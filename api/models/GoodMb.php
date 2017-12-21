@@ -3,6 +3,7 @@
 namespace api\models;
 
 use Yii;
+use api\models\UserAddress;
 
 /**
  * This is the model class for table "sp_good_mb".
@@ -42,11 +43,12 @@ class GoodMb extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'place_id', /*'freight_id',*/ 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status','created_at', 'updated_at'], 'integer'],
+            [['user_id', 'place_id', /*'freight_id',*/'address_id', 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status','created_at', 'updated_at'], 'integer'],
             [['good_id', 'cate_id', 'brand_id'], 'required'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id']],
             //[['freight_id'], 'exist', 'skipOnError' => true, 'targetClass' => Freight::className(), 'targetAttribute' => ['freight_id' => 'id']],
+            [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
             [['good_id'], 'exist', 'skipOnError' => true, 'targetClass' => Good::className(), 'targetAttribute' => ['good_id' => 'id']],
             [['cate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['cate_id' => 'id']],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
@@ -62,7 +64,8 @@ class GoodMb extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'place_id' => 'Place ID',
-            //'freight_id' => 'Freight ID',
+            'freight_id' => 'Freight ID',
+            'address_id' => 'Address ID',
             'good_id' => 'Good ID',
             'cate_id' => 'Cate ID',
             'brand_id' => 'Brand ID',
@@ -134,5 +137,12 @@ class GoodMb extends \yii\db\ActiveRecord
     public function getOrder()
     {
         return $this->hasMany(Order::className(), ['mb_id' => 'id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddress()
+    {
+        return $this->hasOne(UserAddress::className(), ['id' => 'address_id']);
     }
 }

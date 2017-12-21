@@ -8,7 +8,7 @@ class BusinessUpdateGoodForm extends \yii\db\ActiveRecord
 {
     //public $freight_id;//运费模版
     public $place_id;//运费模版
-    
+    public $address_id;//仓库    
 
     /**
      * @inheritdoc
@@ -21,6 +21,10 @@ class BusinessUpdateGoodForm extends \yii\db\ActiveRecord
             
 //             ['freight_id', 'required', 'message' => '运费模版不能为空.'],
 //             ['freight_id', 'integer','message' => '运费模版类型不正确.'],
+            ['address_id', 'trim'],
+
+            ['address_id', 'required', 'message' => '仓库不能为空.'],
+            ['address_id', 'integer','message' => '仓库类型不正确.'], 
             
             ['place_id', 'trim'],
             

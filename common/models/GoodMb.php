@@ -41,14 +41,15 @@ class GoodMb extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'place_id', 'freight_id', 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'place_id', /*'freight_id',*/ 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status', 'created_at', 'updated_at'], 'integer'],
             [['good_id', 'cate_id', 'brand_id'], 'required'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['good_id'], 'exist', 'skipOnError' => true, 'targetClass' => Good::className(), 'targetAttribute' => ['good_id' => 'id']],
             [['cate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['cate_id' => 'id']],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
             [['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id']],
-            [['freight_id'], 'exist', 'skipOnError' => true, 'targetClass' => Freight::className(), 'targetAttribute' => ['freight_id' => 'id']],
+            //[['freight_id'], 'exist', 'skipOnError' => true, 'targetClass' => Freight::className(), 'targetAttribute' => ['freight_id' => 'id']],
+            [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
         ];
     }
 
@@ -62,6 +63,7 @@ class GoodMb extends \yii\db\ActiveRecord
             'user_id' => '商家用户',
             'place_id' => '发货地',
             'freight_id' => '运费模版',
+            'address_id' => 'Address ID',
             'good_id' => '商品id',
             'cate_id' => '分类id',
             'brand_id' => '品牌id',

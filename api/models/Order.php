@@ -100,6 +100,7 @@ class Order extends \yii\db\ActiveRecord
             'good_var' => 'Good Var',
             'message' => 'Message',
             'cancel_text' => 'cancel Text',
+            'library_at' => '出库时间',
         ];
     }
 
