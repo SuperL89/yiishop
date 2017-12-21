@@ -2330,7 +2330,7 @@ class UserController extends ActiveController
                 $goodmb->good_id = $good->id;
                 $goodmb->cate_id=$user_data['cate_id'];
                 $goodmb->brand_id=$user_data['brand_id'];
-                $goodmb->place_id=$user_data['place_id'];
+                //$goodmb->place_id=$user_data['place_id'];
                 $goodmb->status=1;
                 $goodmb->mb_status=0;
                 $goodmb->created_at=time();
@@ -2450,7 +2450,7 @@ class UserController extends ActiveController
                     $goodmb = GoodMb::findOne($good_arr->id);
                     //$goodmb->freight_id=$user_data['freight_id'];
                     $goodmb->address_id=$user_data['address_id'];
-                    $goodmb->place_id=$user_data['place_id'];
+                    //$goodmb->place_id=$user_data['place_id'];
                     $goodmb->mb_status=0;
                     $goodmb->updated_at=time();
                     if(!$goodmb->save()){

@@ -13,8 +13,8 @@ class BusinessCreateGoodForm extends \yii\db\ActiveRecord
     public $cate_id;//商品分类
     public $brand_id;//商品品牌
     public $place_id;//发货地
-    public $freight_id;//运费模版
-    public $address_id;//仓库
+//     public $freight_id;//运费模版
+//     public $address_id;//仓库
     
 
     /**
@@ -49,7 +49,7 @@ class BusinessCreateGoodForm extends \yii\db\ActiveRecord
             
             [['cate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['cate_id' => 'id'],'message' => '商品分类不存在.'],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id'],'message' => '商品品牌不存在.'],
-            [['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id'],'message' => '发货地不存在.'],
+            //[['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id'],'message' => '发货地不存在.'],
             //[['freight_id'], 'exist', 'skipOnError' => true, 'targetClass' => Freight::className(), 'targetAttribute' => ['freight_id' => 'id'],'message' => '运费模版不存在.'],
         ];
     }
