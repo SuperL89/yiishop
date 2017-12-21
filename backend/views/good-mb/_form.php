@@ -9,6 +9,7 @@ use common\models\Brand;
 use common\models\Place;
 use common\models\GoodMb;
 use common\models\Freight;
+use common\models\UserAddress;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\GoodMb */
@@ -90,7 +91,7 @@ use common\models\Freight;
     <?php // $form->field($model, 'user_id')->textInput() ?>
 
     <?php // $form->field($model, 'place_id')->textInput() ?>
-    <?= $form->field($model, 'place_id', [
+    <?php /*$form->field($model, 'place_id', [
         'template'=>'{label}'.
             Html::activeDropDownList($model,'place_id_1', ArrayHelper::map(Place::getChildrenList(140), 'id', 'name'), [
                 'class' => 'form-control',
@@ -113,16 +114,24 @@ use common\models\Freight;
                     $("#goodmb-place_id").val($(this).val());
                 ',
             ]),
-    ])->hiddenInput(); ?>
+    ])->hiddenInput(); */?>
 
     <?php // $form->field($model, 'freight_id')->textInput() ?>
-	<?= $form->field($model, 'freight_id')
+	<?php /*$form->field($model, 'freight_id')
              ->dropDownList(Freight::find()
              ->select(['title','id'])
              ->where(['user_id'=>$model->user_id])
              ->indexBy('id')
              ->column(),
              ['prompt'=>'请选择运费模版']
+             );*/?>
+    <?= $form->field($model, 'address_id')
+             ->dropDownList(UserAddress::find()
+             ->select(['name','id'])
+             ->where(['status'=>0])
+             ->indexBy('id')
+             ->column(),
+             ['prompt'=>'请选择仓库']
              );?>
     <?= $form->field($model, 'good_id')->textInput() ?>
 

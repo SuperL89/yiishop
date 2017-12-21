@@ -14,16 +14,17 @@ class GoodMbSearch extends GoodMb
 {
     public $good_title;
     public $username;
-    public $city_name;
-    public $freight_name;
+//     public $city_name;
+//     public $freight_name;
+    public $address_name;
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'user_id', 'place_id', 'freight_id', 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status'/*, 'created_at', 'updated_at'*/], 'integer'],
-            [['username','good_title','city_name','freight_name', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'user_id', /*'place_id', 'freight_id',*/ 'address_id','good_id', 'cate_id', 'brand_id', 'status', 'mb_status'/*, 'created_at', 'updated_at'*/], 'integer'],
+            [['username','good_title','city_name','freight_name','address_name', 'address_name','created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -46,7 +47,7 @@ class GoodMbSearch extends GoodMb
     public function search($params)
     {
         $query = GoodMb::find();
-        $query->joinWith(['user','good','place','freight']);
+        $query->joinWith(['user','good',/*'place','freight'*/'address']);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -65,8 +66,8 @@ class GoodMbSearch extends GoodMb
         $query->andFilterWhere([
             'id' => $this->id,
              //'user_id' => $this->user_id,
-            'place_id' => $this->place_id,
-            'freight_id' => $this->freight_id,
+//             'place_id' => $this->place_id,
+//             'freight_id' => $this->freight_id,
             'good_id' => $this->good_id,
             'cate_id' => $this->cate_id,
             'brand_id' => $this->brand_id,
@@ -78,8 +79,9 @@ class GoodMbSearch extends GoodMb
         ]);
         $query->andFilterWhere(['like', 'username', $this->username])
               ->andFilterWhere(['like', '{{%good}}.title', $this->good_title])
-              ->andFilterWhere(['like', '{{%freight}}.title', $this->freight_name])
-              ->andFilterWhere(['like', '{{%place}}.name', $this->city_name]);
+//               ->andFilterWhere(['like', '{{%freight}}.title', $this->freight_name])
+//               ->andFilterWhere(['like', '{{%place}}.name', $this->city_name])
+              ->andFilterWhere(['like', '{{%user_address}}.name', $this->address_name]);
         
         if (!empty($this->created_at)) {
             $query->andFilterCompare('{{%good_mb}}.created_at', strtotime(explode('/', $this->created_at)[0]), '>=');//起始时间

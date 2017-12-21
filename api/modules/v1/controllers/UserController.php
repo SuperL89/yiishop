@@ -2153,6 +2153,88 @@ class UserController extends ActiveController
         
     }
     /**
+     * 根据商品id搜索商品 token good_id
+     */
+    public function actionBusinessIdGood()
+    {
+        $user_data = Yii::$app->request->post();
+        $token = $user_data['token'];
+        $user = User::findIdentityByAccessToken($token);
+        //验证是否为商家用户
+        $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
+        if(!$business){
+            $data['code'] = '10001';
+            $data['msg'] = '不是商家用户或未通过商家审核';
+            return $data;
+        }
+        $good_id = isset($user_data['good_id']) && $user_data['good_id'] ? $user_data['good_id'] : '';
+        if(!$good_id){
+            $data['code'] = '10001';
+            $data['msg'] = '商品id不能为空';
+            return $data;
+        }
+//         //根据条形码去条形码库中查找商品
+//         $goodcode = GoodCode::find(['good_id'])->where(['bar_code' =>$bar_code])->one();
+//         $good_id = $goodcode['good_id'];
+        //查询商品信息
+        $good_arr = Good::find()->select(['*'])->where(['id'=>$good_id])->with([
+            'goodImage'=> function ($query){
+            $query->select(['image_url']);
+            },
+            'cate'=> function ($query){
+            $query->select(['*']);
+            },
+            'brand'=> function ($query){
+            $query->select(['*']);
+            },
+            'goodCode'=> function ($query){
+            $query->select(['*']);
+            },
+            ])
+            ->one();
+            if(!$good_arr){
+                $data['code'] = '200';
+                $data['msg'] = '';
+                $data['data'] =[];
+                return $data;
+            }
+            //商品属性信息
+            $goodMbv = array();
+            $goodCode = isset($good_arr->goodCode) ? $good_arr->goodCode : array();
+            if ($goodCode) {
+                foreach ($goodCode as $codeKey => $codeValue) {
+                    $goodMbv[$codeKey]['model_text'] = $codeValue->model_text;
+                    $goodMbv[$codeKey]['price'] = 0;
+                    $goodMbv[$codeKey]['stock_num'] = 0;
+                    $goodMbv[$codeKey]['bar_code'] = $codeValue->bar_code;
+                }
+            }
+            //商品id
+            $goods['good_id'] = $good_arr->id;
+            //商品标题
+            $goods['title'] = $good_arr->title;
+            //商品图片
+            $goods['goodimage']=$good_arr->goodImage->image_url;
+            //商品详细
+            $goods['description']=$good_arr->description;
+            //商品码
+            $goods['good_num']=$good_arr->good_num;
+            //分类id及名称
+            $goods['cate_id']=$good_arr->cate->id;
+            $goods['cate_name']=$good_arr->cate->title;
+            //品牌id及名称
+            $goods['brand_id']=$good_arr->brand->id;
+            $goods['brand_name']=$good_arr->brand->title;
+    
+            $goods['goodmbv'] = $goodMbv;
+    
+            $data['code'] = '200';
+            $data['msg'] = '';
+            $data['data'] = $goods;
+            return $data;
+    
+    }
+    /**
      * 商家添加报价 token good_id address_id date
      * {"goodmbv":[{"model_text":"型号1","price":"111","stock_num":"50","bar_code":"21231231231"},{"model_text":"型号2","price":"222","stock_num":"50","bar_code":"3123123123123"}]}
      */

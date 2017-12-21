@@ -121,7 +121,13 @@ class GoodMb extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Freight::className(), ['id' => 'freight_id']);
     }
-
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddress()
+    {
+        return $this->hasOne(UserAddress::className(), ['id' => 'address_id']);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */

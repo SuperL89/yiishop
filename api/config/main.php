@@ -129,6 +129,7 @@ return [
                         'POST business-create-good-mb' => 'business-create-good-mb',
                         'POST ali-payment-order' => 'ali-payment-order',
                         'POST ali-payment-notify-order' => 'ali-payment-notify-order',
+                        'POST business-id-good' => 'business-id-good',
                     ]
                 ],
             ]

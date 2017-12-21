@@ -17,6 +17,7 @@ class OrderSearch extends Order
     public $pay_at;
     public $deliver_at;
     public $complete_at;
+    public $library_at;
     /**
      * @inheritdoc
      */
@@ -24,7 +25,7 @@ class OrderSearch extends Order
     {
         return [
             [['id', 'user_id', 'business_id', 'good_id', 'mb_id', 'mbv_id', 'pay_type', 'pay_num', 'status', /*'created_at', 'pay_at', 'deliver_at', 'complete_at'*/], 'integer'],
-            [['order_num', 'user_address', 'express_name', 'express_num', 'good_var', 'cancel_text', 'message','username','created_at','pay_at','deliver_at','complete_at'], 'safe'],
+            [['order_num', 'user_address', 'express_name', 'express_num', 'good_var', 'cancel_text', 'message','username','created_at','pay_at','deliver_at','complete_at','library_at'], 'safe'],
             [['good_price', 'good_total_price', 'order_fare', 'order_total_price'], 'number'],
         ];
     }
@@ -112,6 +113,10 @@ class OrderSearch extends Order
             if (!empty($this->complete_at)) {
                 $query->andFilterCompare('{{%order}}.complete_at', strtotime(explode('/', $this->complete_at)[0]), '>=');//起始时间
                 $query->andFilterCompare('{{%order}}.complete_at', (strtotime(explode('/', $this->complete_at)[1]) + 86400), '<');//结束时间
+            }
+            if (!empty($this->library_at)) {
+                $query->andFilterCompare('{{%order}}.library_at', strtotime(explode('/', $this->library_at)[0]), '>=');//起始时间
+                $query->andFilterCompare('{{%order}}.library_at', (strtotime(explode('/', $this->library_at)[1]) + 86400), '<');//结束时间
             }
             
             $dataProvider->sort->defaultOrder=

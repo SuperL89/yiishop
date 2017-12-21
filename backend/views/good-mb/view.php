@@ -73,14 +73,19 @@ $this->params['breadcrumbs'][] = $this->title;
             'value'=>$model->user->username,
             ],
             //'place_id',
+//             [
+//             'attribute' => 'place_id',
+//             'value'=>$model->place->name,
+//             ],
+//             //'freight_id',
+//             [
+//             'attribute' => 'freight_id',
+//             'value'=>$model->freight->title,
+//             ],
             [
-            'attribute' => 'place_id',
-            'value'=>$model->place->name,
-            ],
-            //'freight_id',
-            [
-            'attribute' => 'freight_id',
-            'value'=>$model->freight->title,
+            'attribute'=>'address_name',
+            'label'=>'仓库',
+            'value'=>$model->address->name,
             ],
             //'status',
             [
