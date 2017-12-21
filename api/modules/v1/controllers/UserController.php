@@ -2153,7 +2153,7 @@ class UserController extends ActiveController
         
     }
     /**
-     * 商家添加报价 token good_id freight_id place_id date
+     * 商家添加报价 token good_id address_id date
      * {"goodmbv":[{"model_text":"型号1","price":"111","stock_num":"50","bar_code":"21231231231"},{"model_text":"型号2","price":"222","stock_num":"50","bar_code":"3123123123123"}]}
      */
     public function actionBusinessCreateGoodMb()
@@ -2199,11 +2199,12 @@ class UserController extends ActiveController
 
                 $goodmb = new GoodMb();
                 $goodmb->user_id=$user->id;
-                $goodmb->freight_id=$user_data['freight_id'];
+                //$goodmb->freight_id=$user_data['freight_id'];
                 $goodmb->good_id = $good->id;
                 $goodmb->cate_id=$good->cate_id;
                 $goodmb->brand_id=$good->brand_id;
-                $goodmb->place_id=$user_data['place_id'];
+                //$goodmb->place_id=$user_data['place_id'];
+                $goodmb->address_id=$user_data['address_id'];
                 $goodmb->mb_status=0;
                 $goodmb->created_at=time();
                 $goodmb->updated_at=time();
