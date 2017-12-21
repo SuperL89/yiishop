@@ -2487,7 +2487,7 @@ class UserController extends ActiveController
         }
         //查询该商品的所有条形码
         $bar_code = array();
-        $bar_codes = GoodCode::find()->select(['bar_code'])->where(['good_id' => $good['id']])->all();
+        $bar_codes = GoodCode::find()->select(['bar_code'])->where(['good_id' => $goodmb->good_id])->all();
         foreach ($bar_codes as $key => $v){
             $bar_code[$key] = $v->bar_code;
         }
