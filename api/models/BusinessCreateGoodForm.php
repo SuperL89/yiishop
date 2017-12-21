@@ -12,9 +12,9 @@ class BusinessCreateGoodForm extends \yii\db\ActiveRecord
     public $good_num;//商品编码
     public $cate_id;//商品分类
     public $brand_id;//商品品牌
-    public $place_id;//发货地
+   // public $place_id;//发货地
 //     public $freight_id;//运费模版
-//     public $address_id;//仓库
+    public $address_id;//仓库
     
 
     /**
@@ -27,6 +27,7 @@ class BusinessCreateGoodForm extends \yii\db\ActiveRecord
             ['cate_id', 'trim'],
             ['brand_id', 'trim'],
             //['freight_id', 'trim'],
+            ['address_id', 'trim'],
             
             ['image_url', 'required', 'message' => '商品图片不能为空.'],
             ['title', 'required', 'message' => '商品标题不能为空.'],
