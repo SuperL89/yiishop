@@ -3172,7 +3172,7 @@ class UserController extends ActiveController
     /**
      * 验证用户收获地址
      */
-    private function validateOrderAddress($address_arr, $user)
+    private function validateOrderAddress($address_arr, $user = 0)
     {
         //验证收获地址是否存在
         if (empty($address_arr)) {
