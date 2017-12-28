@@ -43,8 +43,8 @@ class GoodImage extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'good_id' => 'Good ID',
-            'image_url' => 'Image Url',
+            'good_id' => '商品ID',
+            'image_url' => '商品图片',
         ];
     }
 

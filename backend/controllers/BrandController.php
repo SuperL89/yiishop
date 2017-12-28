@@ -8,6 +8,8 @@ use backend\models\BrandSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use common\components\Upload;
 
 /**
  * BrandController implements the CRUD actions for Brand model.
@@ -64,7 +66,7 @@ class BrandController extends Controller
     public function actionCreate()
     {
         $model = new Brand();
-
+        
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect('index');
         } else {
@@ -90,6 +92,29 @@ class BrandController extends Controller
             return $this->render('update', [
                 'model' => $model,
             ]);
+        }
+    }
+    
+    /**
+     * 上传图片
+     */
+    public function actionUpload()
+    {
+        try {
+            $model = new Upload();
+            $info = $model->upImageToQny();
+    
+            $info && is_array($info) ?
+            exit(Json::htmlEncode($info)) :
+            exit(Json::htmlEncode([
+                'code' => 1,
+                'msg' => 'error'
+            ]));
+        } catch (\Exception $e) {
+            exit(Json::htmlEncode([
+                'code' => 1,
+                'msg' => $e->getMessage()
+            ]));
         }
     }
 

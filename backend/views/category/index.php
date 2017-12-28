@@ -28,13 +28,13 @@ $this->params['breadcrumbs'][] = $this->title;
             //['class' => 'yii\grid\SerialColumn'],
 
             'title',
-            [
+            /*[
                 'attribute' => 'categoryParent.title',
                 'filter' => Html::activeTextInput($searchModel, 'parent_title', [
                     'class' => 'form-control', 'id' => null
                 ]),
                 'label' => '父类名称',
-            ],
+            ],*/
             //'parentid',
             [
                  'attribute'=>'status',
@@ -43,7 +43,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'order',
             ['class' => 'yii\grid\ActionColumn',
-             'template'=>' {update}{delete}',    
+                'template'=>' {update}{category-index}{delete}',
+                'buttons'=>[
+                    'category-index'=>function($url,$model,$key)
+                    {
+                        $options = [
+                            'title'=>Yii::t('yii','查看二级分类'),
+                            'aria-label'=>yii::t('yii','查看二级分类'),
+                            'data-pjax'=>'0',
+                        ];
+                        return Html::a('<span class="glyphicon glyphicon-list-alt"></span>',$url,$options);
+                    },
+                ],
             ],
         ],
     ]); ?>

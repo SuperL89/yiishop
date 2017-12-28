@@ -14,11 +14,10 @@ use common\models\Category;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true]); ?>
+    
+    <?= $form->field($model, 'image_url')->widget('manks\FileInput'); ?>
 
-    <?= $form->field($model, 'image_url')->textInput(['maxlength' => true]) ?>
-
-    <?php // $form->field($model, 'cate_id')->textInput() ?>
     <?= $form->field($model, 'cate_id')
              ->dropDownList(Category::find()
              ->select(['title','id'])
@@ -33,7 +32,6 @@ use common\models\Category;
 
     <?= $form->field($model, 'order')->textInput(['value'=>0]) ?>
 
-    <?php //$form->field($model, 'is_hot')->textInput() ?>
     <?= $form->field($model, 'is_hot')->dropDownList(Brand::allHot(),['prompt'=>'请选择']) ?>
 
     <div class="form-group">

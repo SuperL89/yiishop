@@ -30,7 +30,7 @@ class CategorysController extends ActiveController
         $modelClass = $this->modelClass;  
         $modelBrand = $this->modelBrand;
         //查询所有分类
-        $allCategorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0])->orderBy('order desc')->asArray()->all();
+        $allCategorys = $modelClass::find()->select(['id','title','parentid','image_url'])->where(['status' => 0])->orderBy('order desc')->asArray()->all();
         //查询所有一级分类
         $categorys = $modelClass::find()->select(['id','title','parentid'])->where(['status' => 0, 'parentid' => 0])->orderBy('order desc')->asArray()->all();
         

@@ -44,6 +44,22 @@ class CategoryController extends Controller
                 'searchModel' => $searchModel,
         ]);
     }
+    
+    /**
+     * Lists all Category models.
+     * @return mixed
+     */
+    public function actionCategoryIndex($id)
+    {
+        $searchModel = new CategorySearch;
+        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+
+        return $this->render('category-index', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'cate_id' => $id
+        ]);
+    }
 
     /**
      * Displays a single Category model.
@@ -65,6 +81,7 @@ class CategoryController extends Controller
     public function actionCreate()
     {
         $model = new Category;
+        $model->level = 1;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Helper::invalidate();
@@ -72,6 +89,28 @@ class CategoryController extends Controller
         } else {
             return $this->render('create', [
                     'model' => $model,
+            ]);
+        }
+    }
+    
+    /**
+     * Creates a new Category model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCategoryCreate()
+    {
+        $cate_id = Yii::$app->request->get('cate_id');
+        $model = new Category;
+        $model->level = 2;
+    
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Helper::invalidate();
+            return $this->redirect(['category-index', 'id' => $model->parentid]);
+        } else {
+            return $this->render('category-create', [
+                'model' => $model,
+                'cate_id'=>$cate_id,
             ]);
         }
     }
@@ -94,6 +133,28 @@ class CategoryController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
+            ]);
+        }
+    }
+    
+    /**
+     * Updates an existing Category model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionCategoryUpdate($id)
+    {
+        $model = $this->findModel($id);
+        if ($model->categoryParent) {
+            $model->parent_title = $model->categoryParent->title;
+        }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Helper::invalidate();
+            return $this->redirect(['category-index', 'id' => $model->parentid]);
+        } else {
+            return $this->render('category-update', [
+                'model' => $model
             ]);
         }
     }

@@ -54,7 +54,7 @@ class Brand extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'title' => '品牌名称',
-            'image_url' => '品牌图片地址',
+            'image_url' => '品牌图片',
             'cate_id' => '一级分类',
             'status' => '状态',
             'order' => '排序',

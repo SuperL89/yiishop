@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use common\models\UserAddress;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\UserAddressSearch */
@@ -16,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('创建转运仓库', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('创建转运仓', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -28,17 +29,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute'=>'id',
             'headerOptions' => ['width' => '3%'],
             ],
-            //'user_id',
             'name',
-            //'country_id',
-            //'state_id',
-            //'city_id',
             'csc_name',
             'csc_name_en',
             'street',
             'phone',
-            'status',
-
+            [
+            'attribute'=>'status',
+            'value'=>'statusStr',
+            'filter'=>UserAddress::allStatus(),
+            ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

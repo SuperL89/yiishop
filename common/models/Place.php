@@ -65,6 +65,15 @@ class Place extends \yii\db\ActiveRecord
     public static function getChildrenList($pid)
     {
         $x[] = (new static)->select_head[0];
-        return array_merge($x,static::findAll(['pid'=>$pid]));
+        if ($pid) {
+            return array_merge($x,static::findAll(['pid'=>$pid]));
+        } else {
+            return array_merge($x,array());
+        }
+    }
+    
+    public static function getParentInfo($pid)
+    {
+        return static::findOne(['id'=>$pid]);
     }
 }

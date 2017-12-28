@@ -41,11 +41,23 @@ class CategorySearch extends Category
      */
     public function search($params)
     {
-        $query = Category::find()
+        if (isset($params['id'])) {
+            $query = Category::find()
             ->from(Category::tableName() . ' t')
             ->joinWith(['categoryParent' => function ($q) {
-            $q->from(Category::tableName() . ' parent');
-        }]);
+                $q->from(Category::tableName() . ' parent');
+            }])
+            ->where(['t.parentid' => $params['id'], 't.level' => 2])
+            ->orderBy('t.order ASC');
+        } else {
+            $query = Category::find()
+            ->from(Category::tableName() . ' t')
+            ->joinWith(['categoryParent' => function ($q) {
+                $q->from(Category::tableName() . ' parent');
+            }])
+            ->where(['t.level' => 1])
+            ->orderBy('t.order ASC');
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query

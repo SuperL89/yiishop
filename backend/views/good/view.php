@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'description',
             [
                 'attribute'=>'cate_id',
-                'value'=>$model->cate->title,
+                'value'=>isset($model->cate->title) ? $model->cate->title : '',
             ],
             [
             'attribute'=>'image_url',

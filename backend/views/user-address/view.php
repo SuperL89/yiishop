@@ -7,12 +7,12 @@ use yii\widgets\DetailView;
 /* @var $model common\models\UserAddress */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'User Addresses', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '转运仓管理', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-address-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?php //Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -29,16 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'user_id',
             'name',
-            'country_id',
-            'state_id',
-            'city_id',
             'csc_name',
             'csc_name_en',
             'street',
             'phone',
-            'status',
+            [
+                'attribute'=>'status',
+                'value'=>$model->StatusStr,
+            ],
         ],
     ]) ?>
 

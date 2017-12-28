@@ -47,12 +47,13 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['title'], 'required'],
-            [['parent_title'], 'in','range' => static::find()->select(['title'])->column(),'message' => 'category "{value}" not found.'],
+            //[['parent_title'], 'in','range' => static::find()->select(['title'])->column(),'message' => 'category "{value}" not found.'],
             [['parentid', 'status', 'order'], 'integer'],
             [['parentid'], 'filterParent', 'when' => function() {
                 return !$this->isNewRecord;
             }],
             [['title'], 'string', 'max' => 50],
+            [['image_url'], 'string', 'max' => 255],
         ];
     }
     

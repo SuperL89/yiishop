@@ -24,7 +24,7 @@ $this->registerJs($this->render('_script.js'));
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'parent_title')->textInput(['id' => 'parent_title']) ?>
+    <?php //$form->field($model, 'parent_title')->textInput(['id' => 'parent_title']) ?>
 
     <?= $form->field($model, 'status')->dropDownList(Category::allStatus()) ?>
     
