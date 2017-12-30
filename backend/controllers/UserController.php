@@ -10,6 +10,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\models\ResetpwdForm;
 use api\models\UserAddress;
+use common\models\UserMonryLog;
+use common\models\UserMoneyLog;
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -65,6 +67,7 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
+        $model->money = 0;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -84,8 +87,19 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $oldMoney = $model->money;
+        $User = Yii::$app->request->post('User');
+        $newMoney = $User['money'];
+        
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            //print_r(array_values($model->getFirstErrors()));exit();
+            if ($oldMoney != $newMoney) {
+                $userMoneyLogModel = new UserMoneyLog();
+                $userMoneyLogModel->admin_uid = yii::$app->user->identity->id;
+                $userMoneyLogModel->old_money = $oldMoney;
+                $userMoneyLogModel->new_money = $newMoney;
+                $userMoneyLogModel->created_at = time();
+                $userMoneyLogModel->save();
+            }
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [

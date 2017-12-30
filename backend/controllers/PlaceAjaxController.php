@@ -33,8 +33,9 @@ class PlaceAjaxController extends GoodMbController
             $place = '';
             
             $pid = \Yii::$app->request->post('pid');
+            $level = \Yii::$app->request->post('level');
             //查询城市
-            $place_children = Place::getChildrenList($pid);
+            $place_children = Place::getChildrenList($pid, $level);
             if (count($place_children) > 0) {
                 foreach ($place_children as $k => $v) {
                     $place .= Html::tag('option',Html::encode($v['name']),['value'=>$v['id']]);

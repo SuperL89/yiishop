@@ -31,40 +31,23 @@ use common\models\Brand;
     <?php // $form->field($model, 'cate_id')->textInput() ?>
     <?= $form->field($model, 'cate_id', [
         'template'=>'{label}'.
-            Html::activeDropDownList($model,'cate_id_1', ArrayHelper::map(Category::getChildrenList(0), 'id', 'title'), [
+            Html::activeDropDownList($model,'cate_id_1', ArrayHelper::map(Category::getChildrenList(0, 1), 'id', 'title'), [
                 'class' => 'form-control',
                 'onchange' => '
                     $.ajax({
                         type:"post",
                         dataType:"json",
                         url:"'.Yii::$app->urlManager->createUrl('/category-ajax/ajax-post-children-cate').'",
-                        data:{pid:$(this).val(),cateid:$(this).val()},
+                        data:{pid:$(this).val(),cateid:$(this).val(),level:2},
                         success:function(msg){
-                            $("#good-cate_id_2").html(msg.cate);
-                            $("#good-cate_id").html(\'<option value="0">请选择</option>\');
+                            $("#good-cate_id").html(msg.cate);
                             $("#good-brand_id").html(msg.brand);
                         }
                     });
                 ',
             ])
             .
-            Html::activeDropDownList($model,'cate_id_2', ArrayHelper::map(Category::getChildrenList($model->cate_id_1), 'id', 'title'), [
-                'class' => 'form-control',
-                'onchange' => '
-                    var cateid = $("#good-cate_id_1").val();
-                    $.ajax({
-                        type:"post",
-                        dataType:"json",
-                        url:"'.Yii::$app->urlManager->createUrl('/category-ajax/ajax-post-children-cate').'",
-                        data:{pid:$(this).val(),cateid:cateid},
-                        success:function(msg){
-                            $("#good-cate_id").html(msg.cate);
-                        }
-                    });
-                ',
-            ])
-            .
-            Html::activeDropDownList($model,'cate_id', ArrayHelper::map(Category::getChildrenList($model->cate_id_2), 'id', 'title'), [
+            Html::activeDropDownList($model,'cate_id', ArrayHelper::map(Category::getChildrenList($model->cate_id_1, 2), 'id', 'title'), [
                 'class' => 'form-control',
                 'onchange' => '
                     $("#good-cate_id").val($(this).val());
@@ -75,7 +58,7 @@ use common\models\Brand;
     <?php //$form->field($model, 'brand_id')->textInput() ?>
     <?= $form->field($model, 'brand_id', [
         'template'=>'{label}'.
-            Html::activeDropDownList($model,'brand_id', ArrayHelper::map(Brand::getBrandByCate($model->cate_id_1), 'id', 'title'), [
+            Html::activeDropDownList($model,'brand_id', ArrayHelper::map(Brand::getBrandByCate($model->cate_id_1, 2), 'id', 'title'), [
                 'class' => 'form-control',
                 'onchange' => '
                     $("#good-brand_id").val($(this).val());

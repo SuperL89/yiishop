@@ -94,6 +94,9 @@ class GoodMbController extends Controller
     {
         $model = $this->findModel($id);
         $model->updated_at = time();
+        $Good =  Yii::$app->request->post('Good');
+        $model->cate_id = $Good['cate_id'];
+        $model->brand_id = $Good['brand_id'];
         $goodmodel = $this->findGoodModel($model->good_id);
         $goodmodel->updated_at = time();
         $imagemodel = $this->findGoodImageModel($goodmodel->id);
@@ -135,7 +138,6 @@ class GoodMbController extends Controller
                     'imagemodel' =>$imagemodel,
                 ]);
             }
-            
         } else {
             return $this->render('update', [
                 'model' => $model,

@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = '更新';
 ?>
 <div class="user-update">
 
-    <?= $this->render('_form', [
+    <?= $this->render('user_form', [
         'model' => $model,
     ]) ?>
 

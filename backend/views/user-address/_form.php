@@ -26,7 +26,7 @@ use api\models\UserAddress;
 
     <?= $form->field($model, 'city_id', [
         'template'=>'{label}'.
-            Html::activeDropDownList($model,'city_id_1', ArrayHelper::map(Place::getChildrenList(140), 'id', 'name'), [
+            Html::activeDropDownList($model,'city_id_1', ArrayHelper::map(Place::getChildrenList(140, 1), 'id', 'name'), [
                 'class' => 'form-control',
                 'onchange' => '
                     var id = $(this).val();
@@ -35,7 +35,7 @@ use api\models\UserAddress;
                         type:"post",
                         dataType:"json",
                         url:"'.Yii::$app->urlManager->createUrl('/place-ajax/ajax-post-children-place').'",
-                        data:{pid:$(this).val()},
+                        data:{pid:$(this).val(),level:2},
                         success:function(msg){
                             $("#useraddress-city_id").html(msg.place);
                             if (id == 0) {
@@ -47,7 +47,7 @@ use api\models\UserAddress;
                 ',
             ])
             .
-            Html::activeDropDownList($model,'city_id', ArrayHelper::map(Place::getChildrenList($model->city_id_1), 'id', 'name'), [
+            Html::activeDropDownList($model,'city_id', ArrayHelper::map(Place::getChildrenList($model->city_id_1, 2), 'id', 'name'), [
                 'class' => 'form-control',
                 'onchange' => '
                     $("#useraddress-city_id").val($(this).val());

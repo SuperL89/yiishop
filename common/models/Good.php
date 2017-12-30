@@ -191,9 +191,10 @@ class Good extends \yii\db\ActiveRecord
         $cate_info = $category::findOne($cate_id);
         if($cate_info){
            //获得分类的父级id
-           $this->cate_id_2 = $cate_info->parentid;
-           $cate2_info = $category::findOne($this->cate_id_2);
-           $this->cate_id_1 = $cate2_info->parentid;
+            $this->cate_id_1 = $cate_info->parentid;
+           //$this->cate_id_2 = $cate_info->parentid;
+           //$cate2_info = $category::findOne($this->cate_id_2);
+           //$this->cate_id_1 = $cate2_info->parentid;
         }
     }
 }

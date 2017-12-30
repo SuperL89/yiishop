@@ -36,8 +36,9 @@ class CategoryAjaxController extends GoodController
             
             $pid = \Yii::$app->request->post('pid');
             $cateid = \Yii::$app->request->post('cateid');
+            $level = \Yii::$app->request->post('level');
             //查询分类
-            $cate_children = Category::getChildrenList($pid);
+            $cate_children = Category::getChildrenList($pid, $level);
             if (count($cate_children) > 0) {
                 foreach ($cate_children as $k => $v) {
                     $cate .= Html::tag('option',Html::encode($v['title']),['value'=>$v['id']]);
