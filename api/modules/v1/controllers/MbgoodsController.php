@@ -55,6 +55,10 @@ class MbgoodsController extends ActiveController
 //                         'place'=> function ($query){
 //                             $query->select(['*']);
 //                         },
+                        'address'=> function ($query){
+                            $query->select(['*']);
+                        },
+                        
                     ]);
             },
             'goodImage'=> function ($query){
@@ -87,6 +91,8 @@ class MbgoodsController extends ActiveController
                 //$goods['good_mb'][$k]['freight']=isset($v['freight']['freightVars'][0]['freight'])?$v['freight']['freightVars'][0]['freight']:0;
                 //查询商品发货地
                 //$goods['good_mb'][$k]['place'] = $v['place']['name'];
+                //查询商品转运仓名
+                $goods['good_mb'][$k]['address_name'] = $v['address']['name'];
                 //商品最低价格
                 $goods['good_mb'][$k]['price_min'] = isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
                 //商品总库存
