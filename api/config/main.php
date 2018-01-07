@@ -74,6 +74,7 @@ return [
                     'pluralize' => false,
                     'extraPatterns' => [
                         'POST index' => 'index',
+                        'POST ceshi' => 'ceshi',
                         'POST register' => 'register',
                         'POST login' => 'login',
                         'GET signup-test' => 'signup-test',

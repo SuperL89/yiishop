@@ -59,6 +59,8 @@ use api\models\AlipaymentOrderForm;
 use common\components\alipay\aop\AopClient;
 use common\components\alipay\aop\request\AlipayTradeAppPayRequest;
 
+use common\components\JiGuangPush;
+
 class UserController extends ActiveController
 {
     public $modelClass = 'api\models\User';
@@ -79,7 +81,8 @@ class UserController extends ActiveController
                         'get-express',
                         'qiniu-token',
                         'transfer-bin',
-                        'ali-payment-notify-order'
+                        'ali-payment-notify-order',
+                        'ceshi'
                     ],
                 ] 
         ] );
@@ -88,6 +91,30 @@ class UserController extends ActiveController
     {
         $action =  parent::actions(); 
         unset($action['index'],$action['view'],$action['create'],$action['update'],$action['delete']); //所有动作删除
+    }
+    //极光测试
+    public function actionCeshi(){
+    
+        try {
+            $model = new JiGuangPush();
+            $platform = "all";
+            //$tag = array("7");
+            $alias = array("7");
+            $notification_alert = "hello";
+            $message = "测试测试测试策划四测试";
+            $options = array("apns_production" => false);
+    
+            $model->_init($platform, /*$tag*/ $alias, $notification_alert, $message, $options);
+            $info = $model->push();
+    
+            if ($info && is_array($info) && $info['code'] == 0) {
+                return array('code' => 200, 'msg' => '');
+            } else {
+                return array('code' => 10001, 'msg' => $info['msg']);
+            }
+        } catch (\Exception $e) {
+            return array('code' => 10001, 'msg' => $e->getMessage());
+        }
     }
     
     /**
@@ -116,6 +143,8 @@ class UserController extends ActiveController
             return $data;
         }
     }
+    
+    
     /**
      * 注册
      */
