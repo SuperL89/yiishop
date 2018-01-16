@@ -26,7 +26,13 @@ $this->registerJs($this->render('_script.js'));
 
     <?= $form->field($model, 'parentid')->hiddenInput(['value'=>$cate_id])->label(false); ?>
     
-    <?= $form->field($model, 'image_url')->widget('manks\FileInput'); ?>
+   <?= $form->field($model, 'image_url')->widget('manks\FileInput', [
+        'clientOptions' => [
+            'pick' => [
+                'multiple' => true,
+            ]
+        ],
+    ]); ?>
 
     <?= $form->field($model, 'status')->dropDownList(Category::allStatus()) ?>
     
