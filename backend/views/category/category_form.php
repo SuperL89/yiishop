@@ -4,17 +4,17 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\models\Category;
 use yii\helpers\Json;
-use mdm\admin\AutocompleteAsset;
+//use mdm\admin\AutocompleteAsset;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Category */
 /* @var $form yii\widgets\ActiveForm */
-AutocompleteAsset::register($this);
-$opts = Json::htmlEncode([
-    'categorys' => Category::getCategorySource(),
-]);
-$this->registerJs("var _opts = $opts;");
-$this->registerJs($this->render('_script.js'));
+// AutocompleteAsset::register($this);
+// $opts = Json::htmlEncode([
+//     'categorys' => Category::getCategorySource(),
+// ]);
+// $this->registerJs("var _opts = $opts;");
+// $this->registerJs($this->render('_script.js'));
 ?>
 
 <div class="category-form">
