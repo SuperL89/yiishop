@@ -97,7 +97,6 @@ class MbgoodsController extends ActiveController
                 $goods['good_mb'][$k]['price_min'] = isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
                 //商品总库存
                 $goods['good_mb'][$k]['stock_sum'] = $this->actionArrvalsum($v['goodMbv'], 'stock_num');
-                
                 foreach ($v['goodMbv'] as $ks => $vs){
                     //型号id
                     $goods['good_mb'][$k]['good_mbv'][$ks]['model_id']=$vs['id'];
@@ -116,6 +115,12 @@ class MbgoodsController extends ActiveController
             $good['msg'] = '商品不存在';
             return $good;
         }
+        //print_r($goods);exit();
+        //提取列数组；
+        foreach ($goods['good_mb'] as $key => $val) {
+            $tmp[$key] = $val['price_min'];
+        }
+        array_multisort($tmp,SORT_DESC,$goods['good_mb']);//此处对数组进行降序排列；SORT_DESC按降序排列
         
         $good['code'] = '200';
         $good['msg'] = '';
