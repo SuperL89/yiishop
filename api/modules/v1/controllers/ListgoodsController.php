@@ -41,7 +41,7 @@ class ListgoodsController extends ActiveController
         $modelClass = $this->modelClass;
         //分页
         $pagination = new Pagination([
-            'defaultPageSize' => 20,
+            'defaultPageSize' => 10,
             'totalCount' => $modelClass::find()->where(['status' => 0])->filterWhere(['status' => 0,'is_hot'=>$ishot])->count(),
             'page' =>$page - 1,
         ]);
