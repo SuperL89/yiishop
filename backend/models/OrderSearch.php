@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Order;
+use phpDocumentor\Reflection\DocBlock\Description;
 
 /**
  * OrderSearch represents the model behind the search form about `common\models\Order`.
@@ -124,5 +125,66 @@ class OrderSearch extends Order
                 'created_at' =>SORT_DESC,
             ];
         return $dataProvider;
+    }
+    
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function searchOrder($params)
+    {
+        $this->load($params);
+        
+        $query = Order::find();
+        $query->joinWith(['user']);
+        $query->andFilterWhere([
+            '{{%order}}.id' => $this->id,
+            'pay_type' => $this->pay_type,
+            'good_price' => $this->good_price,
+            'pay_num' => $this->pay_num,
+            'good_total_price' => $this->good_total_price,
+            'order_fare' => $this->order_fare,
+            'order_total_price' => $this->order_total_price,
+            '{{%order}}.status' => $this->status,
+        ]);
+    
+        $query->andFilterWhere(['like', 'order_num', $this->order_num])
+        ->andFilterWhere(['like', 'username', $this->username])
+        ->andFilterWhere(['like', 'express_name', $this->express_name])
+        ->andFilterWhere(['like', 'express_num', $this->express_num])
+        ->andFilterWhere(['like', 'cancel_text', $this->cancel_text])
+        ->andFilterWhere(['like', 'message', $this->message]);
+    
+        if (!empty($this->created_at)) {
+            $query->andFilterCompare('{{%order}}.created_at', strtotime(explode('/', $this->created_at)[0]), '>=');//起始时间
+            $query->andFilterCompare('{{%order}}.created_at', (strtotime(explode('/', $this->created_at)[1]) + 86400), '<');//结束时间
+        }
+    
+        if (!empty($this->pay_at)) {
+            $query->andFilterCompare('{{%order}}.pay_at', strtotime(explode('/', $this->pay_at)[0]), '>=');//起始时间
+            $query->andFilterCompare('{{%order}}.pay_at', (strtotime(explode('/', $this->pay_at)[1]) + 86400), '<');//结束时间
+        }
+    
+        if (!empty($this->deliver_at)) {
+            $query->andFilterCompare('{{%order}}.deliver_at', strtotime(explode('/', $this->deliver_at)[0]), '>=');//起始时间
+            $query->andFilterCompare('{{%order}}.deliver_at', (strtotime(explode('/', $this->deliver_at)[1]) + 86400), '<');//结束时间
+        }
+    
+        if (!empty($this->complete_at)) {
+            $query->andFilterCompare('{{%order}}.complete_at', strtotime(explode('/', $this->complete_at)[0]), '>=');//起始时间
+            $query->andFilterCompare('{{%order}}.complete_at', (strtotime(explode('/', $this->complete_at)[1]) + 86400), '<');//结束时间
+        }
+        if (!empty($this->library_at)) {
+            $query->andFilterCompare('{{%order}}.library_at', strtotime(explode('/', $this->library_at)[0]), '>=');//起始时间
+            $query->andFilterCompare('{{%order}}.library_at', (strtotime(explode('/', $this->library_at)[1]) + 86400), '<');//结束时间
+        }
+        $query->orderBy('created_at DESC');
+        $orderInfo = $query->all();
+        //$orderInfo = $query->createCommand()->getRawSql();
+        
+        return $orderInfo;
     }
 }

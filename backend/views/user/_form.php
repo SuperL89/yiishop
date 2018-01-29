@@ -16,6 +16,7 @@ use common\models\User;
     <?= $form->field($model, 'image_h')->widget('manks\FileInput', []); ?>
     <?= $form->field($model, 'nickname')->textInput() ?>
 	<?= $form->field($model, 'sex')->radioList(['1'=>'男','0'=>'女']) ?>
+    <?= $form->field($model, 'commission_fee')->textInput() ?>
     <?= $form->field($model, 'status')->dropDownList(User::allStatus(),['prompt'=>'请选择状态']) ?>
 	<?= $form->field($model, 'updated_at')->textInput()->hiddenInput(['value'=>time()])->label(false); ?>
     <div class="form-group">

@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'filter'=>Good::allHot(),
             ],
             //'created_at',
-            [
+            /*[
             'attribute'=>'created_at',
             'format'=>['date','php:Y-m-d H:i:s'],
             'headerOptions' => ['width' => '12%'],
@@ -91,9 +91,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]
             ]),
-            ],
+            ],*/
             //'updated_at',
-            [
+            /*[
             'attribute'=>'updated_at',
             'format'=>['date','php:Y-m-d H:i:s'],
             'headerOptions' => ['width' => '12%'],
@@ -112,7 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]
             ]),
-            ],
+            ],*/
             //'user_id',
 //             [
 //             'attribute'=>'username',
@@ -122,7 +122,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'order',
 
             ['class' => 'yii\grid\ActionColumn',
-                'template'=>'{view}{update}{good-code}',
+                'template'=>'{view}{update}{good-code}{delete}',
                 'buttons'=>[
                     'good-code'=>function($url,$model,$key)
                     {

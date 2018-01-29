@@ -13,6 +13,9 @@ use common\models\User;
 use common\models\UserTradelog;
 
 use yii\base\Exception;
+use moonland\phpexcel\Excel;
+use PHPExcel;
+use PHPExcel_IOFactory;
 
 /**
  * OrderController implements the CRUD actions for Order model.
@@ -42,10 +45,13 @@ class OrderController extends Controller
     {
         $searchModel = new OrderSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $params = isset(Yii::$app->request->queryParams) ? Yii::$app->request->queryParams : array();
+        $params[0] = 'export';
+        
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'params' => $params
         ]);
     }
 
@@ -240,5 +246,98 @@ class OrderController extends Controller
             Yii::$app->getSession()->setFlash('error', '操作失败，请重试。');
             return $this->redirect(['index']);
         }
+    }
+    
+    /**
+     * 导出
+     */
+    public function actionExport()
+    {
+        $searchModel = new OrderSearch();
+        $orderInfo = $searchModel->searchOrder(Yii::$app->request->queryParams);
+        
+        Excel::export([
+            'models' => $orderInfo,
+            'fileName' => 'order_export',
+            'columns' => [
+                [
+                    'attribute'=>'id',
+                    'header' => 'ID',
+                ],
+                [
+                    'attribute'=>'order_num',
+                    'header' => '订单编号',
+                ],
+                [
+                    'attribute'=>'username',
+                    'header' => '购买用户',
+                    'value'=>'user.username',
+                ],
+                [
+                    'attribute' => 'pay_type',
+                    'header' => '支付方式',
+                    'format' => 'text',
+                    'value' => 'paytypeStr',
+                    'filter' => Order::allPaytype(),
+                ],
+                [
+                    'attribute'=>'good_price',
+                    'header' => '商品单价',
+                    'format' => 'decimal',
+                ],
+                [
+                    'attribute'=>'pay_num',
+                    'header' => '购买数量',
+                ],
+                [
+                    'attribute'=>'good_total_price',
+                    'header' => '商品总价',
+                ],
+                [
+                    'attribute'=>'order_fare',
+                    'header' => '运费',
+                ],
+                [
+                    'attribute'=>'order_total_price',
+                    'header' => '订单总价',
+                ],
+                [
+                    'attribute' => 'status',
+                    'header' => '订单状态',
+                    'value' => 'statusStr',
+                    'filter' => Order::allStatus(),
+                ],
+                [
+                    'attribute' => 'created_at',
+                    'header' => '创建时间',
+                    'format' => ['date', 'php:Y-m-d H:i:s'],
+                    'value' => 'created_at',
+                ],
+                [
+                    'attribute' => 'pay_at',
+                    'header' => '支付时间',
+                    'format' => ['date', 'php:Y-m-d H:i:s'],
+                    'value' => 'pay_at',
+                ],
+                [
+                    'attribute' => 'deliver_at',
+                    'header' => '发货时间',
+                    'format' => ['date', 'php:Y-m-d H:i:s'],
+                    'value' => 'deliver_at',
+                ],
+                [
+                    'attribute' => 'complete_at',
+                    'header' => '完成时间',
+                    'format' => ['date', 'php:Y-m-d H:i:s'],
+                    'value' => 'complete_at',
+                ],
+                [
+                    'attribute' => 'library_at',
+                    'header' => '出库时间',
+                    'format' => ['date', 'php:Y-m-d H:i:s'],
+                    'value' => 'library_at',
+                ],
+            ],
+        ]);
     }
 }

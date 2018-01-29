@@ -14,6 +14,8 @@ use yii\filters\VerbFilter;
 use yii\base\Exception;
 use backend\models\GoodMbvSearch;
 use api\models\GoodCode;
+use Symfony\Component\Yaml\Dumper;
+use Symfony\Component\Yaml\Tests\DumperTest;
 
 /**
  * GoodMbController implements the CRUD actions for GoodMb model.
@@ -226,14 +228,15 @@ class GoodMbController extends Controller
     public function actionStatusOk($id)
     {
         $model = $this->findGoodMbvModel($id);
+        $goodmb = GoodMb::find()->where(['id'=>$model->mb_id])->one();
         if($model->status != 2){
             Yii::$app->getSession()->setFlash('error', '非法操作！');
-            return $this->redirect(['good-mbv','id'=>$mb_id->mb_id]);
+            return $this->redirect(['good-mbv','id'=>$model->mb_id]);
         }
         
         //查询商品报价信息
-        $goodmbv = GoodMbv::find()->where(['id'=>$id])->one();
-        $goodmb = GoodMb::find()->where(['id'=>$goodmbv->mb_id])->one();
+        
+        //print_r($goodmb);exit();
         $goodcode = new GoodCode();
         
         $transaction = \Yii::$app->db->beginTransaction();
@@ -258,12 +261,12 @@ class GoodMbController extends Controller
             
             $transaction->commit();
             Yii::$app->getSession()->setFlash('success', '操作成功！');
-            return $this->redirect(['good-mbv','id'=>$goodmbv->mb_id]);
+            return $this->redirect(['good-mbv','id'=>$model->mb_id]);
         } catch(Exception $e) {
             # 回滚事务
             $transaction->rollback();
             Yii::$app->getSession()->setFlash('error', '操作失败，请重试。');
-            return $this->redirect(['good-mbv','id'=>$goodmbv->mb_id]);
+            return $this->redirect(['good-mbv','id'=>$model->mb_id]);
             
             //return $e->getMessage();
         }

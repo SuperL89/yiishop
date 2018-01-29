@@ -73,9 +73,10 @@ class GoodSearch extends Good
 //             'updated_at' => $this->updated_at,
             //'user_id' => 0,
             'order' => $this->order,
+            'is_del' => 0
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
+        $query->andFilterWhere(['like', '{{%good}}.title', $this->title])
             ->andFilterWhere(['like', '{{%category}}.title', $this->cate_name])
             ->andFilterWhere(['like', '{{%brand}}.title', $this->brand_name])
             ->andFilterWhere(['like', 'description', $this->description]);

@@ -99,7 +99,7 @@ class User extends ActiveRecord implements IdentityInterface
             'sex' => '性别',
             'image_h' => '头像',
             'money' => '余额',
-            'commission_fee' => '提现手续费',
+            'commission_fee' => '提现手续费(%)',
         ];
     }
 

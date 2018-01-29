@@ -155,7 +155,7 @@ class Good extends \yii\db\ActiveRecord
      */
     public function getRecoStr()
     {
-        return $this->status==self::IS_RECO?'是':'否';
+        return $this->is_reco==self::IS_RECO?'是':'否';
     }
     const IS_HOT = 1;
     const NO_HOT = 0;
@@ -171,7 +171,7 @@ class Good extends \yii\db\ActiveRecord
      */
     public function getHotStr()
     {
-        return $this->status==self::IS_HOT?'是':'否';
+        return $this->is_hot==self::IS_HOT?'是':'否';
     }
     
     //获得分类联动

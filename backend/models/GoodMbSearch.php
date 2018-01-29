@@ -76,6 +76,7 @@ class GoodMbSearch extends GoodMb
             '{{%good_mb}}.mb_status' => $this->mb_status,
 //             'created_at' => $this->created_at,
 //             'updated_at' => $this->updated_at,
+            '{{%good_mb}}.is_del' => 0
         ]);
         $query->andFilterWhere(['like', 'username', $this->username])
               ->andFilterWhere(['like', '{{%good}}.title', $this->good_title])

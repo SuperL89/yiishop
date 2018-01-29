@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use kartik\daterange\DateRangePicker;
 use common\models\Order;
+use yii\base\Widget;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\OrderSearch */
@@ -18,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?php // Html::a('Create Order', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('导出订单', $params, ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -27,8 +28,9 @@ $this->params['breadcrumbs'][] = $this->title;
             //['class' => 'yii\grid\SerialColumn'],
 
             [
-            'attribute'=>'id',
-            'headerOptions' => ['width' => '3%'],   
+                'attribute'=>'id',
+                'headerOptions' => ['width' => '3%', 'class'=>'text-center'],   
+                'contentOptions' => ['class'=>'text-center'],
             ],
             'order_num',
             //'user_id',

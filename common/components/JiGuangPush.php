@@ -15,17 +15,17 @@ class JiGuangPush extends Model
     private $platform;
     //private $tag;
     private $alias;
-    private $notification_alert;
+    //private $notification_alert;
     private $message;
     private $options;
     
-    public function _init($platform, /*$tag*/ $alias, $notification_alert, $message, $options) 
+    public function _init($platform, /*$tag*/ $alias/*, $notification_alert*/, $message, $options) 
     {
         parent::init();
         $this->platform = $platform;
         //$this->tag = $tag;
         $this->alias = $alias;
-        $this->notification_alert = $notification_alert;
+        //$this->notification_alert = $notification_alert;
         $this->message = $message;
         $this->options = $options;
     }
@@ -39,7 +39,7 @@ class JiGuangPush extends Model
                         //->addTag($this->tag)
                         ->addAlias($this->alias)
                         //->addAllAudience()
-                        ->setNotificationAlert($this->notification_alert)
+                        //->setNotificationAlert($this->notification_alert)
                         ->message($this->message)
                         ->options($this->options)
                         ->send();

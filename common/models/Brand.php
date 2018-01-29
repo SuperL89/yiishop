@@ -113,6 +113,6 @@ class Brand extends \yii\db\ActiveRecord
     public static function getBrandByCate($cate_id)
     {
         $x[] = (new static)->select_head[0];
-        return array_merge($x,static::findAll(['cate_id'=>$cate_id]));
+        return array_merge($x,static::find()->where(['cate_id' => $cate_id])->orderBy('title ASC')->all());
     }
 }

@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Good;
+use common\models\GoodMb;
+use common\models\GoodMbv;
 use backend\models\GoodSearch;
 use common\models\GoodCode;
 use backend\models\GoodCodesSearch;
@@ -14,6 +16,7 @@ use common\models\GoodImage;
 use common\components\Upload;
 use yii\helpers\Json;
 use common\models\GoodClicks;
+use yii\base\Exception;
 
 /**
  * GoodController implements the CRUD actions for Good model.
@@ -148,6 +151,52 @@ class GoodController extends Controller
                 'model' => $model,
                 'imagemodel' => $imagemodel,
             ]);
+        }
+    }
+    
+    /**
+     * Deletes an existing Good model.
+     * If delete is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        
+        
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            //修改商品删除状态
+            $model = $this->findModel($id);
+            $model->is_del = 1;
+            $model->save();
+            
+            //修改商品报价删除状态
+            $goodmb = GoodMb::find()->where(['good_id'=>$model->id])->all();
+            $mbIds = array();
+            foreach ($goodmb as $mb) {
+                $mbIds[] = $mb->id;
+                $mbEdit = array();
+                $mbEdit['is_del'] = 1;
+                GoodMb::updateAll($mbEdit, 'id=:id', array(':id' => $mb->id));
+            }
+            
+            //修改商品属性删除状态
+            $goodmbv = GoodMbv::find()->where(['in', 'mb_id', $mbIds])->all();
+            foreach ($goodmbv as $mbv) {
+                $mbvEdit = array();
+                $mbvEdit['is_del'] = 1;
+                GoodMbv::updateAll($mbvEdit, 'id=:id', array(':id' => $mbv->id));
+            }
+        
+            $transaction->commit();
+            Yii::$app->getSession()->setFlash('success', '操作成功！');
+            return $this->redirect('index');
+        } catch(Exception $e) {
+            # 回滚事务
+            $transaction->rollback();
+            Yii::$app->getSession()->setFlash('error', '操作失败，请重试。'.$e->getMessage());
+            return $this->redirect('index');
         }
     }
     

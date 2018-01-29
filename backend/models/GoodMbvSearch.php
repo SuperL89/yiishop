@@ -70,6 +70,7 @@ class GoodMbvSearch extends GoodMbv
             'status' => $this->status,
             'bar_code' => $this->bar_code,
             //'updated_at' => $this->updated_at,
+            'is_del' => 0
         ]);
 
         $query->andFilterWhere(['like', 'model_text', $this->model_text]);
