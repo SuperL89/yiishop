@@ -76,7 +76,7 @@ class SearchgoodsController extends ActiveController
         
         //分页
         $pagination = new Pagination([
-            'defaultPageSize' => 10,
+            'defaultPageSize' => 20,
             'totalCount' => $modelClass::find()->count(),
             'page' =>$page - 1,
         ]);
