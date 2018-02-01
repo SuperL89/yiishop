@@ -33,7 +33,7 @@ class MbgoodsController extends ActiveController
         }
         $modelClass = $this->modelClass;
         //获取商家商品信息
-        $good_arr = $modelClass::find()->select(['*'])->where(['status'=>0,'id'=>$id])->with([
+        $good_arr = $modelClass::find()->select(['*'])->where(['status'=>0,'id'=>$id,'is_del'=>0])->with([
             'goodMb'=> function ($query) {
                 $query->select(['*'])->where(['status'=>0,'mb_status'=>0])->with([
                         'user'=> function ($query){

@@ -77,14 +77,14 @@ class SearchgoodsController extends ActiveController
         //分页
         $pagination = new Pagination([
             'defaultPageSize' => 20,
-            'totalCount' => $modelClass::find()->count(),
+            'totalCount' => $modelClass::find()->where(['status' => 0,'is_del' => 0,'id'=>$good_ids])->count(),
             'page' =>$page - 1,
         ]);
         
         //获取全部商品列表
         $goods = $modelClass::find()
         ->select(['id','good_num','title','cate_id'])
-        ->where(['status' => 0,'id'=>$good_ids])
+        ->where(['status' => 0,'is_del' => 0,'id'=>$good_ids])
         ->orderBy('order desc')
         ->offset($pagination->offset)
         ->limit($pagination->limit)

@@ -1991,13 +1991,13 @@ class UserController extends ActiveController
         //分页
         $pagination = new Pagination([
             'defaultPageSize' => 10,
-            'totalCount' => GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>$good_status])->count(),
+            'totalCount' => GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>$good_status,'is_del'=>0])->count(),
             'page' =>$page - 1,
         ]);
         //获取商家商品信息
-        $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>$good_status])->with([
+        $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>$good_status,'is_del'=>0])->with([
             'good'=> function ($query) {
-                $query->select(['*'])->with([
+                $query->select(['*'])->where(['is_del' => 0])->with([
                     'goodImage'=> function ($query){
                         $query->select(['id','good_id','image_url']);
                      }
@@ -2080,7 +2080,7 @@ class UserController extends ActiveController
             $data['msg'] = '不是商家用户或未通过商家审核';
             return $data;
         }
-        $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'user_id' => $user->id,'id' => $mb_id])->one();
+        $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'user_id' => $user->id,'id' => $mb_id,'is_del'=>0])->one();
         if (!$goodmb){
             $data['code'] = '10001';
             $data['msg'] = '无此报价信息';
@@ -2127,7 +2127,7 @@ class UserController extends ActiveController
         $goodcode = GoodCode::find(['good_id'])->where(['bar_code' =>$bar_code])->one();
         $good_id = $goodcode['good_id'];
         //查询商品信息
-        $good_arr = Good::find()->select(['*'])->where(['id'=>$good_id])->with([
+        $good_arr = Good::find()->select(['*'])->where(['id'=>$good_id,'is_del'=>0])->with([
             'goodImage'=> function ($query){
                 $query->select(['image_url']);
             },
@@ -2209,7 +2209,7 @@ class UserController extends ActiveController
 //         $goodcode = GoodCode::find(['good_id'])->where(['bar_code' =>$bar_code])->one();
 //         $good_id = $goodcode['good_id'];
         //查询商品信息
-        $good_arr = Good::find()->select(['*'])->where(['id'=>$good_id])->with([
+        $good_arr = Good::find()->select(['*'])->where(['id'=>$good_id,'is_del'=>0])->with([
             'goodImage'=> function ($query){
             $query->select(['image_url']);
             },
@@ -2284,7 +2284,7 @@ class UserController extends ActiveController
             return $data;
         }
         //验证该商品是否存在
-        $good = Good::find()->where(['id' => $user_data['good_id']])->one();
+        $good = Good::find()->where(['id' => $user_data['good_id'],'is_del'=>0])->one();
         if(!$good){
             $data['code'] = '10001';
             $data['msg'] = '商品不存在';
@@ -2536,7 +2536,7 @@ class UserController extends ActiveController
             //获取商家商品信息
             $good_arr = GoodMb::find()->select(['id','good_id'])->where(['user_id'=>$user->id,'status'=>[0,1]])->with([
                 'good'=> function ($query) {
-                $query->select(['id'])->with([
+                $query->select(['id'])->where(['is_del'=>0])->with([
                     'goodImage'=> function ($query){
                         $query->select(['id','good_id']);
                     }
@@ -2801,9 +2801,9 @@ class UserController extends ActiveController
             return $data;
         }
         //获取商家商品信息
-        $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'status'=>[0,1],'id'=>$mb_id])->with([
+        $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'status'=>[0,1],'id'=>$mb_id,'is_del'=>0])->with([
             'good'=> function ($query) {
-                $query->select(['*'])->with([
+                $query->select(['*'])->where(['is_del'=>0])->with([
                     'goodImage'=> function ($query){
                         $query->select(['id','good_id','image_url']);
                     },

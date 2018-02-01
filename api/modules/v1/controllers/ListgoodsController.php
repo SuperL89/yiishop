@@ -42,13 +42,13 @@ class ListgoodsController extends ActiveController
         //分页
         $pagination = new Pagination([
             'defaultPageSize' => 20,
-            'totalCount' => $modelClass::find()->where(['status' => 0])->filterWhere(['status' => 0,'is_hot'=>$ishot])->count(),
+            'totalCount' => $modelClass::find()->where(['status' => 0,'is_del'=>0])->filterWhere(['status' => 0,'is_hot'=>$ishot])->count(),
             'page' =>$page - 1,
         ]);
         //获取商品列表
         $goods = $modelClass::find()
         ->select(['id','good_num','title','cate_id'])
-        ->where(['status' => 0])
+        ->where(['status' => 0,'is_del'=>0])
         ->filterWhere(['status' => 0,'is_hot'=>$ishot])
         ->orderBy('order desc')
         ->offset($pagination->offset)

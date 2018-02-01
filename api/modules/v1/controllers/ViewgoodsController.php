@@ -38,7 +38,7 @@ class ViewgoodsController extends ActiveController
         $modelClass = $this->modelClass;
         $goods = $modelClass::find()
         ->select(['id','good_num','title','description','brand_id'])
-        ->where(['status' => 0,'id' => $id])
+        ->where(['status' => 0,'is_del'=>0,'id' => $id])
         ->orderBy('order desc')
         ->asArray()
         ->one();

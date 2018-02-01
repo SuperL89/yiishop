@@ -53,7 +53,7 @@ class SearchbarcodeController extends ActiveController
         
         $goods = $modelClass::find()
         ->select(['id','good_num','title','description','brand_id'])
-        ->where(['id' => $id])
+        ->where(['id' => $id,'status' => 0,'is_del'=>0])
         ->orderBy('order desc')
         ->asArray()
         ->one();
