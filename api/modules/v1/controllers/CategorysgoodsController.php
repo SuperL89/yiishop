@@ -10,7 +10,7 @@ use api\models\GoodClicks;
 use api\models\GoodImage;
 use yii\data\Pagination;
 
-class ListgoodsController extends ActiveController
+class CategorysgoodsController extends ActiveController
 {
     public $modelClass = 'api\models\Good';
     
@@ -29,7 +29,7 @@ class ListgoodsController extends ActiveController
 
     public function actionIndex(){
         
-        $ishot = (int)Yii::$app->request->post("ishot");
+        $cate_id = (int)Yii::$app->request->post("cate_id","0");
         $page = (int)Yii::$app->request->post("page", '1');
         
         if($page <= 0){
@@ -42,7 +42,7 @@ class ListgoodsController extends ActiveController
         //分页
         $pagination = new Pagination([
             'defaultPageSize' => 20,
-            'totalCount' => $modelClass::find()->where(['status' => 0,'is_del'=>0])->filterWhere(['status' => 0,'is_hot'=>$ishot])->count(),
+            'totalCount' => $modelClass::find()->where(['status' => 0,'is_del'=>0])->count(),
             'page' =>$page - 1,
         ]);
         //获取商品列表
@@ -62,8 +62,7 @@ class ListgoodsController extends ActiveController
                 $query->select(['*']);
             },
         ])
-        ->where(['status' => 0,'is_del'=>0])
-        ->filterWhere(['status' => 0,'is_hot'=>$ishot])
+        ->where(['cate_id' => $cate_id,'status' => 0,'is_del'=>0])
         ->orderBy('order desc')
         ->offset($pagination->offset)
         ->limit($pagination->limit)

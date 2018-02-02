@@ -39,7 +39,8 @@ class SearchbarcodeController extends ActiveController
         
         $modelClass = $this->modelClass;
         //根据条形码搜索符合的商品id集合
-        $goodmbv=GoodMbv::find()->select(['mb_id'])->where(['bar_code' => $code , 'status' => 0 , 'bar_code_status' => 1])->asArray()->one();
+        $goodmbv=GoodMbv::find()->select(['mb_id'])->where(['bar_code' => $code , 'status' => 0])->asArray()->one();
+        //print_r($goodmbv);exit();
         if(!empty($goodmbv)){//查询条形码是否存在
             $goodmb = GoodMb::find()->select(['good_id'])->where(['id' => $goodmbv['mb_id'],'status' => 0])->asArray()->one();
         }else{
@@ -54,20 +55,28 @@ class SearchbarcodeController extends ActiveController
         $goods = $modelClass::find()
         ->select(['id','good_num','title','description','brand_id'])
         ->where(['id' => $id,'status' => 0,'is_del'=>0])
+        ->with([
+            'goodImage'=> function ($query){
+                $query->select(['*']);
+            },
+            'brand'=> function ($query){
+                $query->select(['*']);
+            },
+        ])
         ->orderBy('order desc')
         ->asArray()
         ->one();
         if(!empty($goods)){
-            //获取商品品牌名
-            $brand_name = Brand::find()->where(['id' => $goods['brand_id']])->select(['title'])->asArray()->one();
-            $goods['brand_name']=$brand_name['title'];
             //获取商品图片
-            $image_url = GoodImage::find()->select(['image_url'])->where(['good_id' => $goods['id']])->asArray()->one();
-            $goods['image_url']=$image_url['image_url'];
+            $goods['image_url']=$goods['goodImage']['image_url'];
+            //获取商品品牌
+            $goods['brand_name']=$goods['brand']['title'];
             //增加该商品的点击数
             $goodclicks=GoodClicks::find()->where(['good_id' => $goods['id']])->one();
-            $goodclicks->clicks += 1;
-            $goodclicks->save();
+            if(!empty($goodclicks)){
+                $goodclicks->clicks += 1;
+                $goodclicks->save();
+            }    
         }else{
             $good['code'] = '10002';
             $good['msg'] = '商品不存在';

@@ -73,7 +73,7 @@ class Good extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
+/**
      * @return \yii\db\ActiveQuery
      */
     public function getBrand()
@@ -84,17 +84,25 @@ class Good extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCate()
+    public function getCates()
     {
-        return $this->hasOne(Category::className(), ['id' => 'cate_id'])->select('title');
+        return $this->hasOne(Category::className(), ['id' => 'cate_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCate()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'cate_id'])->select('title');
+    }
+   
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getGoodClicks()
     {
-        return $this->hasMany(GoodClicks::className(), ['good_id' => 'id']);
+        return $this->hasOne(GoodClicks::className(), ['good_id' => 'id']);
     }
 
     /**
@@ -102,7 +110,7 @@ class Good extends \yii\db\ActiveRecord
      */
     public function getGoodImages()
     {
-        return $this->hasMany(GoodImage::className(), ['good_id' => 'id']);
+        return $this->hasMany(GoodImage::className(), ['id' => 'good_id']);
     }
     
     /**
@@ -121,6 +129,9 @@ class Good extends \yii\db\ActiveRecord
     {
         return $this->hasMany(GoodCode::className(), ['good_id' => 'id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     // 明确列出每个字段，适用于你希望数据表或
     // 模型属性修改时不导致你的字段修改（保持后端API兼容性）
 //     public function fields()

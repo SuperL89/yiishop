@@ -58,7 +58,7 @@ class SearchgoodsController extends ActiveController
             $good_brand_ids =array();
         }
         //根据条形码搜索符合的商品id集合
-        $goodmbv=GoodMbv::find()->select(['mb_id'])->where(['bar_code' => $keyword , 'status' => 0 , 'bar_code_status' => 1])->asArray()->one();
+        $goodmbv=GoodMbv::find()->select(['mb_id'])->where(['bar_code' => $keyword , 'status' => 0])->asArray()->one();
         if(!empty($goodmbv)){//查询条形码是否存在
             $goodmb = GoodMb::find()->select(['good_id'])->where(['id' => $goodmbv['mb_id'],'status' => 0])->asArray()->one();
         }else{
@@ -83,8 +83,19 @@ class SearchgoodsController extends ActiveController
         
         //获取全部商品列表
         $goods = $modelClass::find()
-        ->select(['id','good_num','title','cate_id'])
+        ->select(['id','good_num','title','brand_id'])
         ->where(['status' => 0,'is_del' => 0,'id'=>$good_ids])
+        ->with([
+            'goodImage'=> function ($query){
+                $query->select(['*']);
+            },
+            'brand'=> function ($query){
+                $query->select(['*']);
+            },
+            'goodClicks'=> function ($query){
+                $query->select(['*']);
+            },
+        ])
         ->orderBy('order desc')
         ->offset($pagination->offset)
         ->limit($pagination->limit)
@@ -93,15 +104,16 @@ class SearchgoodsController extends ActiveController
       
         if(!empty($goods)){
             foreach ($goods as $k => $v){
-                //获取商品分类名
-                $cate_name = Category::find()->where(['id' => $v['cate_id']])->select(['title'])->asArray()->one();
-                $goods[$k]['cate_name']=$cate_name['title'];
                 //获取商品图片
-                $image_url = GoodImage::find()->select(['image_url'])->where(['good_id' => $v['id']])->asArray()->one();
-                $goods[$k]['image_url']=$image_url['image_url'];
+                $goods[$k]['image_url']=$v['goodImage']['image_url'];
+                //获取商品品牌
+                $goods[$k]['brand_name']=$v['brand']['title'];
                 //获取商品点击数
-                $clicks = GoodClicks::find()->select(['clicks'])->where(['good_id' => $v['id']])->asArray()->one();
-                $goods[$k]['clicks']=$clicks['clicks'];
+                if(!empty($v['goodClicks'])){
+                    $goods[$k]['clicks']=$v['goodClicks']['clicks'];
+                }else{
+                    $goods[$k]['clicks']='0';
+                }
             }
         }else{
             $good['code'] = '10002';

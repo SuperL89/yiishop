@@ -70,6 +70,8 @@ return [
                         'v1/searchgoods',
                         'v1/searchbarcode',
                         'v1/searchkeywords',
+                        'v1/categorysgoods',
+                        'v1/sharegoods',
                     ],
                     'pluralize' => false,
                     'extraPatterns' => [

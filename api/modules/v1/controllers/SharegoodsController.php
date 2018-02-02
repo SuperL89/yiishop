@@ -10,7 +10,7 @@ use api\models\GoodImage;
 use api\models\GoodClicks;
 
 
-class ViewgoodsController extends ActiveController
+class SharegoodsController extends ActiveController
 {
     public $modelClass = 'api\models\Good';
     
@@ -37,15 +37,9 @@ class ViewgoodsController extends ActiveController
         }
         $modelClass = $this->modelClass;
         $goods = $modelClass::find()
-        ->select(['id','good_num','title','description','brand_id'])
+        ->select(['id','title','description'])
         ->with([
             'goodImage'=> function ($query){
-                $query->select(['*']);
-            },
-            'brand'=> function ($query){
-                $query->select(['*']);
-            },
-            'goodClicks'=> function ($query){
                 $query->select(['*']);
             },
         ])
@@ -53,23 +47,21 @@ class ViewgoodsController extends ActiveController
         ->orderBy('order desc')
         ->asArray()
         ->one();
+        
         if(!empty($goods)){
-         //获取商品图片
+            $goods['title']=$goods['title'];
+            $goods['description']=$goods['description'];
             $goods['image_url']=$goods['goodImage']['image_url'];
-            //获取商品品牌
-            $goods['brand_name']=$goods['brand']['title'];
-            //增加该商品的点击数
-            $goodclicks=GoodClicks::find()->where(['good_id' => $goods['id']])->one();
-            if(!empty($goodclicks)){
-                $goodclicks->clicks += 1;
-                $goodclicks->save();
-            }    
+            //获取商品图片
+            $goods['url']="http://www.baidu.com";
+            
         }else{
             $good['code'] = '10002';
             $good['msg'] = '商品不存在或者已下架';
             return $good;
         }
-        
+        unset($goods['id']);
+        unset($goods['goodImage']);
         $good['code'] = '200';
         $good['msg'] = '';
         $good['data'] = $goods;
