@@ -1,0 +1,92 @@
+html,body {
+
+    font-family: Helvetica Neue,Helvetica,STHeiTi,PingFangSC-Regular,sans-serif;
+    line-height: 1.5;
+    font-size: 14px;
+    color: #000;
+    background-color: #f8f8f8;
+    -webkit-user-select: none;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+}
+.gd_body {
+    background-color: #f7f7f7;
+    padding-bottom: 50px;
+}
+
+.gd_body .top {
+    border-bottom: 1px solid #eee;
+    /* margin-bottom: 10px; */
+}
+.gd_body .title{
+    position: relative;
+    background: #FFFFFF;
+    padding: 16px;
+}
+.gd_body .title h2{
+    margin: 0 0 16px 0;
+    font-weight: normal;
+    font-family: PingFangSC-Regular;
+    font-size: 17px;
+    color: #333333;
+    letter-spacing: 0;
+}
+.gd_body .title span.tag{
+    margin-right:12px; 
+    background-image: linear-gradient(-90deg, #FF988F 0%, #FF4F61 100%);
+    border-radius: 2px;
+    width: 30px;
+    height: 16px;
+    color: #fff;
+
+    font-size: 11px;
+}
+.gd_body .title .code{
+    position: absolute;
+    bottom:16px;
+    right: 16px;
+    opacity: 0.6;
+    font-size: 13px;
+    color: #333333;
+}
+
+.gd_body .detail {
+    margin-top: 10px;
+    padding: 13px 16px;
+    background: #fff;
+}
+.gd_body .detail {
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #333333;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+.gd_body .gd_footer {
+    position: fixed;
+    bottom: 0;
+    z-index: 999;
+    height: 60px;
+    width: 100%;
+    background: #FFFFFF;
+    border-top: solid 1px rgba(217,217,217,0.50);
+    /* box-shadow: 0 0 0 0 rgba(217,217,217,0.50) inset;
+    -webkit-box-shadow:0 0 0 0 rgba(217,217,217,0.50) inset;
+    -moz-box-shadow:0 0 0 0 rgba(217,217,217,0.50) inset;
+    box-shadow:0 0 0 0 rgba(217,217,217,0.50) inset; */
+}
+.gd_body .gd_footer .gd_footer_btn {
+    margin: 10px 16px;
+    background: #FF3344;
+    border-radius: 3px;
+    height: 40px;
+    line-height: 40px;
+    text-align:center;
+    font-family: PingFangSC-Regular;
+    font-size: 15px;
+    color: #FFFFFF;
+    letter-spacing: 0;
+}
