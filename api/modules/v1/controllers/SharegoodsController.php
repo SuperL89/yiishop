@@ -53,7 +53,7 @@ class SharegoodsController extends ActiveController
             $goods['description']=$goods['description'];
             $goods['image_url']=$goods['goodImage']['image_url'];
             //获取商品图片
-            $goods['url']="http://www.baidu.com";
+            $goods['url']="http://www.hexintrade.com/index.php?r=share%2Findex&id=".$id;
             
         }else{
             $good['code'] = '10002';

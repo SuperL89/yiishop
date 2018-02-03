@@ -28,8 +28,13 @@ class CategorysgoodsController extends ActiveController
     }
 
     public function actionIndex(){
-        
-        $cate_id = (int)Yii::$app->request->post("cate_id","0");
+        $cate_id = (int)Yii::$app->request->post("cate_id")?(int)Yii::$app->request->post("cate_id"):"";
+        $brand_id = (int)Yii::$app->request->post("brand_id")?(int)Yii::$app->request->post("brand_id"):"";
+        if(!$cate_id && !$brand_id){
+            $good['code'] = '10002';
+            $good['msg'] = '商品不存在';
+            return $good;
+        }
         $page = (int)Yii::$app->request->post("page", '1');
         
         if($page <= 0){
@@ -62,7 +67,8 @@ class CategorysgoodsController extends ActiveController
                 $query->select(['*']);
             },
         ])
-        ->where(['cate_id' => $cate_id,'status' => 0,'is_del'=>0])
+        ->filterWhere(['cate_id' => $cate_id,'brand_id' => $brand_id,'status' => 0,'is_del'=>0])
+        //->andfilterWhere(['brand_id' => $brand_id,'status' => 0,'is_del'=>0])
         ->orderBy('order desc')
         ->offset($pagination->offset)
         ->limit($pagination->limit)
