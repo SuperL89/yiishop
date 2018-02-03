@@ -35,10 +35,10 @@ class ShareController extends Controller
         ])
         ->where(['status' => 0,'is_del'=>0,'id' => $id])
         ->one();
-        //图片处理
-        $goodImages = explode(',',$model->goodImages->image_url);
         //print_r($goodImages);exit();
         if($model){
+            //图片处理
+            $goodImages = explode(',',$model->goodImages->image_url);
             return $this->render('index', ['model' => $model,'goodImages'=>$goodImages]);
         }else{
             return $this->render('null');
