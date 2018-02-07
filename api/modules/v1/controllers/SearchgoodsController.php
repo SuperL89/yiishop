@@ -56,7 +56,7 @@ class SearchgoodsController extends ActiveController
             $brand_ids[] = $v['id'];
         }
         //$brand_ids = implode(',',$brand);
-        print_r($brand_ids);exit();
+        //print_r($brand_ids);exit();
         if(!empty($brand)){//查询品牌是否存在
             $good_brand_ids = $modelClass::find()->select(['id'])->where(['in', 'brand_id', $brand_ids])->asArray()->all();
             $good_brand_ids = $this->actionArr($good_brand_ids, 'id');
