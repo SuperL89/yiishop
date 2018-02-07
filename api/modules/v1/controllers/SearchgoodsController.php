@@ -50,9 +50,15 @@ class SearchgoodsController extends ActiveController
         $good_goodnum_ids = $modelClass::find()->select(['id'])->andFilterWhere(['like', 'good_num', $keyword ])->asArray()->all();
         $good_goodnum_ids = $this->actionArr($good_goodnum_ids, 'id');
         //根据品牌搜索符合的商品id集合
-        $brand=Brand::find()->select(['id'])->andFilterWhere(['like', 'title', $keyword ])->asArray()->one();
+        $brand=Brand::find()->select(['id'])->andFilterWhere(['like', 'title', $keyword ])->asArray()->all();
+        $brand_ids = array();
+        foreach($brand as $v) {
+            $brand_ids[] = $v['id'];
+        }
+        //$brand_ids = implode(',',$brand);
+        print_r($brand_ids);exit();
         if(!empty($brand)){//查询品牌是否存在
-            $good_brand_ids = $modelClass::find()->select(['id'])->where(['brand_id' => $brand['id']])->asArray()->all();
+            $good_brand_ids = $modelClass::find()->select(['id'])->where(['in', 'brand_id', $brand_ids])->asArray()->all();
             $good_brand_ids = $this->actionArr($good_brand_ids, 'id');
         }else{
             $good_brand_ids =array();
