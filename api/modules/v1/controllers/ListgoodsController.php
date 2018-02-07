@@ -63,7 +63,7 @@ class ListgoodsController extends ActiveController
             },
         ])
         ->where(['status' => 0,'is_del'=>0])
-        ->filterWhere(['status' => 0,'is_hot'=>$ishot])
+        ->filterWhere(['status' => 0,'is_del'=>0,'is_hot'=>$ishot])
         ->orderBy('order desc')
         ->offset($pagination->offset)
         ->limit($pagination->limit)
