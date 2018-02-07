@@ -225,10 +225,10 @@ class UserController extends ActiveController
                 $data['msg'] = '验证码发送失败';
                 return $data;
         }
-//         $data['code'] = '200';
-//         $data['msg'] = '';
-//         $data['data']['code']=$code;
-//         return $data;
+        $data['code'] = '200';
+        $data['msg'] = '';
+        $data['data']['code']=" ";
+        return $data;
     }
     /**
      * 获取用户个人信息
