@@ -40,7 +40,7 @@ class Business extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['image_url'], 'required', 'message' => '认证图片不能为空.'],
+            //[['image_url'], 'required', 'message' => '认证图片不能为空.'],
             [['name'], 'required', 'message' => '商家姓名不能为空.'],
             [['city_id'], 'required', 'message' => '发货地不能为空.'],
             [['address'], 'required', 'message' => '详细地址不能为空.'],

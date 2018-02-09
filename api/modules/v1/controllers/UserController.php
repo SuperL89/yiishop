@@ -507,7 +507,12 @@ class UserController extends ActiveController
         $user_data = Yii::$app->request->post();
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
-        
+        if(empty($user_data['image_url'])){
+            $data['code'] = '10001';
+            $msg ='认证图片不能为空.';
+            $data['msg'] = $msg;
+            return $data;
+        }
         $model = new Business();
         $model->setAttributes(Yii::$app->request->post());
         if($model->find()->select(['id'])->where(['status'=>[0,1],'user_id'=>$user->id])->one()){
@@ -2963,10 +2968,10 @@ class UserController extends ActiveController
             return $data;
         }
         
-        $businessCounts['good_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id])->count();
+        $businessCounts['good_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id,'is_del'=>0])->count();
         $businessCounts['order_counts'] = Order::find()->select(['id'])->where(['business_id'=>$user->id,'status'=>2])->count();
-        $businessCounts['goodup_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id,'status'=>0])->count();
-        $businessCounts['gooddw_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id,'status'=>1])->count();
+        $businessCounts['goodup_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id,'status'=>0,'mb_status'=>0,'is_del'=>0])->count();
+        $businessCounts['gooddw_counts'] = GoodMb::find()->select(['id'])->where(['user_id'=>$user->id,'status'=>0,'mb_status'=>1,'is_del'=>0])->count();
         $data['code'] = '200';
         $data['msg'] = '';
         $data['data'] = $businessCounts;
