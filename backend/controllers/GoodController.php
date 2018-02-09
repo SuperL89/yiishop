@@ -162,8 +162,6 @@ class GoodController extends Controller
      */
     public function actionDelete($id)
     {
-        
-        
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             //修改商品删除状态
@@ -191,12 +189,12 @@ class GoodController extends Controller
         
             $transaction->commit();
             Yii::$app->getSession()->setFlash('success', '操作成功！');
-            return $this->redirect('index');
+            return $this->redirect(['index','page'=>$page]);
         } catch(Exception $e) {
             # 回滚事务
             $transaction->rollback();
             Yii::$app->getSession()->setFlash('error', '操作失败，请重试。'.$e->getMessage());
-            return $this->redirect('index');
+            return $this->redirect(['index','page'=>$page]);
         }
     }
     

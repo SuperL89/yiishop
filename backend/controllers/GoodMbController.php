@@ -235,8 +235,6 @@ class GoodMbController extends Controller
         }
         
         //查询商品报价信息
-        
-        //print_r($goodmb);exit();
         $goodcode = new GoodCode();
         
         $transaction = \Yii::$app->db->beginTransaction();
@@ -244,23 +242,33 @@ class GoodMbController extends Controller
             //更改商品属性状态
             $model->status = 0;
             $model->updated_at=time();
-            $model->save();
             
             //更改商家报价的状态
             $goodmb->status = 0;
             $goodmb->updated_at=time();
-            $goodmb->save();
+            //判断该条形码在库中是否已存在
+            $gb = GoodCode::find()->where(['bar_code'=>$model->bar_code])->one();
+            if(!$gb){
+                //添加进商品条形码库
+                $goodcode->model_text=$model->model_text;
+                $goodcode->bar_code=$model->bar_code;
+                $goodcode->good_id = $goodmb->good_id;
+                $goodcode->created_at=time();
+                $goodcode->updated_at=time();
+            }
+           
+            if($model->save()&&$goodmb->save()){
+                if($goodcode->save()){
+                    $transaction->commit();
+                    Yii::$app->getSession()->setFlash('success', '操作成功！');
+                }else{
+                    $transaction->commit();
+                    Yii::$app->getSession()->setFlash('success', '操作成功！');
+                }
+            }else{
+                Yii::$app->getSession()->setFlash('error', '操作失败！');
+            }
             
-            //添加进商品条形码库
-            $goodcode->model_text=$model->model_text;
-            $goodcode->bar_code=$model->bar_code;
-            $goodcode->good_id = $goodmb->good_id;
-            $goodcode->created_at=time();
-            $goodcode->updated_at=time();
-            $goodcode->save();
-            
-            $transaction->commit();
-            Yii::$app->getSession()->setFlash('success', '操作成功！');
             return $this->redirect(['good-mbv','id'=>$model->mb_id]);
         } catch(Exception $e) {
             # 回滚事务

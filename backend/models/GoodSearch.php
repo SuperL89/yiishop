@@ -62,7 +62,7 @@ class GoodSearch extends Good
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            '{{%good}}.id' => $this->id,
             'good_num' => $this->good_num,
             'cate_id' => $this->cate_id,
             'brand_id' => $this->brand_id,

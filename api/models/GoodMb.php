@@ -18,6 +18,7 @@ use api\models\UserAddress;
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $is_del
  *
  * @property User $user
  * @property Place $place
@@ -43,7 +44,7 @@ class GoodMb extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'place_id', /*'freight_id',*/'address_id', 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status','created_at', 'updated_at'], 'integer'],
+            [['user_id', 'place_id', /*'freight_id',*/'address_id', 'good_id', 'cate_id', 'brand_id', 'status', 'mb_status','created_at', 'updated_at','is_del'], 'integer'],
             [['good_id', 'cate_id', 'brand_id'], 'required'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['place_id'], 'exist', 'skipOnError' => true, 'targetClass' => Place::className(), 'targetAttribute' => ['place_id' => 'id']],
@@ -73,6 +74,7 @@ class GoodMb extends \yii\db\ActiveRecord
             'mb_status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'is_del' => 'IS DEL',
         ];
     }
 

@@ -607,10 +607,11 @@ class UserController extends ActiveController
         $model = new Business();
         $model->setAttributes(Yii::$app->request->post());
         if (Yii::$app->request->post() && $model->validate()) {
-            $business=$model->find()->select(['id'])->where(['status'=>0,'user_id'=>$user->id])->one();
+            $business=$model::find()->select(['id'])->where(['status'=>1,'user_id'=>$user->id])->one();
+           //print_r($business->name);exit();
             if($business){
                 $business->user_id = $user->id;
-                $business->image_url = $user_data['image_url'];
+                //$business->image_url = $user_data['image_url'];
                 $business->name = $user_data['name'];
                 $business->city_id = $user_data['city_id'];
                 $business->address = $user_data['address'];
@@ -2085,7 +2086,8 @@ class UserController extends ActiveController
             $data['msg'] = '不是商家用户或未通过商家审核';
             return $data;
         }
-        $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'user_id' => $user->id,'id' => $mb_id,'is_del'=>0])->one();
+        $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'user_id' => $user->id,'id' => $mb_id,'is_del' => '0'])->one();
+        //print_r($mb_id);exit();
         if (!$goodmb){
             $data['code'] = '10001';
             $data['msg'] = '无此报价信息';
