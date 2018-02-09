@@ -2086,26 +2086,27 @@ class UserController extends ActiveController
             $data['msg'] = '不是商家用户或未通过商家审核';
             return $data;
         }
-        $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'user_id' => $user->id,'id' => $mb_id,'is_del' => '0'])->one();
-        //print_r($mb_id);exit();
-        if (!$goodmb){
+        $model = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'user_id' => $user->id,'id' => $mb_id,'is_del' => '0'])->one();
+        //print_r($model);exit();
+        if (!$model){
             $data['code'] = '10001';
             $data['msg'] = '无此报价信息';
             return $data;
         }
-        if($goodmb->mb_status == 0){
+        if($model->mb_status == 0){
             $mb_status = 1;
-        }elseif($goodmb->mb_status == 1){
+        }elseif($model->mb_status == 1){
             $mb_status = 0;
         }
-        $goodmb->mb_status = $mb_status;
-        if($goodmb->save()){
+        $model->mb_status = $mb_status;
+        if($model->save()){
             $data['code'] = '200';
             $data['msg'] = '';
             return $data;
         }else{
             $data['code'] = '10001';
-            $data['msg'] = '操作失败';
+            //$data['msg'] = $model->getErrors();
+            $data['msg'] ='操作失败';
             return $data;
         }
     }
