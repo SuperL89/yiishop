@@ -33,13 +33,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             //'good.title',
             [
-            'attribute'=>'title',
-            'value' => function ($model){
-                $tmpStr = strip_tags($model->title);
-                $tmpLen = mb_strlen($tmpStr);
-                return mb_substr($tmpStr,0,20,'utf-8').(($tmpLen>20)?'...':'');
-            }
+            'attribute'=>'good_title',
+            'label'=>'商品标题',
+            'value'=>'good.title',
             ],
+//             [
+//             'attribute'=>'good_title',
+//             'value' => function (){
+//                 $tmpStr = strip_tags(good.title);
+//                 $tmpLen = mb_strlen($tmpStr);
+//                 return mb_substr($tmpStr,0,20,'utf-8').(($tmpLen>20)?'...':'');
+//             }
+//             ],
             [
             'attribute'=>'id',
             'headerOptions' => ['width' => '5%'],   

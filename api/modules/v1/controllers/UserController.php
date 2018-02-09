@@ -2299,8 +2299,8 @@ class UserController extends ActiveController
             return $data;
         }
         //查询该商品该用户是否已经报过价
-        $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'user_id' => $user->id,'is_del'=>0])->one();
-        if($goodmb->good_id == $user_data['good_id']){
+        $goodmb = GoodMb::find()->select(['*'])->where(['good_id'=>$user_data['good_id'],'mb_status'=>[0,1],'user_id' => $user->id,'is_del'=>0])->one();
+        if($goodmb){
             $data['code'] = '10001';
             $data['msg'] = '每一件商品每一位用户只能报价一次';
             return $data;
