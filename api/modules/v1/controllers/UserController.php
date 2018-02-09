@@ -60,6 +60,7 @@ use common\components\alipay\aop\AopClient;
 use common\components\alipay\aop\request\AlipayTradeAppPayRequest;
 
 use common\components\JiGuangPush;
+use api\models\Feedback;
 
 class UserController extends ActiveController
 {
@@ -2649,6 +2650,95 @@ class UserController extends ActiveController
             return $data;
         }
     }
+    /**
+     * 商家删除报价 token mb_id
+     */
+        public function actionBusinessDeleteGoodMb()
+        {
+            $user_data = Yii::$app->request->post();
+            $token = $user_data['token'];
+            $user = User::findIdentityByAccessToken($token);
+            $mb_id = isset($user_data['mb_id']) && $user_data['mb_id'] ? $user_data['mb_id'] : 0;
+            //验证是否为商家用户
+            $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
+            if(!$business){
+                $data['code'] = '10001';
+                $data['msg'] = '不是商家用户或未通过商家审核';
+                return $data;
+            }
+            $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'status'=>0,'user_id' => $user->id,'id' => $mb_id,'is_del'=>0])->one();
+            if (!$goodmb){
+                $data['code'] = '10001';
+                $data['msg'] = '无此报价信息';
+                return $data;
+            }
+            if($goodmb->mb_status==0){
+                $data['code'] = '10001';
+                $data['msg'] = '只能删除下架的报价';
+                return $data;
+            }
+            if($goodmb->is_del==1){
+                $data['code'] = '10001';
+                $data['msg'] = '此报价已删除';
+                return $data;
+            }
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                //修改商品报价删除状态
+                $goodmb = GoodMb::find()->where(['id'=>$mb_id])->one();
+                $goodmb->is_del = 1;
+                if($goodmb->save()){
+                    //修改商品属性删除状态
+                    $goodmbv = GoodMbv::find()->where(['in', 'mb_id', $goodmb->id])->all();
+                    foreach ($goodmbv as $mbv) {
+                        $mbvEdit = array();
+                        $mbvEdit['is_del'] = 1;
+                        GoodMbv::updateAll($mbvEdit, 'id=:id', array(':id' => $mbv->id));
+                    }
+                    $transaction->commit();
+                    $data['code'] = '200';
+                    $data['msg'] = '';
+                    return $data;
+                }else{
+                    $data['code'] = '10001';
+                    $data['msg'] = '操作失败';
+                    return $data;
+                }
+
+            } catch(Exception $e) {
+                # 回滚事务
+                $transaction->rollback();
+                $data['code'] = '10001';
+                $data['msg'] = '操作失败';
+                return $data;
+            }
+        }
+        /**
+         * 用户反馈 token text_a
+         */
+        public function actionFeedback()
+        {
+            $user_data = Yii::$app->request->post();
+            $token = $user_data['token'];
+            $user = User::findIdentityByAccessToken($token);
+            if(empty($user_data['text_a'])){
+                $data['code'] = '10001';
+                $data['msg'] = '反馈内容不能为空';
+                return $data;
+            }
+            $feedback = new Feedback();
+            $feedback->text_a =$user_data['text_a'];
+            $feedback->created_at = time();
+            if($feedback->save()){
+                $data['code'] = '200';
+                $data['msg'] = '';
+                return $data;
+            }else{
+                $data['code'] = '10001';
+                $data['msg'] = '操作失败';
+                return $data;
+            }
+        }
        /**
         * 商家更新商品 token mb_id image_url title description good_num cate_id brand_id place_id freight_id date
         * {"goodmbv": [{"id":"21","model_text": "型号1","price": "111","stock_num": "50","bar_code": "21231231231"},{"id":"22","model_text": "型号2","price": "222","stock_num": "50","bar_code": "3123123123123"},{"id":"","model_text": "型号3","price": "333","stock_num": "50","bar_code": "3123123123123"}]}

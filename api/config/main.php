@@ -133,6 +133,8 @@ return [
                         'POST ali-payment-order' => 'ali-payment-order',
                         'POST ali-payment-notify-order' => 'ali-payment-notify-order',
                         'POST business-id-good' => 'business-id-good',
+                        'POST business-delete-good-mb' => 'business-delete-good-mb',
+                        'POST feedback' => 'feedback',
                     ]
                 ],
             ]
