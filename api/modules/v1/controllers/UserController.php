@@ -220,7 +220,8 @@ class UserController extends ActiveController
             //发送验证码
             $phone = $sms->to;
             $code1 = $sms->code;
-            Yii::$app->smser->send($phone , '【合心意】您的验证码是'.$code1);
+            //Yii::$app->smser->send($phone , '【合心意】您的验证码是'.$code1);
+            Yii::$app->smser->send('+'.$phone , '【hexinyi】Your verification code is '.$code1);
         }else{
                 $data['code'] = '10004';
                 $data['msg'] = '验证码发送失败';
@@ -228,7 +229,7 @@ class UserController extends ActiveController
         }
         $data['code'] = '200';
         $data['msg'] = '';
-        $data['data']['code']=" ";
+        $data['data']=[];
         return $data;
     }
     /**

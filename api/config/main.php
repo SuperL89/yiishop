@@ -31,7 +31,7 @@ return [
         'smser' => [
             // 云片网
             'class' => 'daixianceng\smser\YunpianSmser',
-            'apikey' => '11bf15c1728ddab4e5501b8c70c225ad', // 请替换成您的apikey
+            'apikey' => '88cfc0144d6333a0227ae76ce58db220', // 请替换成您的apikey
             'useFileTransport' => false
         ],
 //         'session' => [
