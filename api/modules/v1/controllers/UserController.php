@@ -229,7 +229,7 @@ class UserController extends ActiveController
         }
         $data['code'] = '200';
         $data['msg'] = '';
-        $data['data']=[];
+        $data['data']['code']=" ";
         return $data;
     }
     /**
