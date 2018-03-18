@@ -221,7 +221,7 @@ class UserController extends ActiveController
             $phone = $sms->to;
             $code1 = $sms->code;
             //Yii::$app->smser->send($phone , '【合心意】您的验证码是'.$code1);
-            Yii::$app->smser->send('+'.$phone , '【hexinyi】Your verification code is '.$code1);
+            Yii::$app->smser->send('+1'.$phone , '【hexinyi】Your verification code is '.$code1);
         }else{
                 $data['code'] = '10004';
                 $data['msg'] = '验证码发送失败';
