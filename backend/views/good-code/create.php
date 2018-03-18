@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\GoodCode */
 
-$this->title = 'Create Good Code';
+$this->title = '创建条形码';
 $this->params['breadcrumbs'][] = ['label' => 'Good Codes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

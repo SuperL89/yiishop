@@ -167,26 +167,26 @@ class GoodController extends Controller
             //修改商品删除状态
             $model = $this->findModel($id);
             $model->is_del = 1;
-            $model->save();
-            
-            //修改商品报价删除状态
-            $goodmb = GoodMb::find()->where(['good_id'=>$model->id])->all();
-            $mbIds = array();
-            foreach ($goodmb as $mb) {
-                $mbIds[] = $mb->id;
-                $mbEdit = array();
-                $mbEdit['is_del'] = 1;
-                GoodMb::updateAll($mbEdit, 'id=:id', array(':id' => $mb->id));
+            //$model->save();
+            if($model->save()){
+                //修改商品报价删除状态
+                $goodmb = GoodMb::find()->where(['good_id'=>$model->id])->all();
+                $mbIds = array();
+                foreach ($goodmb as $mb) {
+                    $mbIds[] = $mb->id;
+                    $mbEdit = array();
+                    $mbEdit['is_del'] = 1;
+                    GoodMb::updateAll($mbEdit, 'id=:id', array(':id' => $mb->id));
+                }
+                
+                //修改商品属性删除状态
+                $goodmbv = GoodMbv::find()->where(['in', 'mb_id', $mbIds])->all();
+                foreach ($goodmbv as $mbv) {
+                    $mbvEdit = array();
+                    $mbvEdit['is_del'] = 1;
+                    GoodMbv::updateAll($mbvEdit, 'id=:id', array(':id' => $mbv->id));
+                }
             }
-            
-            //修改商品属性删除状态
-            $goodmbv = GoodMbv::find()->where(['in', 'mb_id', $mbIds])->all();
-            foreach ($goodmbv as $mbv) {
-                $mbvEdit = array();
-                $mbvEdit['is_del'] = 1;
-                GoodMbv::updateAll($mbvEdit, 'id=:id', array(':id' => $mbv->id));
-            }
-        
             $transaction->commit();
             Yii::$app->getSession()->setFlash('success', '操作成功！');
             return $this->redirect(['index']);

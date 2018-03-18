@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
              ['class' => 'yii\grid\ActionColumn',
-                'template'=>'{status-ok}{good-mbv-update}',
+                'template'=>'{status-ok}{good-mbv-update}{good-mbv-delete}',
                 'buttons'=>[
                 'good-mbv-update'=>function($url,$model,$key)
                     {
@@ -111,6 +111,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             ];
                             return Html::a('<span class="glyphicon glyphicon-ok"></span>', $url, $options);
                         }
+                    },
+                    'good-mbv-delete'=>function($url,$model,$key)
+                    {
+                        $options =[
+                            'title'=>Yii::t('yii','删除商品属性'),
+                            'aria-label'=>yii::t('yii','删除商品属性'),
+                            'data-pjax'=>'0',
+                        ];
+                        return Html::a('<span class="glyphicon glyphicon-trash"></span>',$url,$options);
                     },
                 ],
             ],

@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\GoodCodeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Good Codes';
+$this->title = '商品条形码';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="good-code-index">
@@ -16,13 +16,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Good Code', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php // Html::a('Create Good Code', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            //['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'good_id',

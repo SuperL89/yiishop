@@ -163,6 +163,39 @@ class GoodMbController extends Controller
 //     }
 
     /**
+     * Deletes an existing Good model.
+     * If delete is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            
+            $model = $this->findModel($id);
+            $model->is_del = 1;
+            if($model->save()){
+                //修改商品属性删除状态
+                $goodmbv = GoodMbv::find()->where(['mb_id'=>$model->id])->all();
+                foreach ($goodmbv as $mbv) {
+                    $mbvEdit = array();
+                    $mbvEdit['is_del'] = 1;
+                    GoodMbv::updateAll($mbvEdit, 'id=:id', array(':id' => $mbv->id));
+                }
+            }
+            $transaction->commit();
+            Yii::$app->getSession()->setFlash('success', '操作成功！');
+            return $this->redirect(['index']);
+        } catch(Exception $e) {
+            # 回滚事务
+            $transaction->rollback();
+            Yii::$app->getSession()->setFlash('error', '操作失败，请重试。'.$e->getMessage());
+            return $this->redirect(['index']);
+        }
+    }
+
+    /**
      * Finds the GoodMb model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -318,6 +351,26 @@ class GoodMbController extends Controller
             return $this->render('good-mbv-update', [
                 'model' => $model,
             ]);
+        }
+    }
+    
+    public function actionGoodMbvDelete($id)
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+        
+            $model = $this->findGoodMbvModel($id);
+            $model->is_del = 1;
+            $model->save();
+            
+            $transaction->commit();
+            Yii::$app->getSession()->setFlash('success', '操作成功！');
+            return $this->redirect(['good-mbv','id' => $model->mb_id]);
+        } catch(Exception $e) {
+            # 回滚事务
+            $transaction->rollback();
+            Yii::$app->getSession()->setFlash('error', '操作失败，请重试。'.$e->getMessage());
+            return $this->redirect(['good-mbv','id' => $model->mb_id]);
         }
     }
 }

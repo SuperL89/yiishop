@@ -136,7 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ]),
             ],
             ['class' => 'yii\grid\ActionColumn',
-                'template'=>'{view}{update}{good-mbv}',
+                'template'=>'{view}{update}{good-mbv}{delete}',
                 'buttons'=>[
                 'good-mbv'=>function($url,$model,$key)
                     {
