@@ -58,28 +58,33 @@ $this->params['breadcrumbs'][] = $this->title;
                     return ($model->status==0)?['class' => 'bg-danger']:[];
                 }
             ],
-            'score',
-            //'score_updated_at',
             [
-            'attribute'=>'score_updated_at',
-            'format'=>['date','php:Y-m-d H:i:s'],
-            'headerOptions' => ['width' => '12%'],
-            //时间筛选
-            'filter' => DateRangePicker::widget([
-                'name' => 'BusinessSearch[score_updated_at]',
-                'options' => ['placeholder' => '','class' => 'form-control'],
-                //注意，该方法更新的时候你需要指定value值
-                'value' => Yii::$app->request->get('BusinessSearch')['score_updated_at'],
-                'convertFormat' => true,
-                'pluginOptions' => [
-                    'autoclose' => true,
-                    'locale' => [
-                        'format' => 'Y-m-d',
-                        'separator' => '/',
-                    ]
-                ]
-            ]),
+            'attribute'=>'money',
+            'label'=>'余额',
+            'value'=>'user.money',
             ],
+            //'score',
+            //'score_updated_at',
+//             [
+//             'attribute'=>'score_updated_at',
+//             'format'=>['date','php:Y-m-d H:i:s'],
+//             'headerOptions' => ['width' => '12%'],
+//             //时间筛选
+//             'filter' => DateRangePicker::widget([
+//                 'name' => 'BusinessSearch[score_updated_at]',
+//                 'options' => ['placeholder' => '','class' => 'form-control'],
+//                 //注意，该方法更新的时候你需要指定value值
+//                 'value' => Yii::$app->request->get('BusinessSearch')['score_updated_at'],
+//                 'convertFormat' => true,
+//                 'pluginOptions' => [
+//                     'autoclose' => true,
+//                     'locale' => [
+//                         'format' => 'Y-m-d',
+//                         'separator' => '/',
+//                     ]
+//                 ]
+//             ]),
+//             ],
             [
              'attribute'=>'created_at',
                 'format'=>['date','php:Y-m-d H:i:s'],

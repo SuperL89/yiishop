@@ -13,6 +13,7 @@ use common\models\Business;
 class BusinessSearch extends Business
 {
     public $username;
+    public $money;
     public $city_name;
     public $cate_name;
     /**
@@ -22,7 +23,7 @@ class BusinessSearch extends Business
     {
         return [
             [['id', 'user_id', 'city_id', 'status', 'score', /*'score_updated_at', 'created_at', 'updated_at'*/], 'integer'],
-            [[/*'image_url',*/'username','city_name','cate_name','name', 'address', 'cate_id','score_updated_at', 'created_at', 'updated_at'], 'safe'],
+            [[/*'image_url',*/'username','money','city_name','cate_name','name', 'address', 'cate_id','score_updated_at', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -75,6 +76,7 @@ class BusinessSearch extends Business
 
         $query->andFilterWhere(['like', 'image_url', $this->image_url])
             ->andFilterWhere(['like', 'username', $this->username])
+            ->andFilterWhere(['like', 'money', $this->money])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', "{{%place}}.name", $this->city_name])
             ->andFilterWhere(['like', 'address', $this->address])
