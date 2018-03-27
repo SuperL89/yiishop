@@ -37,7 +37,7 @@ class GoodMbv extends \yii\db\ActiveRecord
     {
         return [
             [['mb_id', 'stock_num', 'bar_code', 'bar_code_status', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['model_text', 'price', 'stock_num', 'bar_code', 'bar_code_status'], 'required'],
+            [['model_text', 'price', 'stock_num', 'bar_code'], 'required'],
             [['price'], 'number'],
             [['model_text'], 'string', 'max' => 255],
             [['mb_id'], 'exist', 'skipOnError' => true, 'targetClass' => GoodMb::className(), 'targetAttribute' => ['mb_id' => 'id']],

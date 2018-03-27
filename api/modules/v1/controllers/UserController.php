@@ -2609,8 +2609,6 @@ class UserController extends ActiveController
                         //print_r($goodmbvEditArr);exit();
                         if(isset($attributes['id']) && $attributes['id']){
                             $query = GoodMbv::updateAll($goodmbvEditArr, 'mb_id=:mb_id AND id=:id', array(':mb_id' => $good_arr->id, ':id' => $attributes['id']));
-                            // 输出SQL语句
-                           print_r($model->getFirstErrors());exit();
                         }
                         if ( ! isset($attributes['id']) || (isset($attributes['id']) && empty($attributes['id']))) {
                             //添加数据
