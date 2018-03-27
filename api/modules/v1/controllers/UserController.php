@@ -2608,7 +2608,10 @@ class UserController extends ActiveController
                         $goodmbvEditArr['updated_at'] = time();
                         //print_r($goodmbvEditArr);exit();
                         if(isset($attributes['id']) && $attributes['id']){
-                            GoodMbv::updateAll($goodmbvEditArr, 'mb_id=:mb_id AND id=:id', array(':mb_id' => $good_arr->id, ':id' => $attributes['id']));
+                            $query = GoodMbv::updateAll($goodmbvEditArr, 'mb_id=:mb_id AND id=:id', array(':mb_id' => $good_arr->id, ':id' => $attributes['id']));
+                            // 输出SQL语句
+                            $commandQuery = clone $query;
+                            echo $commandQuery->createCommand()->getRawSql();exit();
                         }
                         if ( ! isset($attributes['id']) || (isset($attributes['id']) && empty($attributes['id']))) {
                             //添加数据
