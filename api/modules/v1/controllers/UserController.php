@@ -2524,9 +2524,10 @@ class UserController extends ActiveController
         $mb_id = isset($user_data['mb_id']) && $user_data['mb_id'] ? $user_data['mb_id'] : 0;
         //验证是否为商家用户
         $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
-        if(!$business){
+        if($business){
             $data['code'] = '10001';
-            $data['msg'] = '不是商家用户或未通过商家审核';
+            //$data['msg'] = '不是商家用户或未通过商家审核';
+            $data['msg'] = $mb_id;
             return $data;
         }
         $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'status'=>0,'user_id' => $user->id,'id' => $mb_id,'is_del'=>0])->one();
