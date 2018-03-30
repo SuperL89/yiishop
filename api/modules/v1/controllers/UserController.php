@@ -1829,7 +1829,7 @@ class UserController extends ActiveController
             $aop->appId = Yii::$app->params['appId'];
             $aop->rsaPrivateKey = Yii::$app->params['rsaPrivateKey'];
             $aop->format = Yii::$app->params['format'];
-            //$aop->charset = Yii::$app->params['charset'];
+            $aop->charset = Yii::$app->params['charset'];
             $aop->signType = Yii::$app->params['signType'];
             $aop->alipayrsaPublicKey = Yii::$app->params['alipayrsaPublicKey'];
             //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
