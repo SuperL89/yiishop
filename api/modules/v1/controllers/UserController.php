@@ -2533,7 +2533,7 @@ class UserController extends ActiveController
         if ($goodmb){
             $data['code'] = '10001';
             //$data['msg'] = '无此报价信息';
-            $data['msg'] = $user_data;
+            $data['msg'] = json_encode($user_data);
             return $data;
         }
         //查询该商品的所有条形码
