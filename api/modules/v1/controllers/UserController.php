@@ -2973,13 +2973,15 @@ class UserController extends ActiveController
                     }
                 }
             }else{
-                foreach ($goodMbv as $k => $goodMbvValue) {
-                    $goodMbvs[$k]['id'] = $goodMbvValue['id'];
-                    $goodMbvs[$k]['model_text'] = $goodMbvValue['model_text'];
-                    $goodMbvs[$k]['price'] = $goodMbvValue['price'];
-                    $goodMbvs[$k]['stock_num'] = $goodMbvValue['stock_num'];
-                    $goodMbvs[$k]['bar_code'] = $goodMbvValue['bar_code'];
-               }
+                if($good_arr['good']['id']>3||$good_arr['good']['id']<76){
+                    foreach ($goodMbv as $k => $goodMbvValue) {
+                        $goodMbvs[$k]['id'] = $goodMbvValue['id'];
+                        $goodMbvs[$k]['model_text'] = $goodMbvValue['model_text'];
+                        $goodMbvs[$k]['price'] = $goodMbvValue['price'];
+                        $goodMbvs[$k]['stock_num'] = $goodMbvValue['stock_num'];
+                        $goodMbvs[$k]['bar_code'] = $goodMbvValue['bar_code'];
+                    }
+                }
             }
             
             //print_r($goodMbvs);exit();
