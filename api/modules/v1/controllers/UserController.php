@@ -1832,14 +1832,16 @@ class UserController extends ActiveController
             $aop->postCharset = Yii::$app->params['charset'];
             $aop->signType = Yii::$app->params['signType'];
             $aop->alipayrsaPublicKey = Yii::$app->params['alipayrsaPublicKey'];
+            $aop->signType = Yii::$app->params['signType'];
             //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
             $request = new AlipayTradeAppPayRequest();
             //SDK已经封装掉了公共参数，这里只需要传入业务参数
             $bizcontent = json_encode([
                 'body'=>$user_data['order_id'],
                 //'subject'=>'App支付测试',
-                'subject'=>'商品订单号:'.$user_data['order_id'],
                 'out_trade_no'=>$user_data['order_id'],//此订单号为商户唯一订单号
+                'subject'=>'商品订单号:'.$user_data['order_id'],
+                
                 //'total_amount'=> 0.01,//保留两位小数
                 
                 'total_amount'=> "$order_arr->order_total_price",//保留两位小数
