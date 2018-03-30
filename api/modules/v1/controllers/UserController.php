@@ -1841,7 +1841,8 @@ class UserController extends ActiveController
                 'subject'=>'商品订单号:'.$user_data['order_id'],
                 'out_trade_no'=>$user_data['order_id'],//此订单号为商户唯一订单号
                 //'total_amount'=> 0.01,//保留两位小数
-                'total_amount'=> $order_arr->order_total_price,//保留两位小数
+                
+                'total_amount'=> "$order_arr->order_total_price",//保留两位小数
                 'product_code'=>'QUICK_MSECURITY_PAY'
             ]);
             $request->setNotifyUrl("http://api.hexintrade.com/v1/user/ali-payment-notify-order");
