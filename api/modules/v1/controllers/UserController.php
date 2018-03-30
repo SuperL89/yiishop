@@ -2530,10 +2530,10 @@ class UserController extends ActiveController
             return $data;
         }
         $goodmb = GoodMb::find()->select(['*'])->where(['mb_status'=>[0,1],'status'=>0,'user_id' => $user->id,'id' => $mb_id,'is_del'=>0])->one();
-        if ($goodmb){
+        if (!$goodmb){
             $data['code'] = '10001';
-            //$data['msg'] = '无此报价信息';
-            $data['msg'] = json_encode($user_data);
+            $data['msg'] = '无此报价信息';
+            //$data['msg'] = json_encode($user_data);
             return $data;
         }
         //查询该商品的所有条形码
