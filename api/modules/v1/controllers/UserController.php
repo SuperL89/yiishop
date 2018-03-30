@@ -605,7 +605,12 @@ class UserController extends ActiveController
         $user_data = Yii::$app->request->post();
         $token = $user_data['token'];
         $user = User::findIdentityByAccessToken($token);
-    
+        //
+        $data['code'] = '10001';
+        $msg =json_encode($user_data);
+        $data['msg'] = $msg;
+        return $data;
+        //
         $model = new Business();
         $model->setAttributes(Yii::$app->request->post());
         if (Yii::$app->request->post() && $model->validate()) {
@@ -627,13 +632,13 @@ class UserController extends ActiveController
                     return $data;
                 }else {
                     $data['code'] = '10001';
-                    $msg ='操作失败1';
+                    $msg ='操作失败';
                     $data['msg'] = $msg;
                     return $data;
                 }
             }else{
                 $data['code'] = '10001';
-                $msg ='操作失败2';
+                $msg ='操作失败';
                 $data['msg'] = $msg;
                 return $data;
             }
