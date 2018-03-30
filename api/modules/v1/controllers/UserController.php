@@ -2591,7 +2591,7 @@ class UserController extends ActiveController
                         $data['msg'] = $msg;
                         return $data;
                     }
-                    print_r($goodmbv_arr['goodmbv']);exit();
+                    //print_r($goodmbv_arr['goodmbv']);exit();
                     $goodmbvArr = array();
                     foreach($goodmbv_arr['goodmbv'] as $key => $attributes) {
                         if ( ! isset($attributes['model_text']) ||  ! isset($attributes['price']) ||  ! isset($attributes['stock_num']) ||  ! isset($attributes['bar_code'])) {
@@ -2606,7 +2606,7 @@ class UserController extends ActiveController
                         $goodmbvEditArr['stock_num'] = $attributes['stock_num'];
                         $goodmbvEditArr['bar_code'] = $attributes['bar_code'];
                         $goodmbvEditArr['updated_at'] = time();
-                        //print_r($goodmbvEditArr);exit();
+                        print_r($goodmbvEditArr);exit();
                         if(isset($attributes['id']) && $attributes['id']){
                             $query = GoodMbv::updateAll($goodmbvEditArr, 'mb_id=:mb_id AND id=:id', array(':mb_id' => $good_arr->id, ':id' => $attributes['id']));
                             //print_r($query);exit();  
