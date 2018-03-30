@@ -2606,7 +2606,7 @@ class UserController extends ActiveController
                         $goodmbvEditArr['stock_num'] = $attributes['stock_num'];
                         $goodmbvEditArr['bar_code'] = $attributes['bar_code'];
                         $goodmbvEditArr['updated_at'] = time();
-                        //print_r($goodmbvEditArr);exit();
+                        print_r($goodmbvEditArr);exit();
                         if(isset($attributes['id']) && $attributes['id']){
                             $query = GoodMbv::updateAll($goodmbvEditArr, 'mb_ids=:mb_id AND id=:id', array(':mb_id' => $good_arr->id, ':id' => $attributes['id']));
                             print_r($query);exit();  
