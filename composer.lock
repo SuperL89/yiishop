@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b6cd218c3ab90b174e85e673ee3071a",
+    "content-hash": "06b25d4d6906a98fdb3e90ee68b45c4b",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -45,6 +45,40 @@
                 "web"
             ],
             "time": "2017-10-09T16:32:18+00:00"
+        },
+        {
+            "name": "bailangzhan/yii2-webuploader",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bailangzhan/yii2-webuploader.git",
+                "reference": "dcc6c5ed20f6b15ee46365d0b52167d96f69c566"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/bailangzhan/yii2-webuploader/dcc6c5ed20f6b15ee46365d0b52167d96f69c566.zip",
+                "reference": "dcc6c5ed20f6b15ee46365d0b52167d96f69c566",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": ">=2.0.4"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "manks\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "yii2-webuploader组件",
+            "keywords": [
+                "webuploader",
+                "yii2"
+            ],
+            "time": "2017-08-17 06:22:57"
         },
         {
             "name": "bower-asset/bootstrap",
@@ -355,7 +389,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/crazyfd/yii2-qiniu.git",
+                "url": "https://github.com/crazyfd/upload.git",
                 "reference": "ef6d78c59d7099c0994ad809288b57896fbaf242"
             },
             "dist": {
@@ -592,6 +626,49 @@
             "time": "2016-10-24T15:52:54+00:00"
         },
         {
+            "name": "jpush/jpush",
+            "version": "v3.5.24",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jpush/jpush-api-php-client.git",
+                "reference": "dd03e86257c7a47a566168c7571092559e87751a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/jpush/jpush-api-php-client/dd03e86257c7a47a566168c7571092559e87751a.zip",
+                "reference": "dd03e86257c7a47a566168c7571092559e87751a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JPush\\": "src/JPush/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "JPush",
+                    "email": "support@jpush.cn",
+                    "homepage": "https://www.jpush.cn/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "JPush API PHP Client",
+            "homepage": "https://github.com/jpush/jpush-api-php-client",
+            "time": "2017-12-15T09:28:07+00:00"
+        },
+        {
             "name": "kartik-v/bootstrap-fileinput",
             "version": "v4.4.5",
             "source": {
@@ -643,6 +720,60 @@
                 "upload"
             ],
             "time": "2017-10-01T12:55:30+00:00"
+        },
+        {
+            "name": "kartik-v/yii2-date-range",
+            "version": "1.6.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-date-range.git",
+                "reference": "908e8175f3f8c091d425bcaba6e18871d63291a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/kartik-v/yii2-date-range/908e8175f3f8c091d425bcaba6e18871d63291a0.zip",
+                "reference": "908e8175f3f8c091d425bcaba6e18871d63291a0",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/yii2-krajee-base": "*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "kartik\\daterange\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "An advanced Yii 2 date range picker input for based on bootstrap-daterangepicker plugin.",
+            "homepage": "https://github.com/kartik-v/yii2-date-range",
+            "keywords": [
+                "bootstrap",
+                "bootstrap 3",
+                "date",
+                "date-range",
+                "extension",
+                "range",
+                "time",
+                "widget",
+                "yii2"
+            ],
+            "time": "2017-08-08T04:26:22+00:00"
         },
         {
             "name": "kartik-v/yii2-krajee-base",
@@ -861,6 +992,108 @@
                 "yii"
             ],
             "time": "2017-10-17 06:08:40"
+        },
+        {
+            "name": "moonlandsoft/yii2-phpexcel",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/moonlandsoft/yii2-phpexcel.git",
+                "reference": "9408d09abc7ff4828302dafd5ffb709314f14589"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/moonlandsoft/yii2-phpexcel/9408d09abc7ff4828302dafd5ffb709314f14589.zip",
+                "reference": "9408d09abc7ff4828302dafd5ffb709314f14589",
+                "shasum": ""
+            },
+            "require": {
+                "phpoffice/phpexcel": "*",
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "moonland\\phpexcel\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Moh Khoirul Anam",
+                    "email": "moh.khoirul.anaam@gmail.com"
+                }
+            ],
+            "description": "Exporting PHP to Excel or Importing Excel to PHP",
+            "keywords": [
+                "excel",
+                "export",
+                "extension",
+                "import",
+                "xls",
+                "yii2"
+            ],
+            "time": "2015-09-06T07:50:33+00:00"
+        },
+        {
+            "name": "phpoffice/phpexcel",
+            "version": "1.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPOffice/PHPExcel.git",
+                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/PHPOffice/PHPExcel/372c7cbb695a6f6f1e62649381aeaa37e7e70b32.zip",
+                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPExcel": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Maarten Balliauw",
+                    "homepage": "http://blog.maartenballiauw.be"
+                },
+                {
+                    "name": "Mark Baker"
+                },
+                {
+                    "name": "Franck Lefevre",
+                    "homepage": "http://blog.rootslabs.net"
+                },
+                {
+                    "name": "Erik Tilt"
+                }
+            ],
+            "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
+            "homepage": "http://phpexcel.codeplex.com",
+            "keywords": [
+                "OpenXML",
+                "excel",
+                "php",
+                "spreadsheet",
+                "xls",
+                "xlsx"
+            ],
+            "time": "2015-05-01T07:00:55+00:00"
         },
         {
             "name": "qiniu/php-sdk",
@@ -3898,7 +4131,8 @@
         "mdmsoft/yii2-admin": 20,
         "kartik-v/yii2-widget-datepicker": 20,
         "kartik-v/yii2-widget-fileinput": 20,
-        "crazyfd/yii2-qiniu": 20
+        "crazyfd/yii2-qiniu": 20,
+        "bailangzhan/yii2-webuploader": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

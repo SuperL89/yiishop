@@ -12,7 +12,11 @@
     "kartik-v/yii2-widget-fileinput": "@dev",
     "daixianceng/yii2-smser": "*",
 	"crazyfd/yii2-qiniu": "dev-master",
-    "qiniu/php-sdk": "^7.2"
+    "qiniu/php-sdk": "^7.2",
+    "kartik-v/yii2-date-range": "^1.6",
+    "bailangzhan/yii2-webuploader": "dev-master",
+    "jpush/jpush": "^3.5",
+    "moonlandsoft/yii2-phpexcel": "^1.1"
   },
   "require-dev" : {
     "yiisoft/yii2-debug" : "~2.0.0",
@@ -33,14 +37,14 @@
     "source" : "https://github.com/yiisoft/yii2"
   },
   "config" : {
-    "process-timeout" : 1800,
-	"github-oauth": {
-          "github.com": "80e4389000ce0d4b3c4413b8e5cd7d9e05da2275"
+    "process-timeout": 1800,
+    "github-oauth": {
+		 "github.com": "ebbab487adaab9e7bf0661fbc7d190e23380d481"
     },
-    "fxp-asset" : {
-      "installer-paths" : {
-        "npm-asset-library" : "vendor/npm",
-        "bower-asset-library" : "vendor/bower"
+    "fxp-asset": {
+      "installer-paths": {
+        "npm-asset-library": "vendor/npm",
+        "bower-asset-library": "vendor/bower"
       }
     }
   },
