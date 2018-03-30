@@ -627,13 +627,13 @@ class UserController extends ActiveController
                     return $data;
                 }else {
                     $data['code'] = '10001';
-                    $msg ='操作失败';
+                    $msg ='操作失败1';
                     $data['msg'] = $msg;
                     return $data;
                 }
             }else{
                 $data['code'] = '10001';
-                $msg ='操作失败';
+                $msg ='操作失败2';
                 $data['msg'] = $msg;
                 return $data;
             }
