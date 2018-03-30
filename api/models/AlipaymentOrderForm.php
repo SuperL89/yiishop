@@ -22,7 +22,7 @@ class AlipaymentOrderForm extends \yii\db\ActiveRecord
             //国内手机号验证规则
 //          ['username', 'match', 'pattern'=>'/^1[34578][0-9]{9}$/','message'=>'手机号/用户名不符合规则'],
             //美国手机验证规则
-            ['username','match','pattern'=>'/^(((1(\s)|)|)[1-9]{3}(\s|-|)[1-9]{3}(\s|-|)[1-9]{4})$/','message'=>'非美国手机用户不能通过'],
+            //['username','match','pattern'=>'/^(((1(\s)|)|)[1-9]{3}(\s|-|)[1-9]{3}(\s|-|)[1-9]{4})$/','message'=>'非美国手机用户不能通过'],
             ['order_id', 'required', 'message' => '订单id不能为空.'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'order_num'],'message' => '订单不存在.'],
         ];
