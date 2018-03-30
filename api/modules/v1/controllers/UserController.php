@@ -2927,7 +2927,7 @@ class UserController extends ActiveController
                 ]);
             },
             'goodMbv'=> function ($query){
-                $query->select(['*'])->orderBy('price asc');
+                $query->select(['*'])->where(['is_del'=>0])->orderBy('price asc');
             },
 //             'place'=> function ($query){
 //                 $query->select(['*']);
@@ -2941,7 +2941,7 @@ class UserController extends ActiveController
             ])
             ->Asarray()
             ->one();
-            //print_r($good_arr);exit();
+            //print_r($good_arr['goodMbv']);exit();
             if (empty($good_arr)) {
                 $data['code'] = '10001';
                 $data['msg'] = '无此报价信息';
@@ -2953,6 +2953,7 @@ class UserController extends ActiveController
             $goodBarCode = isset($good_arr['good']['goodCode']) ? $good_arr['good']['goodCode'] : array();
             //商品属性信息
             $goodMbv = isset($good_arr['goodMbv']) ? $good_arr['goodMbv'] : array();
+            //print_r($goodMbv);exit();
             if ($goodBarCode && $goodMbv) {
                 foreach ($goodBarCode as $barcodeKey => $barcodeValue) {
                     foreach ($goodMbv as $goodMbvValue) {
@@ -2971,8 +2972,17 @@ class UserController extends ActiveController
                         }
                     }
                 }
+            }else{
+                foreach ($goodMbv as $k => $goodMbvValue) {
+                    $goodMbvs[$k]['id'] = $goodMbvValue['id'];
+                    $goodMbvs[$k]['model_text'] = $goodMbvValue['model_text'];
+                    $goodMbvs[$k]['price'] = $goodMbvValue['price'];
+                    $goodMbvs[$k]['stock_num'] = $goodMbvValue['stock_num'];
+                    $goodMbvs[$k]['bar_code'] = $goodMbvValue['bar_code'];
+               }
             }
-            //print_r($good_arr);exit();
+            
+            //print_r($goodMbvs);exit();
             //商家报价id
             $goods['good']['mb_id']=$good_arr['id'];
             //商品图片
