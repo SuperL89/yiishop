@@ -1860,7 +1860,8 @@ class UserController extends ActiveController
             
             $data['code'] = '200';
             $data['msg'] = '';
-            $data['data'] = htmlspecialchars($response);
+            //$data['data'] = htmlspecialchars($response);
+            $data['data'] = $response;
             return $data;
         } else {
             $data['code'] = '10001';
