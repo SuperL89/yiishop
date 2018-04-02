@@ -120,13 +120,11 @@ class AopClient extends Component {
 
 	protected function sign($data, $signType = "RSA") {
 		if($this->checkEmpty($this->rsaPrivateKeyFilePath)){
-		    echo '1|';
-			$priKey=$this->rsaPrivateKey;
+			$priKey=$this->rsaPrivateKey;echo $priKey;exit;
 			$res = "-----BEGIN RSA PRIVATE KEY-----\n" .
 				wordwrap($priKey, 64, "\n", true) .
 				"\n-----END RSA PRIVATE KEY-----";
 		}else {
-		    echo '2|';
 			$priKey = file_get_contents($this->rsaPrivateKeyFilePath);
 			$res = openssl_get_privatekey($priKey);
 		}
@@ -134,20 +132,15 @@ class AopClient extends Component {
 		($res) or die('您使用的私钥格式错误，请检查RSA私钥配置'); 
 
 		if ("RSA2" == $signType) {
-		    echo '3|';
 			openssl_sign($data, $sign, $res, OPENSSL_ALGO_SHA256);
 		} else {
-		    echo '4|';
 			openssl_sign($data, $sign, $res);
 		}
 
 		if(!$this->checkEmpty($this->rsaPrivateKeyFilePath)){
-		    echo '5|';
 			openssl_free_key($res);
 		}
-		echo $sign.'|';
 		$sign = base64_encode($sign);
-		echo $sign;exit;
 		return $sign;
 	}
 
