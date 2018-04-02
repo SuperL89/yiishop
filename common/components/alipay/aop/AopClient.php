@@ -88,7 +88,7 @@ class AopClient extends Component {
 			}
 		}
 
-		unset ($k, $v);echo $stringToBeSigned.'|';
+		unset ($k, $v);
 		return $stringToBeSigned;
 	}
 
@@ -120,7 +120,7 @@ class AopClient extends Component {
 
 	protected function sign($data, $signType = "RSA") {
 		if($this->checkEmpty($this->rsaPrivateKeyFilePath)){
-			$priKey=$this->rsaPrivateKey;echo $priKey.'|';
+			$priKey=$this->rsaPrivateKey;
 			$res = "-----BEGIN RSA PRIVATE KEY-----\n" .
 				wordwrap($priKey, 64, "\n", true) .
 				"\n-----END RSA PRIVATE KEY-----";
@@ -140,7 +140,7 @@ class AopClient extends Component {
 		if(!$this->checkEmpty($this->rsaPrivateKeyFilePath)){
 			openssl_free_key($res);
 		}
-		$sign = base64_encode($sign);echo $sign;exit;
+		$sign = base64_encode($sign);
 		return $sign;
 	}
 
