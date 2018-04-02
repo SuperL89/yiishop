@@ -1832,7 +1832,6 @@ class UserController extends ActiveController
             $aop->postCharset = Yii::$app->params['charset'];
             $aop->signType = Yii::$app->params['signType'];
             $aop->alipayrsaPublicKey = Yii::$app->params['alipayrsaPublicKey'];
-            $aop->signType = Yii::$app->params['signType'];
             //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
             $request = new AlipayTradeAppPayRequest();
             //SDK已经封装掉了公共参数，这里只需要传入业务参数
@@ -1857,7 +1856,8 @@ class UserController extends ActiveController
             
             $data['code'] = '200';
             $data['msg'] = '';
-            $data['data'] = htmlspecialchars($response);
+            //$data['data'] = htmlspecialchars($response);
+            $data['data'] = $response;
             return $data;
         } else {
             $data['code'] = '10001';
