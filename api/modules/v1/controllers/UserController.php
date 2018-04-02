@@ -61,6 +61,7 @@ use common\components\alipay\aop\request\AlipayTradeAppPayRequest;
 
 use common\components\JiGuangPush;
 use api\models\Feedback;
+use function Qiniu\json_decode;
 
 class UserController extends ActiveController
 {
@@ -1835,13 +1836,13 @@ class UserController extends ActiveController
             //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
             $request = new AlipayTradeAppPayRequest();
             //SDK已经封装掉了公共参数，这里只需要传入业务参数
-            $bizcontent = [
+            $bizcontent = json_encode([
                 'body'=>$user_data['order_id'],
                 'out_trade_no'=>$user_data['order_id'],//此订单号为商户唯一订单号
                 'subject'=>'商品订单号:'.$user_data['order_id'],
                 'total_amount'=> "$order_arr->order_total_price",//保留两位小数
                 'product_code'=>'QUICK_MSECURITY_PAY'
-            ];
+            ]);
             $request->setNotifyUrl("http://api.hexintrade.com/v1/user/ali-payment-notify-order");
             $request->setBizContent($bizcontent);
             //这里和普通的接口调用不同，使用的是sdkExecute
@@ -1853,7 +1854,7 @@ class UserController extends ActiveController
             $data['code'] = '200';
             $data['msg'] = '';
             //$data['data'] = htmlspecialchars($response);
-            $data['data'] = $bizcontent;
+            $data['data'] = json_decode($bizcontent);
             return $data;
         } else {
             $data['code'] = '10001';
