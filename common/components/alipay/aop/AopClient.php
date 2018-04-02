@@ -300,7 +300,7 @@ class AopClient extends Component {
 		$params['biz_content'] = $dict['biz_content'];
 
 		ksort($params);
-
+print_r($params);exit;
 		$params['sign'] = $this->generateSign($params, $this->signType);
 
 		foreach ($params as &$value) {
