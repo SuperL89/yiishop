@@ -33,7 +33,7 @@ class SignupForm extends Model
             //['username', 'match', 'pattern'=>'/^1[34578][0-9]{9}$/','message'=>'请输入正确的手机号/用户名'],
             //美国手机验证规则
 //             ['username','match','pattern'=>'/^(((1(\s)|)|)[1-9]{3}(\s|-|)[1-9]{3}(\s|-|)[1-9]{4})$/','message'=>'请输入正确的手机号/用户名'],
-            ['username','match','pattern'=>"/^\(([2-9][0-9]{2})\)[2-9][0-9]{2}-[0-9]{4}$/i",'message'=>'请输入正确的手机号/用户名'],
+            ['username','match','pattern'=>'/^((?:\d{9})|(?:\d{3}-\d{4})|(?:\d{3}-\d{3}-\d{4}))$/','message'=>'请输入正确的手机号/用户名'],
             //验证码
             ['verifycode', 'trim'],
             ['verifycode', 'required', 'message' => '验证码不能为空.'],
