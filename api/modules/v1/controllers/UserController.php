@@ -1397,14 +1397,14 @@ class UserController extends ActiveController
                 case 5: return array('code' => '10001', 'msg' => '该订单为已出库状态,不可发货'); break;
             }
             //查询快递公司信息
-            $express_arr = Express::find()->select(['*'])->where(['id' => $user_data['express_id'],'status' => 0])->one();
+            //$express_arr = Express::find()->select(['*'])->where(['id' => $user_data['express_id'],'status' => 0])->one();
 
             //订单信息
             $orderData = Order::findOne($order_arr->id);
             $orderData->status = 3; //订单已发货
             $orderData->deliver_at = time();
-            $orderData->express_name = $express_arr->name;
-            $orderData->express_num = $user_data['express_number'];
+            //$orderData->express_name = $express_arr->name;
+           // $orderData->express_num = $user_data['express_number'];
             if ($orderData->save()) {
                 $data['code'] = '200';
                 $data['msg'] = '';
