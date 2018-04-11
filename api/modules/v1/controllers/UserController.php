@@ -1999,7 +1999,7 @@ class UserController extends ActiveController
         //分页
         $pagination = new Pagination([
             'defaultPageSize' => 10,
-            'totalCount' => GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>$good_status,'is_del'=>0])->count(),
+            'totalCount' => GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'status'=>0,'mb_status'=>$good_status,'is_del'=>0])->count(),
             'page' =>$page - 1,
         ]);
         //获取商家商品信息
