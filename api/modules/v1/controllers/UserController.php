@@ -2003,7 +2003,7 @@ class UserController extends ActiveController
             'page' =>$page - 1,
         ]);
         //获取商家商品信息
-        $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>$good_status,'is_del'=>0])->with([
+        $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'status'=>0,'mb_status'=>$good_status,'is_del'=>0])->with([
             'good'=> function ($query) {
                 $query->select(['*'])->where(['is_del' => 0])->with([
                     'goodImage'=> function ($query){
