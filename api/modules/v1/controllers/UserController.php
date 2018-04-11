@@ -2718,6 +2718,49 @@ class UserController extends ActiveController
             }
         }
         /**
+         * 商家删除商品属性 token id
+         */
+        public function actionBusinessDeleteGoodmbv()
+        {
+            $user_data = Yii::$app->request->post();
+            $token = $user_data['token'];
+            $user = User::findIdentityByAccessToken($token);
+            $userid = $user->id;
+            $mbv_id = isset($user_data['id']) && $user_data['id'] ? $user_data['id'] : 0;
+            //验证是否为商家用户
+            $business =Business::find()->select(['user_id'])->where(['user_id'=>$user->id,'status'=>1])->one();
+            if(!$business){
+                $data['code'] = '10001';
+                $data['msg'] = '不是商家用户或未通过商家审核';
+                return $data;
+            }
+           
+            $goodMbv = GoodMbv::find()->where(['id'=>$mbv_id,'status'=>0,'is_del'=>0])->one();
+            if($goodMbv){
+               $goodMb = GoodMb::find()->where(['id'=>$goodMbv->mb_id,'user_id'=>$user->id,'status'=>[0,1],'is_del'=>0])->one();
+               if($goodMb){
+                   $goodMbv->is_del = 1;
+                   if($goodMbv->save()){
+                       $data['code'] = '200';
+                       $data['msg'] = '';
+                       return $data;
+                   }else{
+                       $data['code'] = '10001';
+                       $data['msg'] = '删除失败';
+                       return $data;
+                   }
+               }else{
+                   $data['code'] = '10001';
+                   $data['msg'] = '操作失败';
+                   return $data;
+               }
+            }else{
+                $data['code'] = '10001';
+                $data['msg'] = '商品属性不存在';
+                return $data;
+            }           
+        }
+        /**
          * 用户反馈 token text_a
          */
         public function actionFeedback()

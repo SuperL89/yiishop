@@ -135,6 +135,7 @@ return [
                         'POST business-id-good' => 'business-id-good',
                         'POST business-delete-good-mb' => 'business-delete-good-mb',
                         'POST feedback' => 'feedback',
+                        'POST business-delete-goodmbv' => 'business-delete-goodmbv',
                     ]
                 ],
             ]
