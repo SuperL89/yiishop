@@ -2553,7 +2553,7 @@ class UserController extends ActiveController
             }
             $goodmbv_arr = json_decode($user_data['data'],true);
             //获取商家商品信息
-            $good_arr = GoodMb::find()->select(['id','good_id'])->where(['user_id'=>$user->id,'status'=>[0,1],'is_del'=>0])->with([
+            $good_arr = GoodMb::find()->select(['id','good_id'])->where(['id'=>$mb_id,'user_id'=>$user->id,'status'=>[0,1],'is_del'=>0])->with([
                 'good'=> function ($query) {
                 $query->select(['id'])->where(['is_del'=>0])->with([
                     'goodImage'=> function ($query){
@@ -2592,7 +2592,7 @@ class UserController extends ActiveController
                         $data['msg'] = $msg;
                         return $data;
                     }
-                    //print_r($goodmbv_arr['goodmbv']);exit();
+                    //print_r($good_arr);exit();
                     $goodmbvArr = array();
                     foreach($goodmbv_arr['goodmbv'] as $key => $attributes) {
                         if ( ! isset($attributes['model_text']) ||  ! isset($attributes['price']) ||  ! isset($attributes['stock_num']) ||  ! isset($attributes['bar_code'])) {
@@ -2618,7 +2618,7 @@ class UserController extends ActiveController
                             $goodmbvArr[$key]['price'] = $attributes['price'];
                             $goodmbvArr[$key]['stock_num'] = $attributes['stock_num'];
                             $goodmbvArr[$key]['bar_code'] = $attributes['bar_code'];
-                            $goodmbvArr[$key]['mb_id'] = $good_arr->id;
+                            $goodmbvArr[$key]['mb_id'] = $goodmb->id;
                             $goodmbvArr[$key]['created_at'] = time();
                             $goodmbvArr[$key]['updated_at'] = time();
                             if (!in_array($attributes['bar_code'], $bar_code)) {
