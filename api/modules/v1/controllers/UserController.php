@@ -2735,7 +2735,7 @@ class UserController extends ActiveController
                 return $data;
             }
            
-            $goodMbv = GoodMbv::find()->where(['id'=>$mbv_id,'status'=>0,'is_del'=>0])->one();
+            $goodMbv = GoodMbv::find()->where(['id'=>$mbv_id,'status'=>[0,2],'is_del'=>0])->one();
             if($goodMbv){
                $goodMb = GoodMb::find()->where(['id'=>$goodMbv->mb_id,'user_id'=>$user->id,'status'=>[0,1],'is_del'=>0])->one();
                if($goodMb){
