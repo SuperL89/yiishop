@@ -2494,7 +2494,7 @@ class UserController extends ActiveController
                 $transaction->commit();
             
                 $data['code'] = '200';
-                $data['msg'] = '';
+                $data['msg'] = '提交成功，新发布商品需审核后才可见';
                 return $data;
             }  catch(Exception $e) {
                 # 回滚事务
@@ -2701,7 +2701,7 @@ class UserController extends ActiveController
                     }
                     $transaction->commit();
                     $data['code'] = '200';
-                    $data['msg'] = '';
+                    $data['msg'] = '提交成功，新发布商品需审核后才可见';
                     return $data;
                 }else{
                     $data['code'] = '10001';
