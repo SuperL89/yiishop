@@ -2956,7 +2956,7 @@ class UserController extends ActiveController
         //获取商家商品信息
         $good_arr = GoodMb::find()->select(['*'])->where(['user_id'=>$user->id,'mb_status'=>[0,1],'status'=>0,'id'=>$mb_id,'is_del'=>0])->with([
             'good'=> function ($query) {
-                $query->select(['*'])->where(['is_del'=>0])->with([
+                $query->select(['*'])->andWhere(['is_del'=>0])->with([
                     'goodImage'=> function ($query){
                         $query->select(['id','good_id','image_url']);
                     },
@@ -2972,7 +2972,7 @@ class UserController extends ActiveController
                 ]);
             },
             'goodMbv'=> function ($query){
-                $query->select(['*'])->where(['is_del'=>0])->orderBy('price asc');
+                $query->select(['*'])->andWhere(['is_del'=>0])->orderBy('price asc');
             },
 //             'place'=> function ($query){
 //                 $query->select(['*']);
