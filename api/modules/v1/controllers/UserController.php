@@ -2245,6 +2245,7 @@ class UserController extends ActiveController
             $goodCode = isset($good_arr->goodCode) ? $good_arr->goodCode : array();
             if ($goodCode) {
                 foreach ($goodCode as $codeKey => $codeValue) {
+                    $goodMbv[$codeKey]['id'] = $codeValue->id;
                     $goodMbv[$codeKey]['model_text'] = $codeValue->model_text;
                     $goodMbv[$codeKey]['price'] = 0;
                     $goodMbv[$codeKey]['stock_num'] = 0;
