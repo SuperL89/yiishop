@@ -37,7 +37,7 @@ class MbgoodsController extends ActiveController
             'goodMb'=> function ($query) {
                 $query->select(['*'])->where(['status'=>0,'mb_status'=>0,'is_del' => 0])->with([
                         'user'=> function ($query){
-                            $query->select(['*']);
+                            $query->select(['nickname']);
                         },
                         'goodMbv'=> function ($query){
                             $query->select(['*'])->where(['status'=> 0,'is_del'=> 0])->andwhere(['>', 'price', 0])->orderBy('price asc');
