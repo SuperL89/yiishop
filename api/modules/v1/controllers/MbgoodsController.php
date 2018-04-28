@@ -70,6 +70,7 @@ class MbgoodsController extends ActiveController
             ])
             ->asArray()
             ->one();
+            print_r($goods);exit();
         if(!empty($good_arr)){
             //获取商品id
             $goods['good_id']=$good_arr['id'];
@@ -94,7 +95,7 @@ class MbgoodsController extends ActiveController
                 //查询商品转运仓名
                 $goods['good_mb'][$k]['address_name'] = $v['address']['name'];
                 //商品最低价格
-                $goods['good_mb'][$k]['price_min'] = isset($v['good_mbv'][0]['price'])?$v['good_mbv'][0]['price']:0;
+                $goods['good_mb'][$k]['price_min'] = isset($v['goodMbv'][0]['price'])?$v['goodMbv'][0]['price']:0;
                 //商品总库存
                 $goods['good_mb'][$k]['stock_sum'] = $this->actionArrvalsum($v['goodMbv'], 'stock_num');
                 foreach ($v['goodMbv'] as $ks => $vs){
@@ -112,7 +113,7 @@ class MbgoodsController extends ActiveController
                     }
                 }
             }
-           // print_r($goods);exit();
+            
         }else{
             $good['code'] = '10002';
             $good['msg'] = '商品不存在';
