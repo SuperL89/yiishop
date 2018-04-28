@@ -40,7 +40,7 @@ class MbgoodsController extends ActiveController
                             $query->select(['*']);
                         },
                         'goodMbv'=> function ($query){
-                            $query->select(['*'])->where(['status'=> 0,'is_del'=> 0])->orderBy('price asc');
+                            $query->select(['*'])->where(['status'=> 0,'is_del'=> 0])->andwhere(['>', 'price', 0])->orderBy('price asc');
                         },
 //                         'freight'=> function ($query){
 //                             $query->select(['*'])->with([
