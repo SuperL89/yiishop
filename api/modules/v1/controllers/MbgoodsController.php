@@ -112,6 +112,7 @@ class MbgoodsController extends ActiveController
                     }
                 }
             }
+            print_r($goods);exit();
         }else{
             $good['code'] = '10002';
             $good['msg'] = '商品不存在';
@@ -120,7 +121,7 @@ class MbgoodsController extends ActiveController
         
         //提取列数组；
         foreach ($goods['good_mb'] as $key => $val) {
-            $tmp[$key] = $val['price_min'];
+                $tmp[$key] = $val['price_min'];
         }
         array_multisort($tmp,SORT_ASC,$goods['good_mb']);//此处对数组进行降序排列；SORT_DESC按降序排列
         
