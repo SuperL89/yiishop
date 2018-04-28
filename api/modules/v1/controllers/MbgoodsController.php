@@ -70,7 +70,7 @@ class MbgoodsController extends ActiveController
             ])
             ->asArray()
             ->one();
-            print_r($good_arr);exit();
+            //print_r($good_arr);exit();
         if(!empty($good_arr)){
             //获取商品id
             $goods['good_id']=$good_arr['id'];

@@ -39,15 +39,15 @@ class SearchbarcodeController extends ActiveController
         
         $modelClass = $this->modelClass;
         //根据条形码搜索符合的商品id集合
-        $goodmbv=GoodMbv::find()->select(['mb_id'])->where(['bar_code' => $code , 'status' => 0])->asArray()->one();
+        $goodmbv=GoodMbv::find()->select(['mb_id'])->where(['bar_code' => $code , 'status' => 0,'is_del'=>0])->asArray()->one();
         //print_r($goodmbv);exit();
         if(!empty($goodmbv)){//查询条形码是否存在
-            $goodmb = GoodMb::find()->select(['good_id'])->where(['id' => $goodmbv['mb_id'],'status' => 0])->asArray()->one();
+            $goodmb = GoodMb::find()->select(['good_id'])->where(['id' => $goodmbv['mb_id'],'status' => 0,'is_del'=>0])->asArray()->one();
         }else{
             $id =array();
         }
         if(!empty($goodmb)){
-            $id = $modelClass::find()->select(['id'])->where(['id' => $goodmb['good_id'],'status' => 0,])->asArray()->one();
+            $id = $modelClass::find()->select(['id'])->where(['id' => $goodmb['good_id'],'status' => 0,'is_del'=>0])->asArray()->one();
         }else{
             $id =array();
         }
